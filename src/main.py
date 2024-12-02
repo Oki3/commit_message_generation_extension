@@ -1,16 +1,20 @@
 import os
 
 from dotenv import load_dotenv
-from langchain_community.chat_models import ChatDeepInfra
+from langchain_community.chat_models import ChatDeepInfra, ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from extract_diff import import_dataset
 
 load_dotenv()
 
+LLMS = {
+    'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
+    'ollama/starcoder2': ChatOllama(model="ollama/starcoder2", temperature=0),
+}
 
-def call_model_sync(messages):
-    llm = ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0)
+def call_model_sync(model, messages):
+    llm = LLMS[model]
     resp = llm(messages)
     resp.messages = messages
     resp.user = username
@@ -34,5 +38,5 @@ if __name__ == "__main__":
         )
     ]
 
-    res = call_model_sync(message)
+    res = call_model_sync('deepinfra', message)
     print(res)
