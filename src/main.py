@@ -1,4 +1,7 @@
 import csv
+import os
+import random
+
 from dotenv import load_dotenv
 from langchain_community.chat_models import ChatDeepInfra, ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -27,33 +30,39 @@ def call_model_sync(model, messages):
 
 if __name__ == "__main__":
     # TODO: check whether we agree with this dataset
+    output_dir="output"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     train_dataset, validation_dataset, test_dataset = import_dataset("Maxscha/commitbench")
     model_name=input("Enter the model name: ")
+    subset=None
     if model_name in ["codet5"]:
-       train_dataset=pd.read_csv(import_subset_for_local_machine("Maxscha/commitbench"))
+       indices=random.sample(range(len(train_dataset)), 10)
+       subset=train_dataset.select(indices)
     # Open the CSV file for writing
-    with open("output/output.csv", mode="w", newline='', encoding="utf-8") as csvfile:
+    with open(os.path.join(output_dir,"output.csv"), mode="w", newline='', encoding="utf-8") as csvfile:
         csv_writer = csv.writer(csvfile)
         # Write the header row
         csv_writer.writerow(["Original Message", "Model Output"])
         if model_name == "codet5":
-            for _,row in train_dataset.iterrows():
+            for row in subset:
                 diff=row['diff']
                 original_message=row['message']
-            message = [
+                message = [
                 SystemMessage(
                     content="Be a helpful assistant with knowledge of git message conventions."
                 ),
                 HumanMessage(
                     content=f"Summarize this git diff into a useful, 10 words commit message: {diff}"
                 ),
-            ]
+              ]
 
             # Call the model and get the output
-            model_output = call_model_sync('codet5', message)
+                model_output = call_model_sync('codet5', message)
 
             # Write the row to the CSV file
-            csv_writer.writerow([original_message, model_output])
+                csv_writer.writerow([original_message, model_output])
+
         else:
         # Iterate through the dataset
          for item in train_dataset:
@@ -71,7 +80,10 @@ if __name__ == "__main__":
             ]
 
             # Call the model and get the output
-            model_output = call_model_sync('codet5', message)
+            model_output = call_model_sync('deepinfra', message)
 
             # Write the row to the CSV file
             csv_writer.writerow([original_message, model_output])
+
+    df=pd.read_csv(os.path.join(output_dir,"output.csv"))
+    print(df)
