@@ -2,5 +2,6 @@ datasets
 langchain
 langchain_community
 python-dotenv
-
+transformers
+torch
 #forEsGen
