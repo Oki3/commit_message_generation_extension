@@ -2,88 +2,66 @@ import csv
 import os
 import random
 
+import pandas as pd
 from dotenv import load_dotenv
 from langchain_community.chat_models import ChatDeepInfra, ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage
-import pandas as pd
+
+from CodeT5Wrapper import CodeT5Wrapper
 from extract_diff import import_dataset
-from src.CodeT5Wrapper import CodeT5Wrapper
-from src.extract_diff import import_subset_for_local_machine
 
 load_dotenv()
 
 LLMS = {
     'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
     'ollama/starcoder2': ChatOllama(model="ollama/starcoder2", temperature=0),
-    'codet5':CodeT5Wrapper(model_name="Salesforce/codet5-base")
+    'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base")
 }
 
 
 def call_model_sync(model, messages):
+    """Call given model with given prompts."""
     llm = LLMS[model]
-    if model in ["codet5"]:
-        return llm.invoke(messages)
-    else:
-       resp = llm.invoke(messages)
-    return resp.content
+    return llm.invoke(messages) if model == "codet5" else llm.invoke(messages).content
+
+
+def process_dataset(model_name, dataset, csv_writer):
+    """Process the dataset and write results to the CSV file."""
+
+    for item in dataset:
+        diff = item['diff']
+        original_message = item['message']
+        message = [
+            SystemMessage(content="Be a helpful assistant with knowledge of git message conventions."),
+            HumanMessage(content=f"Summarize this git diff into a useful, 10 words commit message: {diff}"),
+        ]
+        model_output = call_model_sync(model_name, message)
+        csv_writer.writerow([original_message, model_output])
 
 
 if __name__ == "__main__":
-    # TODO: check whether we agree with this dataset
-    output_dir="output"
+    # Create output directory
+    output_dir = "output"
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+
+    # Load dataset
     train_dataset, validation_dataset, test_dataset = import_dataset("Maxscha/commitbench")
-    model_name=input("Enter the model name: ")
-    subset=None
-    if model_name in ["codet5"]:
-       indices=random.sample(range(len(train_dataset)), 10)
-       subset=train_dataset.select(indices)
-    # Open the CSV file for writing
-    with open(os.path.join(output_dir,"output.csv"), mode="w", newline='', encoding="utf-8") as csvfile:
+
+    model_name = input("Enter the model name: ")
+
+    # Prepare subset for specific models
+    dataset_to_process = (
+        train_dataset.select(random.sample(range(len(train_dataset)), 10))
+        if model_name == "codet5" else train_dataset
+    )
+
+    # Write output to CSV
+    output_file = os.path.join(output_dir, "output.csv")
+    with open(output_file, mode="w", newline='', encoding="utf-8") as csvfile:
         csv_writer = csv.writer(csvfile)
-        # Write the header row
         csv_writer.writerow(["Original Message", "Model Output"])
-        if model_name == "codet5":
-            for row in subset:
-                diff=row['diff']
-                original_message=row['message']
-                message = [
-                SystemMessage(
-                    content="Be a helpful assistant with knowledge of git message conventions."
-                ),
-                HumanMessage(
-                    content=f"Summarize this git diff into a useful, 10 words commit message: {diff}"
-                ),
-              ]
+        process_dataset(model_name, dataset_to_process, csv_writer)
 
-            # Call the model and get the output
-                model_output = call_model_sync('codet5', message)
-
-            # Write the row to the CSV file
-                csv_writer.writerow([original_message, model_output])
-
-        else:
-        # Iterate through the dataset
-         for item in train_dataset:
-            diff = item['diff']
-            original_message = item['message']
-
-            # Create the input message for the model
-            message = [
-                SystemMessage(
-                    content="Be a helpful assistant with knowledge of git message conventions."
-                ),
-                HumanMessage(
-                    content=f"Summarize this git diff into a useful, 10 words commit message: {diff}"
-                ),
-            ]
-
-            # Call the model and get the output
-            model_output = call_model_sync('deepinfra', message)
-
-            # Write the row to the CSV file
-            csv_writer.writerow([original_message, model_output])
-
-    df=pd.read_csv(os.path.join(output_dir,"output.csv"))
-    print(df)
+    # Display CSV content
+    print(pd.read_csv(output_file))

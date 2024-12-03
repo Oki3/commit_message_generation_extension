@@ -1,6 +1,5 @@
-import csv
-from transformers import AutoTokenizer
 from transformers import AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer
 
 
 class CodeT5Wrapper:

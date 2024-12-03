@@ -1,5 +1,5 @@
 from datasets import load_dataset
-import pandas as pd
+
 
 def import_dataset(dataset_name):
     dataset = load_dataset(dataset_name)
