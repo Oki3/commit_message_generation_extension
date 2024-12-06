@@ -1,6 +1,7 @@
 datasets
 langchain
 langchain_community
+langchain-ollama
 python-dotenv
 transformers
 torch

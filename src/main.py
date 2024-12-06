@@ -4,7 +4,8 @@ import random
 
 import pandas as pd
 from dotenv import load_dotenv
-from langchain_community.chat_models import ChatDeepInfra, ChatOllama
+from langchain_community.chat_models import ChatDeepInfra
+from langchain_community.chat_models import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from CodeT5Wrapper import CodeT5Wrapper
@@ -14,7 +15,7 @@ load_dotenv()
 
 LLMS = {
     'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
-    'ollama/starcoder2': ChatOllama(model="ollama/starcoder2", temperature=0),
+    'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
     'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base")
 }
 
@@ -33,7 +34,7 @@ def process_dataset(model_name, dataset, csv_writer):
         original_message = item['message']
         message = [
             SystemMessage(content="Be a helpful assistant with knowledge of git message conventions."),
-            HumanMessage(content=f"Summarize this git diff into a useful, 10 words commit message: {diff}"),
+            HumanMessage(content=f"Summarize this git diff into a useful, 10 words commit message: {diff}. It is very important that you only provide the final output without any additional comments or remarks."),
         ]
         model_output = call_model_sync(model_name, message)
         csv_writer.writerow([original_message, model_output])
@@ -49,6 +50,11 @@ if __name__ == "__main__":
     train_dataset, validation_dataset, test_dataset = import_dataset("Maxscha/commitbench")
 
     model_name = input("Enter the model name: ")
+
+    # Handle invalid input
+    if model_name not in LLMS:
+        print(f"Model {model_name} not found.")
+        exit(1)
 
     # Prepare subset for specific models
     dataset_to_process = (
