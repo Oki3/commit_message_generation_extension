@@ -1,0 +1,1105 @@
+Original Message,Model Output
+refactoring to use PhaseDiagram.pd_coords,Refactor composition coordinate calculation using pd_coords method.
+refactor(replset): reduce server count when destroyed,Refactor state check and destroy logic in connectNewServers.
+"If there is no repository data, display a nicer message with details on how to proceed to potentially fix it",Add helpful error message for missing GPM repository data.
+"BibFormat: HDREF processing bug fix
+
+* Fixes bug that would occur with empty records when processing HDREF.
+  (closes #<I>)",Fix HDREF formatting condition to check for non-empty recIDs.
+"Task #<I>: Block titles
+fast-fix implementation of isEmpty method, to check, does property have non-empty raw value or not (raw means value without cms editable div wrappers)",Add `isEmpty` method to check block property raw value.
+Add additional cbor test for useTag<I>ForMaps,Add test for map serialization with useTag259ForMaps option.
+"Decorate EcsRunLauncher as experimental
+
+Summary: Now that <URL>",Update EcsRunLauncher to use experimental decorator directly.
+[build] Add tests' requires in setup.py,"Update setup.py: Separate tests_require, clear install_requires."
+"map lazy/upward dylib to proper load command
+
+Both `LC_LAZY_LOAD_DYLIB` and `LC_LOAD_UPWARD_DYLIB` are represented as
+a `DylibCommand` internally as can be verified by creating test dylibs
+with the `-lazy_library` and `-upward_library` linker arguments.",Update LC_LAZY_LOAD_DYLIB and LC_LOAD_UPWARD_DYLIB to DylibCommand.
+Consume bucket once when blocking property is enabled. (#<I>),Fix throttling logic for non-blocking requests in Bucket4j executor.
+"Fix typo in job status update
+
+(cherry picked from commit 0eca<I>d2d<I>a7e0a3d<I>b<I>f0fad<I>e1ed1d1)",Fix typo in `progress` attribute in Job update method.
+Fix package signing for checks with `pyproject.toml` (#<I>),Update link metadata to include optional setup.py and pyproject.toml files.
+"Update setup.py
+
+Changed settings in the setup.py file; moved to new versions that I am working with, removed <I> support, added <I> changed e-mail addresses","Update Python versions, maintainer info, and dependencies in setup.py."
+Mark ClassLoader as deprecated,Add deprecation notice to ClassLoader class.
+"<I>-Freemium mode uninstall flag added on webhook (#<I>)
+
+* <I>-Freemium mode uninstall flag added on webhook
+
+
+
+* styleci fix
+
+
+
+* styleci fix",Add freemium flag on app uninstall if freemium mode enabled.
+"Use two values in the state for editor & frameList
+
+This reduces confusion between what is currently rendering.
+  This will avoid duck type checks in the view and allow the
+  rendering wrapper to have a slightly different container
+  for each type of widget.",Update state management for editor and frame list visibility.
+Bumpy to <I>,Bump version from 0.2.3 to 0.2.4.
+player: allow overriding loader instance by setting the loader property,"Add loader getter/setter, update coreFactory initialization."
+"- bug fix: include compound types in the comput...
+
+- bug fix: include compound types in the computation of the set of
+constructors needed to compute the parents of a class, - bug fix: handle
+abstract type members in the detection of classes whose parents have to
+be computed lazily (thanks Philippe)",Add handling for compound types and improve cyclic type detection.
+Unset phonons at Gamma at initialization.,Initialize phonon_done flag in Interaction class.
+use a static seed for better reproducability,Fix random language selection in HTTPServerMultiLangLoadTest.
+Framework already applies quotes to table names in function params - this would break MySQL,Fix: Remove unnecessary quotes around table name in OrderFilters.
+refactor: Get rid of newly appeared ESLint errors,Fix regex and escape characters in DOM event and parser data modules.
+Remove singleton registration from persistence services to enable mocking,Remove singleton registration for FlowNodeInstanceService and ProcessModelService.
+Fix drop-down panel selector not remembering user's selection,Set selected index for drop-down menu in DNA panels.
+"Gardening: Add missing flow control ACK in performance test driver
+
+Change-Id: I<I>aed<I>be<I>f<I>f0c<I>bcd1d8cf<I>
+Reviewed-on: <URL>",Add flow controller acknowledgment in performance test driver.
+"chore(deepword) rm "" """,Fix argument handling and add verbose flag check.
+Addressed PEP 8 error E<I>,Add missing newline in UserAdmin class; unregister stock group if setting enabled.
+setup.py: Remove Python <I> since it's not tested,Remove Python 3.4 classifier from setup.py.
+rename to force_sandbox,Rename `is_sandbox` to `force_sandbox` for clarity.
+Fix failing tests by throwing Exception when accessing unset value.,Throw exception when accessing non-existent key in Registry.
+exclude colorize-fixtures from hygiene,Exclude colorize-fixtures from indentation and copyright filters.
+Update amc_pruner.py (#<I>),Remove cudnn deterministic setting in AMCPruner.
+nix extraneous stdio closes; makes debugging hard,"Remove unnecessary stdin, stdout, and stderr close calls in link function."
+prase connections from first table row,Fix: Remove unnecessary slice in connections parsing loop.
+Changed member variable to local variable.,Fix ActivityUtils: Remove redundant variable and correct indentation.
+"Added back the generation of ""equal: true"" from schema files.",Add equal relation handling in Doctrine Import Builder.
+ran black on all of curtsies (#<I>),Fix version formatting and add newline in `termhelpers.py`.
+Downcase and remove colons from discovered host names for safety,Remove colons from MAC address for discovered host names.
+Attempt to write a test about files locking for removeAsync(),Add test for retry on file lock during removal.
+Fixing bug which prevents files with more than 2 channels from being read.,Fix channel count in multichannel sample processing.
+Change default cli enviornment to staging to prevent accidental prod deploys,Set default environment to staging for CLI options.
+Reduce the output of dotnet build (#<I>),Add `-nologo` to dotnet build arguments.
+"Fixes app path issue which lead to build fails. Fixes #<I>
+* The build fails when there is a space in the Application path.
+* This small fix resolves that issue.",Fix appdir path handling in Android build command.
+Remove ConnPool functions overlapped by Stat,Remove redundant MaxConnectionCount and CurrentConnectionCount methods.
+Fix missing first name character in device updates,Adjust device name offset in DeviceUpdate constructor.
+Allows specifying a context to merge with the shared context for every capture or transaction,Add context parameter to startTransaction and captureThrowable methods.
+"zip: Re-add zip<I> fix (#<I>)
+
+Accidentally reverted #<I> in #<I>
+
+
+
+Fixes #<I>",Fix zip64 handling in Writer.Close for large offsets.
+Don't assume pytestmark is iterable,Add collections import; fix pytestmark iterable check.
+Fail if there aren't any files to back up.,Refactor backup check: return error if files list is empty.
+"Ticket #<I> (unhelpfull error messages)
+
+Reworks the error message to 1) make it clearer that it's an internal
+error, not something the user did, 2) rearrange the sentence to make
+it clearer that ""setting"" is being used as a noun 3) combined several
+fields to increase the chance that the identifying information would
+suffice to lead someone to the actual source of the error.",Improve error messages for invalid group and owner settings.
+refactor: add setResponse method.,Add setResponse method to Filters class for response handling.
+(Fixes issue #<I>) doc typo,Fix CFileValidator message for minSize and maxFiles.
+"alias :eql? :==
+
+otherwise, @collection - @original (and other array operations) won't work correctly in association_collection.rb",Add alias `eql?` to `==` for consistent object comparison.
+"Adjusting CacheClear Warmup method to namespaced kernels
+
+Backported the patch in #<I> to the <I> branch.",Fix kernel class references in .meta files during cache warmup.
+"Fix fastlane crashing when running a lane (#<I>)
+
+* Fix fastlane crashing when running a lane
+
+
+
+Fixes #<I>
+
+
+
+* Fix RuboCop issue",Add terminal-table dependency for lane selection table.
+set the first job params only if not explicitly set,"Update job connection, queue, and delay handling in PendingChain."
+Add a lock around the listeners list.,Add listener lock to ensure thread safety in ServicesState.
+setting default of temp timeseries in moving average,Add default extend back for buffered time series.
+allowed get_posts to wrap query_posts from commit ee3e<I>c1e8f<I>f8d<I>fb1c5d<I>d7f7e<I>a4,Add `get_posts` method for direct post retrieval.
+cmd/dex/serve: add local connector directly to static connectors in storage,Refactor password DB connector initialization to improve code structure.
+"Add raise statement if metamodel is not known during load()
+
+This commit introduces an explicit message if a metamodel is missing
+from the global_registry or the local one during deserialization (do
+nothing more).",Improve error handling for unknown metamodel URIs in Resource.
+"muc: do check for equality twice
+
+We already performed the presence.getFrom().equals(myRoomJID) check
+and saved its result. No need to do it again.",Fix presence handling in MultiUserChat by using isUserStatusModification.
+Fixing another failures with security manager on,Fix wsdlLocation retrieval using privileged action for security.
+"Set target uuid opposed to resource id
+
+The uuid is the public identifier vs the resource id which should
+be for internal operations.
+The target uuid should correspond to the machine id (given by
+the provider)",Update `Uuid` field instead of `ResourceId` in `SaveMachine` and tests.
+"Setting ""bcmath.scale"" to something other than 0 so that we can be sure bcdiv's $scale parameter is working correctly.",Set bcmath scale to 16 for bcdiv parameter testing.
+"Update dae.py
+
+Fix bug in export of specular color",Fix specular color in material unparser.
+allow appending iterableItems as well,Update method signatures to support union types for better type handling.
+feat(form): Focus location input for typing when 'X' pressed. Addresses conveyal/trimet-mod-otp#<I>,Fix focus issue in LocationField component by updating ref handling.
+#<I> A new SSRC identifier is generated for the media channel when the connection is opened. RTP statistics have the SSRC updated as well.,Add SSRC to statistics on channel open.
+Exposed all functions map as '_map',Add internal map reference to DOMJS module.
+"Use ""Other"" as default name for ColumnMeaning.OTHER",Update OTHER ColumnMeaning label for clarity and consistency.
+Update RequestExecutor.php,Add HEAD method support in RequestExecutor.
+Try to handle when a url is protocol-agnostic (i.e. is hoped to work for whatever the current protocol is - i.e. http:// or https://),Fix relative URL handling in OpenGraphParser.
+Add another test assertion for #chunk(),Add test for chunk size 5 in Array tests.
+[FrameworkBundle] reverted wrong change,Fix logger check in ExceptionListener.
+refactor(md-collapsible): removed comments,Remove commented code in collapsible refresh method.
+"fix ruby <I> warning (#<I>)
+
+fixes
+
+```
+
+lib/seahorse/client/net_http/connection_pool.rb:<I>: warning: `if' at the end of line without an expression
+
+```",Refactor session deletion logic for clarity and conciseness.
+"bumping to <I>.  While there aren't any api changes, we've bumped a bunch of gem versions, dependencies of ruby, etc. and I want to give some versioning 'distance'.",Bump version to 0.7.0 in version.rb.
+do not make check spelling default for now to avoid mass breakage,Remove spelling check from package task prerequisites.
+"Using the instance variable for argv.
+
+Instead of using the global constant ARGV, we're changing to using the
+instance variable because it is more testable.",Refactor version and shift_argv! methods to use argv instead of ARGV.
+bithumb: has fetchOrder,Add fetchOrder capability to bithumb exchange class.
+Put right relative path to 'utils.js',Update utils import path in test_with_nodeunit.js
+"CLN: Condense TIMEZONE ID labeling (#<I>)
+
+Follow-up to gh-<I>",Refactor timezone IDs to use dynamic representation from TIMEZONES.
+"ra-data-graphql-simple GET_MANY_REFERENCE comprehensive param support
+
+support comprehensive pagination, sort and filter params for GET_MANY_REFERENCE requests. currently there is a gap using the ra-data-graphql-simple adapter when trying to use filter / sort / pagination props on the ReferenceManyField component.",Refactor GET_MANY_REFERENCE to use buildGetListVariables for consistency.
+Avoid unnecessary lookup method call if the field we are asking for is already here,Add conditional field loading for traversal in Pods class.
+Bugfix: Timeline with colors option,Fix color options assignment in chart configuration.
+provider/openstack: Use security_groups as native set when update,Optimize security group updates by using schema sets directly.
+"Code fix for SR ID: EMBPD<I>
+
+Did modifications for choosePicture API to get the default values if there are no property values are specified.",Fix null outputFormat by setting default value.
+Should be able to limit acceptable algorithms.,Update verify_signed_jwt to accept allowed_sign_algs parameter.
+Read the README.rst with UTF8,Update `setup.py` to specify UTF-8 encoding for README.
+BatchStatsd: drop new-less support,Remove unnecessary constructor check in BatchStatsd.
+add support for setTimeout and setKeepAlive,Add setTimeout and setKeepAlive methods to JsonSocket delegates.
+"internal/exec/util/passwd: plug fd leak in error path
+
+Doesn't really matter since we'll likely bubble all the way to the exit
+anyway, but it's good practice.",Ensure file is closed after write operation in writeAuthKeysFile.
+theming: minor hint regarding color theme files lookup,Prefer `.rc.default` files for theme selection.
+Proper version bump - on previous merges one version bump was forgotten,Bump version to 30.2.4 and update skip version in Updater.
+"pin pytest version =>3,<4",Update pytest version range in tests_require.
+libc_spec: Don't run tests if on Curl.windows?,Add conditional tests for `getdtablesize` on non-Windows systems.
+"We can now see the hazards produced by engine-<I> with engine <I> [skip hazardlib]
+
+
+Former-commit-id: <I>ce<I>c<I>c<I>a<I>c<I>fda3c<I>be<I>",Remove vs30 from hazard items in extract_hmaps function.
+"Added 'grok_environment_error()' function to deal with the various
+forms that IOError and OSError can take (taken from core.py).",Add function to generate useful error messages from EnvironmentError.
+"return value is never tested, so stop calling `presence`",Fix load_dependency method to remove unnecessary presence call.
+"(PUP-<I>) Fix regex warnings introduced in Ruby <I>
+
+Ruby <I> introduced a warning for checking invalid objects (such as
+Integer in our case) against a regular expression. The check in this
+case would always return nil even though a valid String would respect
+the given regular expression, resulting in the possibility of unwanted
+behaviour.
+
+This commit replaces the check accordingly in the user type and keeps
+previous logic.",Fix user group handling to ensure string conversion.
+Fixed - SpringBoot yaml configuration parsing errors shouldn't be suppressed. #<I>,Add suppressed exception to improve error handling in RedissonAutoConfiguration.
+Update jib version to <I>,Update JIB_VERSION to 3.1.0 in generator-constants.js.
+tests: add test for non-number maxAge,Add maxAge validation test for serialize function.
+"Fix opening mimetypes twice and only closing first
+
+Found by FindBugs.",Fix properties loading to avoid opening stream twice.
+"Add TODO to remove need for each matcher to write their own MatchesSafely
+implementation by providing a default superclass implementation.",Add TODO for PropertyMatcher property accessor awareness.
+update prefix to private-encrypted,Update isEncryptedChannel to check for 'private-encrypted-' prefix.
+Make sure strings get rerendered once loadRemote finishes.,Add broadcast for language change in catalog.
+"register navigation here (so we can lose the menu option) and use the given name instead of generic ""monad""",Add navigation service and update Monad class methods.
+DDC-<I> - Fix undefined variable notice.,Fix sequence generator definition setting in Doctrine 1 schema conversion.
+"Fixed #<I> -- Avoid fetching entire queryset from db
+
+Patched ciritcal memory leak in ModelSelect2 widgets.
+Boolean evaluation of queryset makes django fetch all
+elements.","Bump version to 5.4.1, fix memory leak in ModelSelect2Mixin."
+Reworded confusing comment mentioning <I>,Fix API version regex to protect key/slug parameters.
+Updated spec to use an existing record outside the Collection,Update collection shared spec to use dynamic key for non-member resource retrieval.
+Added magic comment for Ruby <I>.,Add encoding declaration to serializer spec file.
+"fixed method definition
+
+This version introduces multiple enhancements:
+
+all methods converted to static
+
+Details of additions/deletions below:
+--------------------------------------------------------------
+
+Modified:   Base/Register.php
+            -- Updated --
+                getObject renamed used method
+                getRegisteredObjects converted to static
+                setClassCounter converted to static and renamed to _setClassCounter",Update method visibility and naming for consistency and clarity.
+Dump the original rule in the compiled code comments,Add rule comment in AbstractCompiler's execute method.
+Adding defer to the lock (#<I>),Fix bucket deletion by deferring unlock.
+"Added method to generate a list of hex color values between a start
+color and end color.",Add function to generate hex color range for i3bar.
+don't parse geometry if we don't need it,Fix geometry inclusion in GeoJSON output for non-geojson file types.
+deliver action now stores the path to the ipa in IPA_OUTPUT_PATH as well,"Remove unused constant, update IPA path storage in DeliverAction."
+"when deploy registry as a pull through cache ,function copeContent() may cause a socket leak when docker user canceled its pull operation.",Ensure remote reader is closed after use in proxyBlobStore.
+Update to jsdoc relates to issue #<I>,Fix widget path retrieval and update focus method parameter type.
+"added missing globals, strange this seemed to work....",Fix lesson parameter type and add missing global $DB.
+"Add Trove classifiers for supported Python versions and some other info (following TensorFlow).
+
+PiperOrigin-RevId: <I>",Update classifiers and keywords in setup.py for broader audience and topics.
+"added some skeleton to test_PGPKeyCollection, for later",Add PGPKeyCollection test fixture and class structure.
+"fixed a merge bug, I think",Remove duplicate test and fix method name.
+Fixed normalize bug in team filtering.,Fix team normalization in GameQ Filters Normalize class.
+tests/r/service_discovery_public_dns_namespace: Use consistent var name,Fix AWS Service Discovery public DNS namespace sweep function parameter.
+Drop Py2 and six on salt/runners/manage.py,Update `manage.py` to use `urllib.request` for fetching installer.
+"Use Values.Set over Values.Add in testFormValues.
+
+The parameter values of testFormValues function has underlying type
+map[string]string. That means each key is going to be a unique string,
+there can not be two entries in the map with the same key in values.
+
+Therefore, it's sufficient and equivalent to use Values.Set instead of
+Values.Add when converting values map to url.Values type.
+
+Prefer using Values.Set because simpler and easier to reason about.",Update testFormValues to use Set instead of Add for form values.
+only return usable networks for vm deployment,Add canusefordeploy parameter to network listing for deployment filtering.
+allow a user to pass in the symbol :now or 'now',Fix stream_position type handling in fmt_events_args method.
+"support new data-field of ZigUP (#<I>)
+
+* support new data-field of ZigUP
+
+
+
+* satisfy travis",Add DS18B20 temperature sensor support and parsing.
+RG-<I> hack for focus on not yet positioned dropdown,Add focus timeout hack to select filter component.
+Add test for attempting to create a ticket without a barcode.,Add test for ticket creation without barcode.
+Allow importing SEARCHTREE before settings are configured (#<I>),Initialize SEARCHTREE as empty list for consistent state.
+do not notify watchers about voided units,Add check for voided units in notifyWatchers.
+Installing patchelf in travis for successfully building the setup.,Fix patchelf path for Travis CI compatibility.
+it shouldn't be a private method,Fix SSH disconnect method and pty_options visibility.
+Add integration test for user-args help,Add tests for help output and project-defined arguments.
+Remove commented line in test_trajectory,"Remove redundant trajectory initialization, use direct file loading."
+"Allow columns that have value of 0 to be present
+
+Since array filter considers 0= false, and '0' = false, if you have a column with values 0 and 1, you can't sort that column, as it will be filtered out.
+
+using the strlen filter, you ensure that values like null,empty and false are removed, but you keep values that would be boolean false in php, but they shouldn't.",Fix query parameter filtering in SortableLink.
+added an RLock that can be used around database operations (specifically useful for standalone with multiple connections),Add lock to ensure thread-safe database insertions in Statistic.
+Fixed issue with models and table prefixes.,Fix table prefix in schema fetching query.
+Only wait if a gui is available.,Update edit_remote_file to check GUI and wait conditions.
+oh cool i can test right from the repo,Fix syntax errors in Glance.prototype.serveRequest and errorTitle functions.
+"Update setup.py (#<I>)
+
+Minor bugfix",Fix setup.py: Quote 'future' dependency.
+remove unnecessary var that declaration (#<I>),Remove unnecessary variable in checkDisabled function.
+MOved loading type cache to when the db is loaded.,Add typeCache require on MongoDB connection success.
+"Fix NPE in ExecutableNode.fillMapFromExecutable() (#<I>)
+
+When loading some old executions (at least in order to finalize them), it's possible that the serialized flow_data doesn't include the conditionOnJobStatus at all.",Check conditionOnJobStatus before adding to objMap.
+Added check if the value for -e is undefined,Check targetEngine for undefined before length check and prepend.
+Add version 3 of the sshclient facade to introduce Leader().,"Update SSHClient facade to v3, adding Leader() method."
+Add monthlyOnLastDay() to ManagesFrequencies,Add method to schedule event on last day of month.
+Only open filter completion on creation if operand is empty,Ensure `selector.evaluate()` only runs when `filter_operand` is not empty.
+added a few docstings,Add `@since` tag and update `compute_path` docstring for clarity.
+Return response body only if status code is success,Fix response handling to check for success.
+post release: set version to <I>,"Bump version to 0.7.10 in conf.py, __init__.py, and setup.py."
+txnid2: fix additional ambiguous queries,Fix order by clause in ReplicatedUpdateBaseProc SQL statement.
+Ignore ImportError in coverage,Mark cvxopt import error handling as pragma no cover.
+"Fixes #<I> Set Base URL used in the AJAX request to `?` instead of `index.php?`
+
+ It is set to '?' rather than 'index.php?' to increase chances that it works
+ including for users who have an automatic <I> redirection from index.php? to ?
+ POST values are missing when there is such <I> redirection. So by by-passing
+ this <I> redirection, we avoid this issue.",Fix AJAX URL to avoid 301 redirection issues.
+only test for jackson >= <I>,Add Jackson version check for explicit root type test.
+BUGFIX: Fixed an edge case where no PagesToDisplay value was set.,Fix sitemap root pages display logic and default case.
+Uncomment wget spec,Enable automatic download and update of API spec file.
+Fix #<I> - tagName can be provided as a function.,"Fix #1228: Allow tagName as function, update tests."
+jest: ToEqual -> toBe,Fix redundant code expectation in Babel API test.
+Updated version to <I>,Bump version to 2.28.0 in manifest and updater.
+"Avoid an error caused by version mismatch of docker client and server
+
+Add the version specifier to the APIClient constructor with
+the auto value. #<I>",Update Docker client initialization to use auto version.
+"INDY-<I>: Wallet migration for rebranding (#<I>)
+
+Supported wallet migration for rebranding",Update class name for backward compatibility in wallet decoding.
+fix test for new version of chai,Update test to use nested property assertion.
+[syscal binary import] check for consecutive measurement numbers,Add check for consecutive measurement numbers in IRIS Syscal Pro import.
+"Lint refactor
+
+[ci skip]",Fix variable declaration in asset-minifier.js to prevent global leakage.
+Fix casing within a comment.,Fix inconsistent variable naming in upload model.
+Adding missing eslint targets,"Expand ESLint target to include test, Gruntfile, and index files."
+"code cleanup
+
+snake_case for variable names",Refactor variable names to snake_case in test_address_gr.rb
+"[Tests] Remove unnecessary sleep in performance-test consumer
+
+Change-Id: Iba7b<I>c<I>c<I>c4c1cab<I>ab<I>d5de<I>dd","Remove workaround sleep in shutdown, simplify method."
+Fix a problem with the regex for highlighting paths.,Update report builder regex and bump version to 0.1.24.
+Don't sign ourselves as a user,Prevent setting verification for own cross-signing master key.
+Adds a new constant to have the choice of not removing vm disk files upon virtual machine removal,Add VMDELETE_KEEP_FILES constant for file retention option.
+<I> is already released!,Update CompoundTagSetter.java to reflect version 4.6.0 changes.
+feat(app-shell): add re-export of gtm logout and flopflip (#<I>),Add GtmUserLogoutTracker and SetupFlopFlipProvider components.
+"[ec2] fix volume model to not muck with attributes, which breaks mocks","Refactor volume attachment handling, move logic to `attachmentSet=` method."
+#<I> - removed the ipaddress validation,Remove IP address validation for domain creation.
+change columnVisibilityCache in AuthorizationsFilter to ConcurrentHashMap,Update columnVisibilityCache to ConcurrentHashMap for thread safety.
+Add output printing for easier debugging,Add print statement for output and error in e2e test.
+Locate element by name attribute bug fixed (#<I>),Fix name locator in WebDriverIO and update tests.
+"operator: add Info message when a identity is GC in CRD mode
+
+It is useful to have this information being printed in non-debug mode to
+help tracking down potential bugs.",Add log for successful identity garbage collection.
+provide more annotations for flow <I>,Add type annotations to epics array and eventSourceFallback function.
+small update to install.py output to show exe/pkg paths,Enhance install success message with Rez executable and package paths.
+Loading doy as at least 1D.,"Simplify DOY handling, convert datetime to Julian day correctly."
+Fix linter issues (#<I>),Fix IXmlNodeSyncAdapter documentation and add empty function for module complexity.
+"classpath for aar
+
+classpath for aar",Update AAR file class extraction to add file path strings.
+Fix some PEP8 problems in ldap_db,Improve LDAP filter readability and maintainability in `ldap_db.py`.
+"[Propel1Bridge] Fix ""and => &&"" CS in ModelChoiceList",Fix ModelChoiceList to use correct logical operator for condition.
+coinmarketcap workaround in test.js,"Fix ticker bid/ask assertion for coinmarketcap, update testOrderBook."
+patch for commit <I>a<I>bc<I>a<I>b<I>c<I>fba0c<I>dfd6,Fix WebSocketClient close connection with correct CloseFrame NEVER_CONNECTED.
+Temporary logging out put.,Add logging for IRC client connection details.
+#<I> refactor Ps to allow for direct indexed base injector for collection,Fix generic type parameter in PreparedStatementSetterImpl instantiation.
+Adds getUserNameWithSurname() method to Profile entity.,Add method to get user name with surname.
+Add a trailing comma,Fix missing comma in docs gatsby-config versions.
+"[xbase][typesystem] Fixed NPE in type computation
+
+unresolved types in for-expression may have caused trouble, e.g.
+
+for(DoesNotExist d: someExpression) {
+  ..
+}",Fix parameter type handling in XbaseTypeComputer.
+Mark isMobileDevice as deprecated,"Deprecate isMobileDevice, recommend using getDeviceType instead."
+There is no reason to halt tests completely when POJO/MOJO loading fails,Update exception handling for POJO compilation and MOJO loading failures.
+"Clean up the comment describing the DownloadInfo
+
+The comment was rather tautological so clean it up to better explain
+what the payload is for.",Clarify DownloadInfo and RefreshPlatform documentation for charm downloading and platform selection.
+Makes the type definition gpf specific and not global,Update context.js: Rename `gpfTypeContextResult` to `gpf.typedef.contextResult` for consistency.
+rename var and add statsd support,Update metric function parameter and add statsd support.
+"[DOC] Fix alignment in examples
+
+According to <URL>",Fix whitespace in `Ember.isNone` function documentation.
+E<I>: Role name should be the parent dir of tasks (#<I>),Update role name extraction to use tasks directory.
+increase timeout of app delete to <I> seconds,Increase delete timeout for service broker lifecycle test.
+COMMERCE-<I> Removed useless portlet property,Remove unused CSS reference in CommerceSubscriptionEntryPortlet.
+"Avoid `webpacker:install` if unnecessary
+
+Since this is a test to check the behavior of `load_defaults`,
+webpacker is unnecessary.",Update app generator test to skip Webpacker requirement.
+Add strategy attribute to reference and embed mapping in XmlDriver,Add default strategy 'pushPull' for embedded and reference fields.
+Fixes #<I> by adding the channels.join API endpoint,Add method to join channel with code.
+adding whitelist to indexed fields.,Update IPNetwork model to index whitelist field.
+"RootIsShared: Fix root detection
+
+Column 4 is the mount position, column 3 will not always be
+""/"" for the root. On one of my system its ""/root"".",Fix RootIsShared function by adjusting mountinfo parsing logic.
+fixing aggregate in fetchL2OrderBook,Add `aggregate` function to `Exchange.js` for data processing.
+"project_file, not downloaded_file",Update spec to reflect project file instead of downloaded file.
+Use __::split() with limit to 2 in __::set() implementation,"Optimize set function path handling, reduce complexity, improve performance."
+FIX: execute the precommit scripts when directory not dirty,Update pre-commit hook to return success object with restore function.
+"Switch to using sequence for updating tags
+
+no issue
+
+- makes upgrading very large numbers of posts & tags more reliable",Refactor tag order update to use sequence for better handling.
+"- fix Non-static method Piwik_Common::getCountry() should not be called statically, assuming $this from incompatible context
+
+git-svn-id: <URL>",Make `getContinent` and `getCountry` static functions in Common.php.
+#<I>: Check collision feature presence before rendering.,Add null check for TileCollision feature before rendering.
+Whoops! How did flake8 not pick this up,Add TrackStuckEvent import in PlayerManager.py
+"Avoid wrong meta-data
+
+Make `getFaviconLocations` package private so that it's not (wrongly)
+exposed in the meta-data.
+
+Closes gh-<I>",Change getFaviconLocations method visibility to package-private.
+Fixes setCache to accept a JSON Graph Envelope,Add LRU collect to setCache for efficient cache management.
+[migrations] Extracted migrations related classes - cleanup.,Fix toString method to return dbConfig string representation.
+"lxd/firewall/firewall/interface: Adds delete and ipVersions slice args to NetworkClear
+
+So that one call to NetworkClear can clear all rules as needed, and we can indicate if network-specific chains need to be deleted.",Update NetworkClear to support multiple IP versions and deletion flag.
+update scd query api test now that sai-kovan api has been shut down,Update test to use mainnet and new CDP ID.
+aensQuery: Fix default value of pointers field (#<I>),Fix default pointers value from object to array in AENS query.
+added the getAdditionalRolesFunction to the User Row Controller for the User ProxyModel,Add getAdditionalRoles method to Kwf_User_Row.
+Release <I>; only for updating PyPI record.,Bump version to 0.5.2 in setup.py.
+Set up DB config before connecting to DB,Add missing database connection establishment in db_scrub.rb.
+model object contains count and iterator,Remove unused traits in Iterator class.
+Clarify comment for slice_plane,Update slice method docstring for clarity and precision.
+Incremented to version <I>,Bump version to 0.1.2 in collections_.py.
+"Remove verbose command, add version command
+
+The verbose command may be added later.",Update options handler to display version and exit on --version.
+"Test case where Integer can throw an exception, if the integer is invalid",Add test for Integer instance creation failure.
+Adding ability to disable npm install silent flag,Fix npm install command argument handling.
+Add filer migrations in the correct place for Django <I>,"Remove redundant filer migration module setting, consolidate under MIGRATION_MODULES."
+"network: fix mod_hostname() and arp() to work on OpenBSD.
+
+arp(8) output has recently changed on OpenBSD and the hostname
+is set under /etc/myname.",Fix ARP handling and hostname modification for OpenBSD.
+Fix Archive not being cleared in TextDatasource,Add `westley.clear()` before executing history commands in `TextDatasource`.
+Deriving the CMS content (to edit) the correct way within Rich.Cms.Editor,Optimize content item matching and selector retrieval in editor.
+III-<I>: Add theme and type update to offer editor interface,Add methods to update offer type and theme.
+Handle pruned body parts better.,Enhance content extraction: handle readabilityBody and log failures.
+"Bailing from onKeyDown handler when key is already down, ref #<I>",Fix keyDown event handling to prevent multiple press detections.
+changed some aliases on the task generator,"Update task command aliases to ""t"" and ""grift"" for consistency."
+Issue <I>: Ignore CWWKG<I>W config update on DynamicUpdateTest,Update server stop messages in DynamicUpdateTest.
+"test-valve.js: fixed a copy-paste mistake
+
+wasn't major, just ugly",Fix test-valve.js: change callback parameter from 'two' to 'one'.
+Add basic tests for withCredentials functionality,Add tests for withCredentials property in HTTP request.
+Adding types introduced in postgresql-<I> to pgcatalog,"Add PgDdlCommand, Regnamespace, Regrole, and TsmHandler types to pgcatalog."
+docs: replace lodash capitalize with upperFirst in PropTable (#<I>),Update PropTable to use upperFirst instead of capitalize.
+"Fix #<I>, define out to ensure no unbound vars.
+
+When there are no minions to check for docs, out will be undefined.",Add initialization for `out` in `sys.doc` function.
+"Fix bug in VGP solve_cholesky_factored_system_vec
+
+Should have been an adjoint on one of the solves
+
+PiperOrigin-RevId: <I>",Fix Cholesky factor solvevec method by enabling adjoint.
+[ci] Pin torch version while we update,Pin torch version to 1.4.0 in setup.py.
+changing actual to a domain term made the class easier to understand,Update call_verifier to use command_stub instead of actual.
+"The API accepts 'archives' and not 'archive'.
+
+This change will break stuff for people who were using the --archive
+option. But I think that's okay because it was already broken - only
+earlier they didn't know about it (because the API just ignores bad
+parameters.)",Fix typo in ShellCommand option name from `archive` to `archives`.
+Added secure mode need property into DirectPayIn class. Updated unit test.,Add `secure_mode_needed` field to `DirectPayIn` and update tests.
+Fix add function call which should be add_callback,Update handler method to use add_callback instead of add.
+test: more test case (#<I>),Add forceSubMenuRender test for Menu component.
+bring in the concept (lightly!) of users,Add user authorization function and exit on module setup failure.
+Ensured ConjunctionMatcher submatcher list is immutable,Ensure matchers list is unmodifiable in ConjunctionMatcher constructor.
+Added value length check to NdElement,Ensure value dimensions match in NdElement._add_item.
+handle watch command to look for HTTPS,Add HTTPS support to watch command.
+refactor: from=httpsPort,Add httpsPort filter support in matchFilter function.
+"Keyword detection: bring back IE support.
+
+We can't use Array#indexOf there.
+
+<URL>",Refactor future and strict mode reserved word checks using switch statements.
+avoid using same short option in CLI,Update category option to use -t flag in CLI.
+Limit size of exponent component in numbers,Add exponent size limit to prevent DoS in big.Float String function.
+Removed size overcorrection.,Fix yOffset calculation for selected index in SeaGlassComboPopup.
+"test(zipAll): add test against breaking unsubscription chain
+
+Relates to #<I>.",Add test for unsubscription chain integrity in zipAll.
+Add composer autoloading on phpunit bootstrap.,Add vendor autoloader in tests bootstrap.
+Fix issue with jruby <I> mode,Refactor spec_helper to conditionally include coverage tools for Ruby 1.9+.
+should really test examples before pushing at all,Update example5-allfiles.py: Replace py8chan with basc_py4chan and fix thread method.
+"Update result.php
+
+Fixed a bug where the keyword contained ""#"" and could not pass parameters correctly.",Fix URL encoding for search keywords in form action.
+"Check for isinstance(x, JsonSession) instead crashing during transition",Fix session type check to include JsonSession.
+Fix: Firefox bug where `a:active` prevents mousemove events from firing (#<I>),Fix Firefox bug with anchor tags preventing mousemove events.
+Updating the list of urls the SSM moto will match to include china,Add support for SSM in China regions.
+Updated to make site look better on mobile (#<I>),Update logo container width to 100% for responsive design.
+Fix jshint warning.,Rename `camera` to `cameraExtent` for clarity and consistency.
+Increased timeout of ProtocolSmokeTest to deal with slow CloudBees servers.,Increase test timeout to 10 milliseconds per message in ProtocolSmokeTest.
+SEC-<I>: Bug when SecurityEnforcementFilter used with disabled Authentication and remember-me services.,Clear SecurityContextHolder's Authentication after session invalidation for security.
+Apply fixes from StyleCI (#<I>),Fix whitespace in Honeybadger class.
+Avoid undesired time changes when capabilities are loaded,Fix default time setting in WMS layer initialization.
+Deep dived looking for EISDIR but drowing in C,Update `grunt.js` to simplify empty zip file path.
+Rename extra dependency dev -> paster,Update setup.py: Rename 'dev' to 'paster' in extras_require.
+[EventDispatcher] simplified code (thanks Kris Wallsmith for the tip),Optimize event listener retrieval by reducing array operations.
+"Add General Authentication
+
+* Add `authenticate_user!` to engine application folder
+* Remvoe unnecessary `authentication_user!` form child controllers
+
+[#<I>]",Remove redundant `authenticate_user!` before_action in controllers.
+Upgrade the views finder to be compatible with the new controllers naming,Remove unnecessary line in Register controller.
+add .ged to exported files when needed,Add .ged extension if missing in exported filename.
+Fix complexity issue detected by CodeClimate,Refactor task queue to use _get_ready_tasks method.
+FIxed bug assuming order of channels/bands to be equal for both <I> and <I>,Fix channel index handling in MITIFFWriter for correct data calibration.
+Modified ul to div for news listing,Update ContentListStrategy to use 'each' class for list items.
+removing non-clustered test to see if it helps on Travis CI,Add comment to disable all kinds of links test temporarily.
+fixing failing ldap tests,Refactor LDAP test to remove redundant log statements and improve readability.
+first draft of SAX parser implementation,Remove unused `_filter_xml` attribute and related documentation in `RPC`.
+tighten up the chdir logic,Refactor bundle install execution to use pwd option directly.
+"Update attr_encrypted.rb
+
+Toned down my wording.","Refactor global Object namespace pollution, improve method_missing handling."
+BLD/DOC: make.py open file as 'w' rather then 'wb',Fix index file write mode in doc/make.py.
+Fixed NameError with 'file' removed,Update text mode handling for Python 3 compatibility.
+"When searchpath is specified in config and CLI, merge them.",Enhance plugin search path handling with options and configuration.
+"linux: fix l2cap signaling response
+
+Currently, the SignalCommandReject is responded uncontionally.
+In cases we've already handled and respond the request properly,
+the superfluous SignalCommandReject causes the remote device
+responds SignalCommandReject, and we go into a ping pong loop...",Refactor signal handling and command response logic in Conn.
+"Remove robotframework-debuglibrary from setup.py
+
+Fails the buildout due to version mismatches.",Remove unused `robotframework-debuglibrary` dependency in setup.py.
+Changes another boolean.,Fix test case for boolean value insertion.
+"BUGFIX: Fix formating precision for floats close to 0 (Issue #<I>)
+
+The `toPrecision` function prints precision number of **significant**
+digits instead of **number of digits after .**.
+(see
+<URL>)
+
+For numbers which are close to 0 (closer than (<I>**-precision)) this is
+wrong. We should call `toFixed` instead.",Refactor precision handling in `preformat` using `toFixed` for consistency.
+try to make a template Variable object first,Fix variable resolution in HighlightHereNode for context-aware path retrieval.
+Added refunded? to Payments so that you can check the status.,Add refunded status and corresponding method to Payment object.
+Silence and ensure logging warnings are shown during tests,Add logging checks for deferred emails and message conversion failures.
+[Java] Update test timeout.,Reduce test timeout for `shouldCatchupFromEmptyLog` to 10 seconds.
+"Don’t prevent scroll when scroll bar is not visible.
+
+Right now even if the scroll bar is not present, it is preventing scrolling. This shouldn’t happen when no scroll bar is present.",Add condition to prevent parent scroll when visible area is full.
+Check dbserver path excluding any extension,Fix path comparison in check_foreign to ignore file extensions.
+Expose error creation functionality on shell,Add createError method for error message without stack trace.
+Handle error with structures without protein subunits,Fix empty stoichiometry handling in `getValidFolds` method.
+"Fixed bug in line calculation with small values of shadow size and
+line width, reported by lepianiste (issue <I>)
+
+
+git-svn-id: <URL>",Adjust shadow angle and position for better visual effect.
+Fixed a bug with fetching non 'https' urls.,Add HTTP connection support for non-HTTPS schemes.
+"internal: add buffer for channelz flowcontrol getter channel (#<I>)
+
+to avoid goroutine leak",Fix channel buffer size in http2Server getOutFlowWindow method.
+Remove the traceback from server side errors.,Improve pivot error logging with exception details.
+Clean up code and make sure stopped is checked first.,Refactor `running?` and `next_jobs` methods for clarity and efficiency.
+call publish hook with site and s3 connection,Update publish hook to include site object.
+use diff(1) for showing test failures,Improve test output for markup differences using diff command.
+[Product][Core][Admin] PR review and after variant changes fixes,Add createVariant method for generating variant objects with options.
+fixed jpyutil logging vs logger issue,Fix logging module import and configuration in jpyutil.py
+"Filters items_purchased by category.
+
+Fixes #<I>",Fix item retrieval by adding category filter.
+Updated ssl template payload to reflect changes in AXAPI,"Update SSL template parameters from cert-str, key-str to cert, key."
+Fix poloniex error to actually be OrderNotFound,Fix order status error mapping in Poloniex.
+change dns cache file create logic,Fix DnsCacheFile constructor to correctly handle directory creation.
+Send include for Ruby < <I>,Fix local variables plugin inclusion method in spec.
+Added prefix and suffix test,Add test for prefix and suffix in Guard attempt method.
+Fix typo for download and upload retry messages,Fix pluralization in retry delay messages for downloads and uploads.
+gemspec/builder (tools) command added,Add buildable method and command execution for gem packaging.
+"IE<I> undefined fix
+
+something about IE causes an event to come in without these properties",Fix hash router to check new and old URLs.
+"Remove reference to BasicObject, it wasn't introduced until <I>",Refactor `Unordered` class inheritance from `BasicObject` to `Object` for consistency.
+Remove broken and deprecated django setting.,Fix typo in logout URL compilation.
+Updated version to <I>,Bump PATCH version to 2 in version.rb.
+remove is test finished. this is not a command,Remove unused isTestFinished command from setupCommands.js.
+add DONE for cookies in the feature list,Update request.cookies documentation to reflect hash of browser cookies.
+Added username to debug logger,Update login success log message to include username.
+"Partly fix #<I>
+
+This fixes the issue where the expected_value can be wrapped in a 1-element array before calling shap_values for TreeExplainer",Fix expected value handling for single output models.
+RES-<I> Change decay function for debugging,Update decay function to constant for L4L2Experiment.
+test: automated_test: add missing user_script_test.,Add UserScriptTest to automated test suite.
+"Fix length of (*DatabaseIndex).SeriesKeys()
+
+Previously, it would return as many empty strings in the first half of
+the slice as valid values at the end of the slice.",Optimize SeriesKeys method by initializing slice with correct capacity.
+"ExecutionContext replaced, preparing for contructor change",Ensure execution context is initialized only once in Processor constructor.
+lol? switching to DateTime fixed it.,Change average date calculation to use DateTime for precision.
+"Fixes wrong sign of error code
+
+BUSY and NOTLS error codes are also negative: <URL>",Fix ShoutErr values for BUSY and NOTLS.
+"Merge pull request #<I> from jmahmood/patch-1
+
+Typo in help text",Fix transfer confirmation message to match command argument.
+"Fix bug where cc_list should be a set.
+
+It's causing an error that doesn't let Pinpoint update Monorail issues.
+
+Bug: chromium:<I>
+Change-Id: I7afc7c<I>cd<I>a9d4cf<I>b<I>c2b<I>
+Reviewed-on: <URL>",Fix CC list initialization to use set for uniqueness.
+"Fake the network interfaces a bit better
+
+Part of me thinks we should just slice and dice the real data that comes back, but that introduces a whole different set of problems. This at least gets us closer to reality on various platforms.",Use dynamic default network interface based on platform family.
+setup.py reads requirements.txt,Add requirements.txt for install_requires in setup.py.
+keep closer to go-source and avoid off-by-one messup,Fix uint64 conversion to prevent overflow and improve readability.
+"Update message.py
+
+Added getID and getReceivedDate",Add getID and getReceivedDate methods to Message class.
+another gzip bug and version bump,"Fix Python 2 compatibility in `open` function, bump version."
+Create file target path if it does not exist,Add target path creation and index.html file in `move` method.
+time.sleep after deleting tag,"Add time package, optimize CPU usage, and implement sleep for tag deletion."
+Fixes style issues in batch notifier,Fix email format assignment in batch notifier tests.
+"Bug <I> - Update test to take into account changes from bug <I>
+
+The PR's test run was green but yet failed once merged to master,
+because Travis had run the merge tests prior to bug <I> landing.",Remove redundant `vm` key in test_buildbot.py platform dictionary.
+Bump patch version to <I>,Bump version from 0.2.2 to 0.2.3.
+added set_date_of_birth to callback,Add set_date_of_birth before_save hook in Profile model.
+"filesystem_linux: exclude mounts under /var/lib/containers/storage
+
+analogous to the /var/lib/docker exclude added in
+<URL>",Update default excluded mount points to include containers storage.
+Update Layout.php: added typehinting conversion for required array,Fix layout data merging to handle non-array data.
+TST: update tests to check for strict_time_flag failure,"Handle ValueError in load, check strict time flag, reattempt."
+Fix SMBL export for empty model,Fix default bounds for models without reactions.
+Fixed problem with updating dynamically populated Uniformed fields.,Add uniform update call after form load.
+"fix(client): fix append deployments url
+
+Fixes issue when base url has a prefix",Fix deployment endpoint in client post request.
+Corrected PhpDoc type hints,Update return types for cycle and skip methods in Iterators.
+Remove the Illuminate\Support dependency for Container,Replace `last` with `end` for contextual concrete retrieval.
+Minor bugfix: Don't include dots in datastore column names,Update safeName to replace dots with underscores.
+"added Order Email record for: backup purposes, detailed record and better understanding, possible legal requirements, etc...",Add searchable fields to Order_EmailRecord for filtering.
+restructured the connector handle function header,Swap parameters in handle method for consistency in import commands.
+Updated puzzle comments to have more comprehensive description.,Implement header concatenation using Concat and Transform classes.
+Some more raw async features,Add `done` parameter to `while` and implement `sleep` function.
+Client files default with lib and themes.,Add libs and themes to file creation in ClientFiles.
+Changed method name run_on_change,Rename `run_on_change` to `run_on_changes` for plural consistency.
+[quickfix] removing controls in Area chart to leave more room for the legend,Fix nvd3Vis chart controls for dist_bar and time series.
+Add timestamps to simple logger output,Add timestamp to logger messages for better traceability.
+"BUGFIX: Avoid ""wrong"" error if Redis is unavailable
+
+At least when running unit tests for the `MultiBackend` the `connect()`
+
+call raises an error that circumvents exception handling and breaks
+
+correct execution.",Improve Redis connection handling with try-finally block.
+Add UTC timestamp to JSON (#<I>),Add last update timestamp to JSON output.
+Travis: attempt to find better way to test timeout,Update timed_capture test to use faster failing command.
+Removed ingoing and outgoing as paramters in init,Simplify Node initialization by removing redundant default arguments.
+[Web UI] fix folder plugin decoration issue for exclamation/question mark,Check folder size is integer before decoration.
+Use SplQueue class for queuing.,Change queue to SplQueue for improved event handling.
+"Unskipped test [skip hazardlib]
+
+
+Former-commit-id: d<I>b<I>af7ab<I>f1c4a3e<I>ecf5fd3ad [formerly <I>a9bb<I>b5fb<I>e3ea9b1f<I>a<I>c5a7]
+Former-commit-id: <I>a<I>ef<I>eb<I>d",Remove skip test for case 30 in classical test.
+Removes minitest/hell temporarily to avoid broken builds,Remove unused minitest/hell requirement in spec_helper.rb.
+fix: column select filter check for empty value,Fix empty search handling in Select column filter.
+[hotfix] Disable broken savepoint tests tracked in FLINK-<I>,Add `@Ignore` annotation to `SavepointTestBase` class.
+Increment version for minor bug fix release,Bump version from 0.5.0 to 0.5.1.
+Remove settings object from gulp-ruby-sass call,Remove outputStyle option from sass task configuration.
+fixed: corrected scripts path in gulpfile,Update JS source and destination paths in gulpfile.js.
+Fix test case for CaptureClicks,Fix nested router root link to include trailing slash.
+[Core] Also truncate opened files in `File::truncate()` (see #<I>),Add file truncation support using resource handle.
+cmd/syncthing: Improve logged device information on startup (#<I>),"Log device names excluding self, add my device name log."
+"Fixing position.createConstructionSite name arg (#<I>)
+
+position.createConstructionSite is not correctly passing the name variable to room.createConstructionSite.",Update createConstructionSite to include name parameter.
+Allow application/json as accepted content_type,Support JSON and plaintext index files in local and S3 clients.
+"Fix for Mongoid::Config#from_hash
+
+Needs to check the respond_to on the writer instead of the reader before assigning.",Fix config setting assignment by checking setter method existence.
+"- Change format of `$shadow` (still untested, undocumented)","Enhance shadow DOM handling with content, template, open, closed options."
+add PyJWT to setup requirements,Add PyJWT dependency in setup.py.
+Add a lock for resolving events,Add event resolve lock to prevent double resolution.
+"Update: fixes a scenario where an email that does not pass validation is being compared to itself. (#<I>)
+
+- Related to current change: #<I>",Fix invalid alternate email domain check using correct email field.
+Removed left-over interceptor call because it is already handled by evict method,Remove unnecessary interceptAfterRemove call in EvictorImpl.
+MDL-<I> core_enrol: remove desc and fix alias from ordering,Fix role sorting in get_default_enrol_roles function.
+"policy: Express egress CIDRs in endpoint model
+
+An upcoming commit will make use of the endpoint's L3Policy egress map
+to determine which prefix lengths are necessary for generating IPcache
+LPM mappings on older Linux kernels. This ensures that the relevant
+entries are propagated into this structure for this use.
+
+Over time, the Ingress CIDR L3Policy should do the same (see GH #<I>).",Count CIDR+L4 policy in egress for proper IPcache prefix lengths.
+Fix compilation with Java <I>,Fix trailing comma in widget property sets.
+Fixed a but that placeholder still appears on codeview.,Add codeview toggle event and update placeholder visibility logic.
+Handle case when newVersion of the feature is null,Check newVersion existence before comparing osm:version to 1.
+"Add repo_path passed into renderers
+
+Repo path is the relative path to the adoc file in the repo from the
+repo root.
+
+repo_path entity now available during AsciiDoctor Rendering
+repo_path variable available in template rendering",Add repo_path attribute to page attributes and page args.
+feat(server): allow to inject browser-sync client.js in custom middlewares,Reorder middleware addition for consistency and clarity.
+add feature: file handler would create dir for log file if it doesn't exist,Improve file handler to create missing directories on open.
+Improved RegExps for DataURL processing,Fix data URL regex for JPEG and general data URLs.
+Flake8 errores are now showed as failures,Change error tag to failure for better JUnit compatibility.
+"[openvswitch] Capture tunnel arp cache
+
+Provide tnl cached ARP table.",Add tnl arp table capture to OpenVSwitch plugin.
+close cache file to avoid warning message.,Fix cache loading by using with statement for file handling.
+fix device setLocation unit-test,Fix setLocation test to use string coordinates.
+Updated spec helper to retrieve credentials from environment variables.,Update spec_helper to use environment variables for credentials.
+In memory cache for supportsDenormalization types,Add local cache for resource class resolution in supportsDenormalization.
+"Make ""guarded"" take precendence over ""fillable"" in case key is in both by accident. Fixes #<I>.",Reorder fillable check to improve readability and logic flow.
+"(#<I>) Federation Broker
+
+This adds:
+
+  * A working federation broker thats compatible with the ruby one
+  * A basic connector, missing a bunch of things to be like mcollective
+    but enough for this need
+  * Various tweaks and cleanups to the schemas and such","Refactor Logger to use logrus entry, add component field."
+"Keep the constantize behavior consistent for versions prior to Rails 7
+
+Use `AS::Dependencies` as before if we still can, otherwise use the new
+direct `constantize` call for Rails 7+.
+
+Leave a TODO to help remind us this can be removed once we drop support
+to Rails versions prior to 7 in the future.",Add Rails 7 compatibility for constantize and reference methods.
+"fix RegisterListenersPass test
+
+With #<I> being merged, the test needs to be adapted to reflect the
+<I> specific changes.",Add `findDefinition` method to mock in RegisterListenersPassTest.
+"fix _getBemClass for Chained components
+
+generate same class as masterComponentClass does",Add BEM class retrieval for component in Chained Abstract.
+"Validate input_object_type's name
+
+We add validation for the input_object_type's name following the
+object_type's implementation. At this point we're wondering if this
+validation should be applied on all types and be moved to the
+GraphQL::BaseType parent class.
+
+Fix #<I> for input type",Add name validation and test for input object type.
+fixed returning nothing when no aspects were declared in yaml driver,Add initialization for `$aspects` array in `getAspects` method.
+Remove updateState - v-model now supported through update,Remove unused updateState function from render.
+"reply code: add IGNORECASE to the regex...
+
+...to match also emails that have another case than configured
+in ~/.config/alot/config",Fix case sensitivity in email alias matching.
+"Merge after create
+
+Instead of replacing all document data, merge what was returned.
+The Search API is only returning the docId, so index either needs to get
+the document to get rank and all the fields, or merge the docId into the
+values already on the document object. This is a compromise to keep the
+total number of API calls as low as possible.",Merge document raw data instead of overwriting it.
+fix logsend crasher (#<I>),Add NullChatSyncer to GlobalContext initialization.
+Add configurable number of clients for stress_client.,Add clients option to long_test_function and parse_arguments.
+"Allow duplicate read locks for a single owner and entity.
+(See bugzilla #<I>.)
+
+
+git-svn-id: <URL>",Remove check for owner already holding lock on entity.
+make compatible with future sklearn version,Fix NearestNeighbors parameter name in nn function.
+Test that re-attaching disk does not lock the cd-rom on vsphere,Add test for disk re-attachment without locking CD-ROM.
+"Added getNumSlides to Swipe.js
+
+This method returns the number of slides in the slideshow. This could be useful for all kinds of purposes i.e. indicators for the slides.",Add `getNumSlides` function to return total slides count.
+Validate the offset received from kafka when consuming,Add error handling for incomplete message offsets in consumer.
+Fixing logic to account for operator precedence.,Fix service instance check in updateService method.
+fix <I> (#<I>),"Remove client credentials on destroy, update ClientManager destroy method."
+hollaex private POST sign fix,Update signature generation for POST requests in hollaex.js
+Fix detection of absent LXC container in cloud state,Fix instance check logic in cloud absent state.
+remove unneeded parseFloat when building Bounds,"Simplify WMC BoundingBox attribute parsing, reduce code lines."
+fixing loading error in rbenv environment,Simplify require statements in FreeIPMI and IPMITool connection files.
+peer: Fix logging of connected peer.,Add debug log for peer connection in `peer.go`.
+data should not be url safe encoded in PEM,Fix U2F public key encoding from URL-safe to standard Base64.
+Removed all Bower mentions.,Remove unused jQuery and Bower-related files from config.
+Fixed formation of multi-valued parameters in LinkExpression,Fix null value handling in LinkExpression parameter encoding.
+Don't let PortAudio silently swallow panics in stream callbacks.,Add panic recovery in PortAudio stream callback to log and exit.
+"oops, removing rand from the event metadata changed the rand sequence for tests",Update test expectations for sample rate and request body.
+"Sometimes, the dll name is not a bytes...",Handle bytes and str for entry.dll in PE file.
+gc: Wait for allocrunners to be destroyed,Fix alloc runner destroy channel usage in garbage collector.
+"Framework: fix eslint error on ternary operator
+
+'?' and ':' should be placed at the beginning of the line.",Fix form state controller field error hiding logic.
+increase async timeout because appveyor can take <I> seconds to start up,Increase jasmine default timeout interval to 90000 for better test stability.
+fix windows psutil support (#<I>),Add conditional num_fds and num_handles for Windows compatibility.
+"Improve ordering of ""sanity"" checks
+
+Should be somewhat more performant as a regex check is cheaper than
+PublicSuffix´s parse. It should also help with avoiding running into
+exceptions in PublicSuffix´s parse (I am guessing a URL with with a bad
+scheme is more likely to have a “bad” domain).",Reorder public suffix domain validation for clarity and consistency.
+Fix incorrect method call on StringIO in store.,Fix S3 download to use getvalue instead of bytes.
+Fix for checking wrong tool's interactive type,Fix tool mode resolution by correcting variable reference.
+added logging to django example project,Add basic logging configuration to settings.py.
+Added isTableExists() boolean to the DAO and the DatabaseConnection.,Add isTableExists method to AndroidDatabaseConnection.
+"Add @todo API and describe ol.geom.Geometry funcs
+
+The `clone()`, `getSimplifiedGeometry()` and `getType()` methods are all
+base class methods documented in subclasses.  They should appear in
+ol.geom.Geometry in the API docs as well.",Add API documentation for geometry methods.
+input.Get seems to work with the same-ish interface.,Add `iterallitems` method to `Query` class for iterating over all pairs.
+Make installation file permissions paragraph more explicit (gh-<I>),Update permission settings description for clarity and accuracy.
+Refinements to regex handling of column searches,Fix case-insensitive regex search in CollectionEngine.
+Draw box if OverviewMap is added to an existing map,Add method to update box after overview map is rendered.
+"TestImportExtremelyLargeImageWorks: optimize DevZero
+
+According to <URL> the following syntax:
+
+```go
+for i := range b {
+	b[i] = 0
+}
+```
+
+so let's use it. Limited testing shows ~<I>x speed increase,
+compared to the previously used syntax.",Optimize devZero Read method using range for better performance.
+whoops refer to original width and height properly for gifsicle,Fix image resizing by using context info for original dimensions.
+"api/app: sending the environment variable to the environment agent
+
+When setting an environment variable via handler, the handler sends the
+change to a channel that runs a command to update the environment file
+in the unit of the app.
+
+In the future, when we support more than one unit per app, we will need
+to run the command in all units of the app.",Add environment variable update message to channel on set.
+Fix failing if paths are from pathlib,Fix NotebookFile detection for paths with non-standard slashes.
+Asset manager: Refactored multipe asset download,Refactor asset download response to use deleteFileAfterSend.
+"MODIFIED : log when a <I> Not Found is sent back in response to an initial request because no applications were found to handle it
+
+git-svn-id: <URL>",Fix 404 error message for request URI loop.
+"Improving performance of add_cell by fixing workbook validation
+
+This patch switches `validate_workbook` from using `==` (compare every cell
+of one worksheet to every cell of another one) to `equal?` (check if the
+given worksheet is included in the workbook)",Fix worksheet validation and row retrieval methods.
+Add reader method for internal_id,Add internal_id and external_id attributes to CustomList.
+"change PDF::Reader::Resources to typed:strict
+
+slowly slowly rolling out strict",Update type checking from true to strict in PDF reader resources.
+fix the 'uninitialized constant AttachmentSaver::BaseMethods::Processors' you get running a single test,Ensure processor module is defined before requiring and including it.
+test: do not test not guaranteed data,Update test to ignore ctime and birthtime in file stats comparison.
+fix: Catch exception from recursion filter,Add filter exception handling in RecursiveJob.
+This is the default value of this argument,Fix NameBasedDispatcher constructor to remove unnecessary parameter.
+toolbox: skip tests that require Linux,"Add runtime check, skip tests on non-Linux systems."
+"<I>
+
+To decrease build file size, we are using src file for NPM entry point
+and exposing deps to ensure consumers are able to use their own
+build system. Browserify is recommended.",Bump version to 1.3.0 in scroll-js files and package.json.
+Remove last PYTHON-<I> workaround,Fix PYTHON-38: Remove comment and execute USE statement in CoordinatorStats init.
+MDL-<I> more lastname support when resetting passwords; merged from MOODLE_<I>_STABLE,Add lastname to user password reset and change info emails.
+Reset overflow when unmounting,Reset body overflow on Overlay component unmount.
+make sure we do not try and execute nils,Ensure callbacks are not nil before calling.
+Ensure pulse thread is created before we start listening,Ensure pulse starts only once when server begins listening.
+"Implement new Variant class, use instead of sets",Remove unused import and update render method parameters.
+Add method to get all response values as array,Add toArray method to Response class for array conversion.
+Made plot height drag bar explicitly call a highcharts reflow. Fixes #<I>.,Fix plot resizing and trigger HighCharts reflow on resize.
+Removed newline issue in Coordinator (SonarQube issue).,Fix management center configuration formatting in Coordinator.java.
+Bumped version number to <I>,Bump version to 1.1.0 and update copyright year.
+"Remove the she-bang from netsnmpagent.py and netsnmpapi.py
+
+These are Python modules not supposed to be called directly.",Remove shebang from netsnmpagent.py and netsnmpapi.py.
+erease renewal data in set_plan_renewal() function to start with clear settings,Update plan renewal by deleting old and creating new entry.
+"MINOR Return empty string from SQLQuery->sql() if SELECT is the default value, and no FROM is set (moved logic from DB-specific implementations)",Prevent processing of empty SQL queries in SQLQuery::sql.
+further fix to return from -P create refs e<I>,Update output handling in Map class for multiple objects.
+(Fixes issue <I>),"Remove redundant `language=""javascript""` attribute in Firebug log and profile views."
+"monkeypatch unzip.Parse.emit() to emit single 'end'
+
+unzip is not so well-behaved. It typically emits a 'close' event
+when it's done, but there are reports that sometimes it doesn't,
+and that sometimes it emits 'end' instead. Monkeypatch emit() so
+that it emits just one 'end' event from any combination of 'close'
+and 'end' events.",Fix parserStream close/end event handling to prevent duplicate emissions.
+Add ability to create new revision on save,Add new revision functionality to entity save method.
+Issue #<I>: Fix pagination retrieval from HTTP request,"Ensure pagination starts from 0, adjust current page number calculation."
+fixed bug that removed characters from url string,Fix URL formatting in snippet cite.
+"[enrich][mbox] Update the eclipse archives location so the project of a
+mailing lists can be found in projects.json",Update MBoxEnrich to use configurable mboxes directory.
+Allow PROTOCOL_VERSION to be set by envar,Add protocol version environment variable support in integration tests.
+[improvement] Sku: should close image preview when popstate (#<I>),Add closeOnPopstate to ImagePreview for better navigation.
+"should pass io along, and io should be thread-safe!",Fix parallel execution to use shared stat io.
+feat: use config to toggle modalFeedbacks response feature,Add feature visibility check for modal feedbacks in answer state.
+"Fix python 2 encoding problem with the new docstr
+
+Python 2 did not like my fancy new doc string with the unicode
+filetree",Add UTF-8 encoding declaration to renderer.py for compatibility.
+Adding visit_UUIDTools_UUID method to DepthFirst class since Arel each method calls DepthFirst and not MySQL visitor.,Add UUIDTools_UUID visitor method for Arel DepthFirst and MySQL.
+[ru] temp-activate rule for nightly test,Update RussianDashRule to use setDefaultTempOff for performance.
+"failure to load plugins may be reported as NoClassDefError, for example if the dependency classes fail to load
+
+git-svn-id: <URL>",Add LinkageError handling in ClassicPluginStrategy.
+[JBWS-<I>] Need to set the RMManager in the bus for CXF <I>.x,Update RMManager initialization and registration in JBossWSNonSpringBusFactory.
+"fix(openid): Mark tests as expected failures
+
+Long term solution: phase out OpenID <I> support. Current test relies on
+Yahoo (dead now) and Hyves (should be long dead, if it isn't, it's
+undead).
+
+This fix silences the tests, until someone wants to find a new provider
+or mock the discovery, but OpenID itself has moved on to the next shiny
+version: OpenID Connect, so it is best to sunset this support.",Add `expectedFailure` decorator to OpenID tests.
+"Default output folder for IDF5.run() is current directory
+
+This is to match the behaviour of the CLI.",Update default output directory to current directory.
+Fix WebHttpClient logger to refer to WebHttpClient,Update logger to use WdmHttpClient class.
+use short decl for initial and err per code review comments,"Refactor actionWatcher loop: inline initial, simplify error handling."
+always show spinner during searching. fixes #<I> fixes #<I>,Fix search active state and searching message display.
+[fix] Changed require('sys') to require('util') for compatibility with node <I>,Update module import and method calls for consistency.
+"Include Models (from Spec) into Swagger
+
+server.get({
+
+        url: '/foo',
+
+        models: FooModels,
+
+        swagger: {
+
+            summary: 'xxx',
+
+            notes: 'xxx',
+
+            nickname: 'xxx',
+
+            responseClass: ""FooModel"", // is defined inside FooModels
+
+        },
+
+        validation: {
+
+        }
+
+    }
+
+....",Add models to swaggerDoc in loadRestifyRoutes function.
+don't expose the Logger class to the loader,"Refactor Logger class to be private and import Python, Salt libs explicitly."
+validating name doesn't have special characters,Add validation for illegal characters in application name.
+Compatibility with Django <I>,Update JSON import to use standard library.
+"Added the makeMatcher function from the sample implementation in the design doc.
+-------------
+Created by MOE: <URL>",Add `makeMatcher` function to create custom matchers from functions.
+declare a couple of commands that use builtin command names but use multiple words,Add list files and show file commands in setup.py.
+fix: compatibility with php <I>,Fix RdsStorage predicate parameter alignment in method calls.
+"Fix bad log statement in junit_run.py.
+
+Reviewed at <URL>",Fix warning message for unknown test targets.
+Observer was causing timing issues - check for presence of element before using it.,Check input selector existence before applying validation classes.
+One more test before bailing on modules,Comment out `prompt.start()` to prevent unnecessary initialization.
+dup log output onto stderr to catch panics in log file,Add log file redirection for stderr in setupLogger.
+Add runtime deprecation  warning to IdCardMiddleware,"Add deprecation warning for IdCardMiddleware, recommend ApacheIdCardMiddleware or NginxIdCardMiddleware."
+Adding dummy spec to test exclusion,Update protractor config to exclude specific test files.
+"Version bump.
+
+Incrementing the gem version to <I> in preparation for the upcoming
+release.",Bump version to 1.0.2.
+"adds the permissions defined in managers.py to the models, this way 'manage.py migrate' should be able to create the right permissions",Update profile permissions to use ASSIGNED_PERMISSIONS constant.
+"Don't match ""time"" inside SET()/ENUM()
+
+We previously relied upon definition order to prevent this, but now
+we're defining these types in a child TypeMap, so that won't work.
+
+The loose patterns we define here seem like they'd be in general danger
+of this sort of issue, but for now we can just address the immediately
+affected ones.","Update regex patterns for time, datetime, and timestamp in extended_type_map."
+"unfreeze TempleEngine precompiled string literals (#<I>)
+
+Maintain backwards-compatibility in public API.",Fix precompiled string duplication in Haml Temple Engine.
+Modified map to input and output lower cased keys.,Lowercase input and output keys in env.py map function.
+Update referrer and let it configurable,Fix referrer handling to use empty string and make it configurable.
+fix(json serialiser): Serialise empty array as `[]`,Fix null content check in JSONSerialiser to handle None explicitly.
+lint: transforms queueMongoUrl into queueMongoURL,Fix variable naming inconsistency in queue configuration.
+fix(resave_state_machines): synced call of save_state_machine_as,Refactor state machine saving process and remove unnecessary loop.
+None is not useful if comparing against contract_manager.contracts_version,Update DEVELOPMENT_CONTRACT_VERSION to '0.9.0' in settings.py.
+allow logging configuration from manage scripts,Fix logger initialization to avoid multiple handlers.
+Fixed call to undefined class constant.,Fix typo in line breaks key comparison.
+"Calculate NEXT course->sortorder in restore to avoid
+sortorder grown always (by fix_course_sortorder()).
+
+Merged from MOODLE_<I>_STABLE",Add sortorder calculation for restored courses.
+"remove http->https middleware in example, because it causes errors with socket.io",Remove HTTP to HTTPS redirection middleware in production environment.
+Might as well keep track of InternalRedirects.,Add redirection tracking to Request class.
+Apply timeout removal on Windows when going interactive,Set channel timeout to None for non-blocking receive.
+simplify the checks on compositeOperation,Simplify composite operation checks in drawer and tiled image.
+"Message: Fixed body trail lost on reply and forward messages.
+Now the contents of the body are preserved.
+Also now setting the body will stack the changes one on top of the other. To avoid this just set the body to '' or None.","Enhance message body handling, update tests for reply functionality."
+"ENH: do not close when not initialized, catch exception and give other devices a chance to close properly",Refactor close method to handle exceptions gracefully on module close.
+"[fix] being a good neighbor and not monkey patching socket, doesn't work when you have gevent installed but are using a threaded server",Remove unused gevent and eventlet imports in connection.py.
+"Filter Photon networks from serial wifi config
+
+Fixes #<I>",Add filter to remove Photon networks from Wi-Fi selection.
+"nodeserver: fix bug introduced in previous commit
+Former-commit-id: <I>d9ef0eb<I>dfa<I>d<I>d<I>f8c4ea<I>c0ed",Fix proxy URL handling in ClientMaster initialization.
+Update factory to pass RequestHandlerInterface if available,Add optional RequestHandlerInterface to ApplicationFactory constructor.
+"Refs #<I> - apipie fixup for new CV publish api
+
+The previous apipie definition was incorrect and caused problems with
+hammer.
+
+The Hash definition is implicit and only the keys inside need to be
+defined.",Simplify repos_units parameter structure for content view publish.
+Try to fix pnpm use case,Fix version parsing for comma-separated values in update-db.js.
+coinbasepro fetchTime json fix reverted,"Fix coinbasepro epoch response handling, parse string if necessary."
+Bugfix with finding page by short url when not logged in,Fix page query to use correct column reference.
+SONAR-<I> show only profiles that match the selected language,Filter quality profiles by selected language in facet.
+[hotfix] druid queries 'There was no query executed' issue,Add client parameter to query method for optional client injection.
+"MDL-<I>: mod_data: Simultaneously added entries do not sort correctly
+
+This was picked up by behat on a fast machine, when using shorter polling interval.",Fix sorting order in data view entries.
+"ci(mypy): fix incompatible types in assignment
+
+src/jump/__init__.py:<I>:<I>: error: Incompatible types in assignment (expression has type ""float"", variable has type ""int"")
+            j = float(b + 1) * (float(1 << <I>) / float((key >> <I>) + 1))
+                ^",Fix type in `py_hash` function parameters.
+Fix wrong deprecation warning for enable_disk_encryption (#<I>),Update deprecated property name to `disk_encryption_enabled` for consistency.
+"fix exception type
+
+If the channel is closed, and the settlement window is over, then
+settle is allowed, if the transaction failled then there is a bug with
+the settlement or the code which calls the smart contract.
+
+[ci integration]",Change error type from RaidenRecoverableError to RaidenUnrecoverableError in TokenNetwork.
+Adding more tests for Format.block_align,Add tests for 32-bit block alignment in Format class.
+Removed an unreachable code,Remove redundant return statement in EasyAdminTwigExtension.
+Fixing maxBodyLength exceeded error form follow-redirects when axios's maxContentLength is not exceeded,Add maxContentLength support to HTTP adapter options.
+Refactored access to internal DB handler,Refactor database access in LegacySolr setup to use property reflection.
+"[java] Using an actually unsupported method in tests, OPTIONS method support was added by commit 4d4eed0f<I>d7d<I>c<I>baf1c<I>e1e<I>",Change HTTP method from OPTIONS to PATCH in RequestConverterTest.
+Updated query test for new bson positions,Remove unused imports in QueryAcceptanceTest.java.
+"Better this way, as the programmer might introduce
+unusual labels",Fix IF-ELSE block chaining in zxbparser.py
+call Jets.eager_load as part of warmup,Add eager loading for app classes in Jets framework.
+"Fix error in string formatting
+
+1. Fix mis-spelled key ""cateegory"".
+2. Simplify complicated format-within-format.
+
+Testing Done:
+Manual testing.
+
+Reviewed at <URL>",Fix ScroogeGen DepLookupError message formatting.
+multilingual fields have null as defaultvalue,Add multilingual support for field default values.
+no need to inject instance methods right away,Include instance methods directly in `has_revisions_for` method.
+"Update setup.py (#<I>)
+
+Fix typo",Update setup.py to exclude 'tests' directory.
+"Fix spacing, and add a class name to tabs so they can be styled
+
+
+svn commit r<I>","Add class to tab, fix selected tab class concatenation."
+Added failing test for false positive result,Add missing test case for arrow function in JSX.
+"Fix error with absolute paths on Windows (#<I>)
+
+Leverage native path function to perform os-independent check.",Fix config path resolution for absolute paths.
+"BUGFIX Removed query that was causing issues displaying members in the security groups. Open ticket #<I>
+
+git-svn-id: svn://svn.silverstripe.com/silverstripe/open/modules/cms/trunk@<I> <I>b<I>ca-7a2a-<I>-9d3b-<I>d<I>a<I>a9",Remove unused group filter and comment in MemberTableField.
+"prelim support to special case certain coins, eg XMR","Add XMR unit handling, remove scripthash from version keys."
+"Version bump
+
+Please release <I> so that I can get your relaxed bundler dependencies without referencing a Github commit. Thanks.",Bump version to 0.7.3 in coveralls/version.rb.
+Added @noinspection for exception that won't happen.,Add unhandled exception inspection annotation to PayloadType getName method.
+- Fixed code that avoids private methods,Refactor method inclusion check to use `isPrivate` method.
+fix(lt-infinity): disable intersection observer,Add viewportUseIntersectionObserver property to lt-infinity component.
+"$success should be defined before the loop, for the hypothetical case, that there are no converters",Add success flag initialization in WebPConvert::convert method.
+"Allow to pass nil nodes from CLI preprocessor
+
+nil is a valid output of parser. So it must also be a valid input.",Add nil check for node in preprocessor run method.
+"try to use raw parsing for binary case (may break compatibility, need further test)",Update log group list import to raw format in pulllog_response.py
+REFACTOR: Switched to new style objects,"Inherit from object in Helper, Logger, and Runner classes."
+"Add custom Part#inspect including only name and value
+
+The output of Rendering#inspect may grow very large with both the context and inflector objects, so hide it from Part#inspect output, making parts easier to understand at a glance.",Add `inspect` method to `Part` class for better debugging.
+"Apply fixes from StyleCI (#<I>)
+
+[ci skip] [skip ci]",Update API route group configuration with proper formatting and commas.

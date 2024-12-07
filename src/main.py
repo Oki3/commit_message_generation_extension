@@ -13,12 +13,6 @@ from extract_diff import import_dataset
 
 load_dotenv()
 
-LLMS = {
-    'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
-    'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
-    'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base")
-}
-
 
 def call_model_sync(model, messages):
     """Call given model with given prompts."""
@@ -41,6 +35,11 @@ def process_dataset(model_name, dataset, csv_writer):
 
 
 if __name__ == "__main__":
+    LLMS = {
+        'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
+        'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
+        'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base")
+    }
     # Create output directory
     output_dir = "output"
     if not os.path.exists(output_dir):

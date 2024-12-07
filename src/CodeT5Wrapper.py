@@ -3,7 +3,7 @@ from transformers import AutoTokenizer
 
 
 class CodeT5Wrapper:
-    def __init__(self, model_name="Salesforce/codet5-base"):
+    def __init__(self, model_name="Salesforce/codet5-base"):# Load model directly
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
