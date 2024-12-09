@@ -1,15 +1,19 @@
 import csv
 import os
 import random
+import re
 
 import pandas as pd
 from dotenv import load_dotenv
+from langchain.agents.self_ask_with_search.prompt import PROMPT
+from langchain.chains.flare.prompts import PROMPT_TEMPLATE
 from langchain_community.chat_models import ChatDeepInfra
 from langchain_community.chat_models import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from CodeT5Wrapper import CodeT5Wrapper
 from extract_diff import import_dataset
+from src.StarCoderWrapper import StarCoderWrapper
 
 load_dotenv()
 
@@ -19,8 +23,41 @@ def call_model_sync(model, messages):
     llm = LLMS[model]
     return llm.invoke(messages) if model == "codet5" else llm.invoke(messages).content
 
+def call_model_with_prompt(model,prompt):
+    llm = LLMS[model]
+    return llm.invoke(prompt)
 
-def process_dataset(model_name, dataset, csv_writer):
+
+def prepare_prompt(diff):
+    return f"Generate a commit message for this git diff:\n\n{diff}\n\nCommit message:"
+
+def preprocess_diff_prepare_prompt(diff):
+    lines=diff.split('\n')
+    cleaned_lines=[]
+    for line in lines:
+        if line.startswith('diff --git') or line.startswith('+++') or line.startswith('---') or line.startswith('@@') or line.startswith('index'):
+            continue
+        cleaned_line=re.sub(r'<I>|<HASH>', '', line)
+        cleaned_line=cleaned_line.lstrip('+- ')
+        cleaned_lines.append(cleaned_line)
+    prompt=PROMPT_TEMPLATE.format(diff=cleaned_lines)
+    return prompt
+
+def generate_commit_message(prompt,model_name):
+    return call_model_with_prompt(model_name, prompt)
+
+
+def process_dataset_llms(model_name, dataset, csv_writer):
+    for item in dataset:
+        diff = item['diff']
+        original_message = item['message']
+        cleaned_diff_prompt = preprocess_diff_prepare_prompt(diff)
+        commit_message=generate_commit_message(cleaned_diff_prompt,model_name)
+        csv_writer.writerow([original_message, commit_message])
+
+
+
+def process_dataset_chatbot(model_name, dataset, csv_writer):
     """Process the dataset and write results to the CSV file."""
 
     for item in dataset:
@@ -38,7 +75,8 @@ if __name__ == "__main__":
     LLMS = {
         'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
         'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
-        'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base")
+        'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base"),
+        'starcoder2':StarCoderWrapper(model_name="TechxGenus/starcoder2-15b-instruct")
     }
     # Create output directory
     output_dir = "output"
@@ -66,7 +104,10 @@ if __name__ == "__main__":
     with open(output_file, mode="w", newline='', encoding="utf-8") as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(["Original Message", "Model Output"])
-        process_dataset(model_name, dataset_to_process, csv_writer)
+        if model_name !='starcoder2':
+           process_dataset_chatbot(model_name, dataset_to_process, csv_writer)
+        else:
+            process_dataset_llms(model_name, dataset_to_process, csv_writer)
 
     # Display CSV content
     print(pd.read_csv(output_file))
