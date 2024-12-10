@@ -7,8 +7,9 @@ class T5Wrapper:
     def __init__(self, model_name):# Load model directly
         self.tokenizer = T5Tokenizer.from_pretrained(model_name)
         self.model = T5ForConditionalGeneration.from_pretrained(model_name,device_map="auto")
-        self.device = torch.device("cpu")
+        self.device = torch.device("mps")
         self.model=self.model.to(self.device)
+        print("Loaded T5")
 
     def invoke(self,prompt):
         inputs=self.tokenizer(prompt,return_tensors="pt",truncation=True,max_length=512)

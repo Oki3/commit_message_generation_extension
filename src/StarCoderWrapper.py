@@ -1,9 +1,7 @@
 import torch
-from sympy.physics.units import temperature
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, BitsAndBytesConfig, AutoModelForCausalLM
-# from huggingface_hub import clean_cache
 
-# clean_cache()
+from transformers import AutoTokenizer,AutoModelForCausalLM
+
 class StarCoderWrapper:
     def __init__(self, model_name):
         # self.quantization_config=BitsAndBytesConfig(load_in_8bit=True)# Load model directly
@@ -17,6 +15,7 @@ class StarCoderWrapper:
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
             self.model.config.pad_token_id = self.model.config.eos_token_id
+        print("Loaded StarCoder2")
 
     def invoke(self,prompt):
         inputs=self.tokenizer(prompt,return_tensors="pt",truncation=True,max_length=1024,padding=True).to(self.device)

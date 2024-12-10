@@ -1,15 +1,10 @@
 import csv
 import os
 import random
-
-
+from mistral_wrapper_llama_cpp import LlamaMistralWrapper
 import pandas as pd
 from dotenv import load_dotenv
-from langchain_community.chat_models import ChatDeepInfra
-from langchain_community.chat_models import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage
-
-
 from CodeT5Wrapper import CodeT5Wrapper
 from extract_diff import import_dataset
 from src.StarCoderWrapper import StarCoderWrapper
@@ -30,7 +25,7 @@ def call_model_with_prompt(model,prompt):
 
 
 def prepare_prompt(diff):
-    return f"Generate a commit message for this git diff:\n\n{diff}\n\nCommit message:"
+    return f"Summarize this git diff into a useful, 10 words commit message:\n\n{diff}\n\nCommit message:"
 
 def preprocess_diff_prepare_prompt(diff):
     PROMPT_TEMPLATE = """Please provide a descriptive commit message for the following changes.
@@ -71,11 +66,12 @@ def process_dataset_llms(model_name, dataset, csv_writer):
 def process_dataset_mistral(model_name,dataset,csv_writer):
     for item in dataset:
         diff = item['diff']
-        print(diff)
+        # print(diff)
         original_message = item['message']
-        messages=[{"role": "system", "content": "You will generate meaningful git messages from git diffs now."},
-            {"role": "user", "content": f"Summarize the git diff {diff} to meaningful git message."}]
-        commit_message=call_model_sync(model_name, messages)
+        print(f"Original message : {original_message}")
+        prompt=prepare_prompt(diff)
+        commit_message=call_model_with_prompt(model_name, prompt)
+        print(f"Commit message : {commit_message}")
         csv_writer.writerow([original_message,commit_message])
 
 
@@ -94,23 +90,25 @@ def process_dataset_chatbot(model_name, dataset, csv_writer):
 
 
 if __name__ == "__main__":
+    print("Compiling LLMs")
     LLMS = {
-        'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
-        'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
-        'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base"),
-        # 'starcoder2':StarCoderWrapper(model_name="bigcode/starcoder2-7b"),
-        'starcoder2': StarCoderWrapper(model_name="bigcode/starcoder2-3b"),
-        'flanbase':T5Wrapper(model_name="google-t5/t5-small"),
-        'mistral':MistralWrapper(model_name="mistralai/Mistral-7B-Instruct-v0.3")
+        # 'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
+        # 'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
+        # 'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base"),
+        # # 'starcoder2':StarCoderWrapper(model_name="bigcode/starcoder2-7b"),
+        # 'starcoder2': StarCoderWrapper(model_name="bigcode/starcoder2-3b"),
+        # 'flanbase':T5Wrapper(model_name="google-t5/t5-small"),
+        'mistral':LlamaMistralWrapper()
     }
+    print("Creating Output directory")
     # Create output directory
     output_dir = "output"
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-
+    print("Separating datasets")
     # Load dataset
     train_dataset, validation_dataset, test_dataset = import_dataset("Maxscha/commitbench")
-
+    print("Receiving model Names")
     model_name = input("Enter the model name: ")
 
     # Handle invalid input
@@ -121,7 +119,7 @@ if __name__ == "__main__":
     # Prepare subset for specific models
     dataset_to_process = (
         train_dataset.select(random.sample(range(len(train_dataset)), 10))
-        if model_name == "flanbase" else train_dataset
+        if model_name == "mistral" else train_dataset
     )
 
     # Write output to CSV
@@ -138,3 +136,4 @@ if __name__ == "__main__":
 
     # Display CSV content
     print(pd.read_csv(output_file))
+    del LLMS[model_name]
