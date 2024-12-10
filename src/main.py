@@ -5,10 +5,9 @@ import random
 import pandas as pd
 from dotenv import load_dotenv
 from langchain_community.chat_models import ChatDeepInfra
-from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_ollama import ChatOllama
 
-from CodeT5Wrapper import CodeT5Wrapper
 from extract_diff import import_dataset
 
 load_dotenv()
@@ -38,7 +37,7 @@ if __name__ == "__main__":
     LLMS = {
         'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
         'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
-        'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base")
+        # 'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base") # TODO: Fix CodeT5 or replace with new model
     }
 
     # Create output directory
@@ -56,10 +55,9 @@ if __name__ == "__main__":
         print(f"Model {model_name} not found.")
         exit(1)
 
-    # Prepare subset for specific models
+    # Prepare subset
     dataset_to_process = (
         train_dataset.select(random.sample(range(len(train_dataset)), 10))
-        if model_name == "codet5" else train_dataset
     )
 
     # Write output to CSV
