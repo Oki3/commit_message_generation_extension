@@ -1,27 +1,20 @@
 Original Message,Model Output
-Bugfix Graphql: retrieving asset volumes with public URLs fixes #<I>,"Added volume filter for conditional image fields in SeoSocialData class. (Fixes #issue)
+race-condition during RedisConnection.forceFastReconnectAsync invocation,Refactored RedisConnection.java: Replaced RedissonPromise creation with a local variable (fastReconnect) and assigned it to a new instance.
+"fix path for root dir ""/""",Added check for empty path in PathJoinUri::toString() function (PathJoinUri.php)
+lint: replace lambdas with defs,Refactored password\_reset/forms.py and password\_reset/utils.py: Extracted and defined reusable function 'f' for query filtering and updated get\_user\_model in utils.py.
+"map: prevent too rapid display of waypoints after load
 
-Explanation:
-The diff shows the addition of a new import statement for the `craft\models\Volume` class and the modification of the `getConditionalFields()` method to filter out volumes without URLs before checking if the application is aware of all public volumes. This change improves the performance and accuracy of the conditional image fields in the"
-shapes.basic: fix PortsViewInterface rendering (#<I>),Converted model.ports to an array for efficient port filtering.
-"More clear description to `transform_first` (#<I>)
+prevents re-display on each point",Updated MapModule in MAVProxy\_map: check for waypoint changes with a time threshold (modified __init__.py)
+"Fixed bug.
+Second initializer was not setting first argument set.",Replaced HashMapSet with provided MapSet in SymmetricDifferenceMatcher constructor (SymmetricDifferenceMatcher.java)
+"Fixes a bug with loading backslashed paths
 
-* More clear description to `transform_first`
+- Fixes #<I>","Updated FileRequirement class in requirements.py:
+Adjusted path assignment based on relpath and made path absolute if needed."
+added docblock for ArrayList::sort,Added sort method to ArrayList class (ArrayList.php)
+should not start before realm config init complete,"Removed redundant contextHandler start call in ExhibitorMain.java.
+(files: exhibitor-standalone/src/main/java/com/netflix/exhibitor/application/ExhibitorMain.java)"
+"Trim any additional fields from git version (#<I>)
 
-
-
-After teaching an MLU-CV class, some students feel confused when they are using the `transform_first` function. So I modified it a bit to make it more clear. :)
-
-
-
-* remove space","Added explanation for DataSet.apply function, applicable for transforming features while keeping labels unchanged."
-Fix p4poller's tickets getting unittest,Updated P4 poller password verification output in test\_changes\_p4poller.py
-concurrence/union only from ruote <I> on,Added note about Ruote version for new union feature in fe_concurrence.rb.
-"Remove unneeded View::$hasRendered flag.
-
-Calling View::render() multiple times should simply render again
-with given arguments and existing context.",Removed `hasRendered` property and related methods from View class.
-fix shlex.split problem in python3,Added sys import for shlex in test\_cmd.py (python3 compatibility)
-minor housekeeping fix - prefix & suffix terms changed to name,Refactored logger constructor and method to accept name instead of suffix.
-Don't need to include couchdb/change_watcher for now.  #<I>.,Removed Couchdb ChangeWatcher requirement.
-Pass through quiet option to api output.,Updated `github_api` and `configure` methods to accept hash arguments for consistency.
+Fixes #<I>",Updated GitVersion function in store/sub/git.go to parse git version string properly.
+"gah, the hand is quicker than the eye",Replaced `opts.delete` with `h.delete` in `ZK::client.rb` for passing hash to `create` method.

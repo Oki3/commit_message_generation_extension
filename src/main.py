@@ -4,12 +4,11 @@ import random
 from mistral_wrapper_llama_cpp import LlamaMistralWrapper
 import pandas as pd
 from dotenv import load_dotenv
+from langchain_community.chat_models import ChatDeepInfra
 from langchain_core.messages import HumanMessage, SystemMessage
-from CodeT5Wrapper import CodeT5Wrapper
+from langchain_ollama import ChatOllama
+
 from extract_diff import import_dataset
-from src.StarCoderWrapper import StarCoderWrapper
-from src.T5Wrapper import T5Wrapper
-from src.mistral_wrapper import MistralWrapper
 
 load_dotenv()
 
@@ -25,43 +24,11 @@ def call_model_with_prompt(model,prompt):
 
 
 def prepare_prompt(diff):
-    return f"Summarize this git diff into a useful, 10 words commit message:\n\n{diff}\n\nCommit message:"
-
-def preprocess_diff_prepare_prompt(diff):
-    PROMPT_TEMPLATE = """Please provide a descriptive commit message for the following changes.
-                       Change:
-                       Used to be
-                       {before}
-                       Is now
-                       {after}
-                        """
-    lines=diff.split('\n')
-    before_lines=[]
-    after_lines=[]
-    for line in lines:
-        if line.startswith('-') and not line.startswith('---'):
-            before_lines.append(line[1:].strip())
-        elif line.startswith('+') and not line.startswith('+++'):
-            after_lines.append(line[1:].strip())
-    before='\n'.join(before_lines)
-    after='\n'.join(after_lines)
-    prompt=PROMPT_TEMPLATE.format(before=before, after=after)
-    print(f"Prompt : {prompt}")
-    return prompt
+    return f"Summarize this git diff into a useful, 10 words commit message.  Include the names of the files in which the changes were made and the change as well:\n\n{diff}\n\nCommit message:"
 
 def generate_commit_message(prompt,model_name):
     return call_model_with_prompt(model_name, prompt)
 
-
-def process_dataset_llms(model_name, dataset, csv_writer):
-    for item in dataset:
-        diff = item['diff']
-        print(diff)
-        original_message = item['message']
-        # cleaned_diff_prompt = preprocess_diff_prepare_prompt(diff)
-        prepared_prompt=prepare_prompt(diff)
-        commit_message=generate_commit_message(prepared_prompt,model_name)
-        csv_writer.writerow([original_message, commit_message])
 
 def process_dataset_mistral(model_name,dataset,csv_writer):
     for item in dataset:
@@ -70,7 +37,7 @@ def process_dataset_mistral(model_name,dataset,csv_writer):
         original_message = item['message']
         print(f"Original message : {original_message}")
         prompt=prepare_prompt(diff)
-        commit_message=call_model_with_prompt(model_name, prompt)
+        commit_message=generate_commit_message(prompt,model_name)
         print(f"Commit message : {commit_message}")
         csv_writer.writerow([original_message,commit_message])
 
@@ -83,7 +50,7 @@ def process_dataset_chatbot(model_name, dataset, csv_writer):
         original_message = item['message']
         message = [
             SystemMessage(content="Be a helpful assistant with knowledge of git message conventions."),
-            HumanMessage(content=f"Summarize this git diff into a useful, 10 words commit message: {diff}. It is very important that you only provide the final output without any additional comments or remarks."),
+            HumanMessage(content=f"Summarize this git diff {diff}. into a useful, 10 words commit message. It is very important that you only provide the final output without any additional comments or remarks."),
         ]
         model_output = call_model_sync(model_name, message)
         csv_writer.writerow([original_message, model_output])
@@ -92,13 +59,9 @@ def process_dataset_chatbot(model_name, dataset, csv_writer):
 if __name__ == "__main__":
     print("Compiling LLMs")
     LLMS = {
-        # 'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
-        # 'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
-        # 'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base"),
-        # # 'starcoder2':StarCoderWrapper(model_name="bigcode/starcoder2-7b"),
-        # 'starcoder2': StarCoderWrapper(model_name="bigcode/starcoder2-3b"),
-        # 'flanbase':T5Wrapper(model_name="google-t5/t5-small"),
-        'mistral':LlamaMistralWrapper()
+         'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
+         'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
+         'mistral':LlamaMistralWrapper()
     }
     print("Creating Output directory")
     # Create output directory
@@ -127,12 +90,10 @@ if __name__ == "__main__":
     with open(output_file, mode="w", newline='', encoding="utf-8") as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(["Original Message", "Model Output"])
-        # if model_name !='flanbase':
-        #    process_dataset_chatbot(model_name, dataset_to_process, csv_writer)
         if model_name == "mistral":
             process_dataset_mistral(model_name, dataset_to_process, csv_writer)
         else:
-            process_dataset_llms(model_name, dataset_to_process, csv_writer)
+            process_dataset_chatbot(model_name, dataset_to_process, csv_writer)
 
     # Display CSV content
     print(pd.read_csv(output_file))
