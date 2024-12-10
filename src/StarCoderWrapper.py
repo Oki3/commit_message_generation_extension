@@ -19,7 +19,7 @@ class StarCoderWrapper:
             self.model.config.pad_token_id = self.model.config.eos_token_id
 
     def invoke(self,prompt):
-        inputs=self.tokenizer(prompt,return_tensors="pt",truncation=True,max_length=1024,padding=True)
+        inputs=self.tokenizer(prompt,return_tensors="pt",truncation=True,max_length=1024,padding=True).to(self.device)
         outputs=self.model.generate(inputs.input_ids, max_new_tokens=100, temperature=0.7,
                                     early_stopping=True)
         return self.tokenizer.decode(outputs[0],skip_special_tokens=True)
