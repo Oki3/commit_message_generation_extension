@@ -1,0 +1,3 @@
+[submodule "ESGen"]
+	path = ESGen
+	url = https://github.com/lhhyz/ESGen.git
