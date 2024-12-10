@@ -16,7 +16,7 @@ load_dotenv()
 def call_model_sync(model, messages):
     """Call given model with given prompts."""
     llm = LLMS[model]
-    return llm.invoke(messages) if model == "codet5" else llm.invoke(messages).content
+    return llm.invoke(messages) if model == "codet5" else llm.invoke(messages, format="json").content
 
 
 def process_dataset(model_name, dataset, csv_writer):
