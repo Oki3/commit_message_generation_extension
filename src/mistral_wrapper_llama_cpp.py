@@ -9,6 +9,7 @@ class LlamaMistralWrapper:
          self.llm=Llama(model_path="/Users/nawminujhat/Desktop/Study Materials/ML for SE/team-3/llama.cpp/models/mistral-7b-instruct-v0.2.Q6_K.gguf",
                         chat_format="llama-2",
                         n_ctx=2048,
+                        n_gpu_layers=48,
                         verbose=True)
 
     def __del__(self):
