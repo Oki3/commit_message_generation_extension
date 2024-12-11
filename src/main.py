@@ -9,6 +9,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
 
 from extract_diff import import_dataset
+from src.StarCoderWrapper import StarCoderWrapper
 
 load_dotenv()
 
@@ -59,9 +60,10 @@ def process_dataset_chatbot(model_name, dataset, csv_writer):
 if __name__ == "__main__":
     print("Compiling LLMs")
     LLMS = {
-         'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
-         'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
-         'mistral':LlamaMistralWrapper()
+         # 'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
+         # 'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
+         'starcoder':StarCoderWrapper(model_name="TechxGenus/starcoder2-15b-instruct"),
+         # 'mistral':LlamaMistralWrapper()
     }
     print("Creating Output directory")
     # Create output directory
@@ -82,7 +84,7 @@ if __name__ == "__main__":
     # Prepare subset for specific models
     dataset_to_process = (
         train_dataset.select(random.sample(range(len(train_dataset)), 10))
-        if model_name == "mistral" else train_dataset
+        if model_name in ["mistral" ,"starcoder"] else train_dataset
     )
 
     # Write output to CSV
@@ -90,7 +92,7 @@ if __name__ == "__main__":
     with open(output_file, mode="w", newline='', encoding="utf-8") as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(["Original Message", "Model Output"])
-        if model_name == "mistral":
+        if model_name == "mistral" or model_name == "starcoder":
             process_dataset_mistral(model_name, dataset_to_process, csv_writer)
         else:
             process_dataset_chatbot(model_name, dataset_to_process, csv_writer)
