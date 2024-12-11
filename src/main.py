@@ -1,10 +1,11 @@
 import csv
 import os
 import random
+import time
+
 from mistral_wrapper_llama_cpp import LlamaMistralWrapper
 import pandas as pd
 from dotenv import load_dotenv
-from langchain_community.chat_models import ChatDeepInfra
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
 
@@ -25,7 +26,7 @@ def call_model_with_prompt(model,prompt):
 
 
 def prepare_prompt(diff):
-    return f"Summarize this git diff into a useful, 10 words commit message.  Include the names of the files in which the changes were made and the change as well:\n\n{diff}\n\nCommit message:"
+    return f"Summarize this git diff into a useful, 10 words commit message{diff}\n\nCommit message:"
 
 def generate_commit_message(prompt,model_name):
     return call_model_with_prompt(model_name, prompt)
@@ -61,9 +62,9 @@ if __name__ == "__main__":
     print("Compiling LLMs")
     LLMS = {
          # 'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
-         # 'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
-         'starcoder':StarCoderWrapper(model_name="TechxGenus/starcoder2-15b-instruct"),
-         # 'mistral':LlamaMistralWrapper()
+         #  'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
+         # 'starcoder':StarCoderWrapper(model_name="TechxGenus/starcoder2-15b-instruct"),
+         'mistral':LlamaMistralWrapper()
     }
     print("Creating Output directory")
     # Create output directory
@@ -73,6 +74,7 @@ if __name__ == "__main__":
     print("Separating datasets")
     # Load dataset
     train_dataset, validation_dataset, test_dataset = import_dataset("Maxscha/commitbench")
+    print(train_dataset.shape)
     print("Receiving model Names")
     model_name = input("Enter the model name: ")
 
@@ -92,10 +94,15 @@ if __name__ == "__main__":
     with open(output_file, mode="w", newline='', encoding="utf-8") as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(["Original Message", "Model Output"])
+        start_time = time.perf_counter()
+        print(f"Start Time: {start_time}")
         if model_name == "mistral" or model_name == "starcoder":
             process_dataset_mistral(model_name, dataset_to_process, csv_writer)
         else:
             process_dataset_chatbot(model_name, dataset_to_process, csv_writer)
+        end_time = time.perf_counter()
+        print(f"End Time: {end_time}")
+        print(f"Total Time taken for executing train set is {end_time-start_time} ")
 
     # Display CSV content
     print(pd.read_csv(output_file))
