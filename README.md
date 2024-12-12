@@ -20,7 +20,7 @@ DEEPINFRA_API_KEY=<your_api_key>
 
 ### For use of Mistral-7b-instruct and Phi-3.5-mini-instruct
 - Both of these model require llama.cpp for running the quantized version locally. See [installation instructions](https://github.com/ggerganov/llama.cpp/blob/master/docs/build.md) for downloading llama.cpp locally. Make sure to clone it inside the project repository.
-- Before installing llama.cpp, make sure to install 'pkgconfig' and 'make' command
+- Before installing llama.cpp, make sure to install 'pkgconfig' and 'make' command. Also run `pip install llama-cpp-python.`
 - Next, install the required versions of Mistral-7b-instruct and Phi-3.5-mini-instruct through the following commands:
    `cd llama.cpp`
    `cd models`

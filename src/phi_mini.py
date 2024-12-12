@@ -1,11 +1,8 @@
 import os
 
-import torch
-from accelerate import disk_offload
 from dotenv import load_dotenv
 from llama_cpp import Llama
 
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
 load_dotenv()
 

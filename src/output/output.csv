@@ -1,31 +1,23 @@
 Original Message,Model Output
-"Regression test for rendering file from absolute path
+"mtime should not be a Date object
 
-Test that we are not allowing you to grab a file with an absolute path
-outside of your application directory. This is dangerous because it
-could be used to retrieve files from the server like `/etc/passwd`.",Add test for dynamic_render with absolute path and assert missing template error
-Make time_independent_equals work with python3 byte strings,Refactor for Python 3 compatibility and optimize XOR comparison.
-"Fixed typo in revision <I>dc<I> (now Issue <I> is really fixed)
+Prior to this commit file's mtime was a Date object which is
+inconsistent to the mtime of directories.",Updated `_walkSync` function to use JavaScript timestamps instead of `mtime` objects.
+"Fixed unit test: because the implementation creates an IMolecule object, the original 'molecule' pointer does not get atoms, and the returned IMolecule object should be assigned to get a molecule with information
 
-Update Issue <I>
-Status: Fixed
+Change-Id: I<I>ef8a0f<I>a<I>f<I>c<I>a6efb<I>c<I>cbee",Refactored MDLV2000ReaderTest to assign read result directly to molecule object.
+Missed some () when removing a pylint2 compat shim,Removed unnecessary parentheses in consumer.to_consume iteration.
+add more debugging for combine magic windows tests,Added print statements for debugging custom.out file in test\_ipmag.py
+set db adapter after storing config,Updated Install class to use Adapter instance instead of testing connection in testDbConfig method.
+Fixed VCR.use_cassette so that it only ejects the cassette if it was successfully inserted.,Added error handling to prevent automatic cassette ejection in VCR methods.
+"removed some commented code
 
-Thanks Jed for pointing that out!",Update IPython reference in sitecustomize.py for Python 0.10 compatibility
-Update models database for 0x<I> (#<I>),Update color modes to RGB_W
-#<I> emitEvent when job is done,Emit event for postponed job and duplicate event emission
-Rename an internal method (thanks to ActionController for the inspiration),Refactor `execute_and_log!` to `perform_and_log!` in `Samuel::Request` for exception handling consistency.
-"Support rubies without Array#to_h
 
-The code used Array#to_h. However, this method was added in <I>. In
-order to support <I>, this commit implements the equivalent
-functionality as a private method.
+Former-commit-id: <I>a<I>de4e<I>cfd<I>da8adb5c<I>ad<I>",Removed redundant code for closing polygon loop in loader.py.
+Inherit ignore rules of output from book,Added inheritance of book's ignore rules to Output class. (Fixes potential ignore conflicts)
+Add args method to translatable component builder which accepts varargs,"Added overload for `args` method that accepts Component array, delegates to list version."
+"Removed registration of duplicate keys within containers
 
-Fix #1",Refactor foreign key check to use hash_from_pairs method for cleaner code
-"ParsoidConfig's interwikiMap returns an api string
-
- * Probably a confusion with interwikiMap in wikiConf, which suggest
-   this name clash is confusing.
-
-Change-Id: I<I>c<I>d3c3b7f<I>f8ceb<I>cb<I>",Update interwiki URL mapping in ApiRequest.js using new conf structure
-Add tests for `degreesToRadians` and `radiansToDegrees`,Add tests for degreesToRadians and radiansToDegrees conversions
-Make note of empty dict return in docstring,Add action info dictionary return and CLI error handling to cloud.py
+This behavior is unnecessary for merging containers and removes the
+possiblity of unnecessary mutation of registered objects within the
+container.",Removed deprecated config registry method in Container class.
