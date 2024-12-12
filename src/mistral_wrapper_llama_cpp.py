@@ -10,7 +10,7 @@ load_dotenv()
 class LlamaMistralWrapper:
 
     def __init__(self):
-         self.llm=Llama(model_path="/Users/nawminujhat/Desktop/Study Materials/ML for SE/team-3/llama.cpp/models/mistral-7b-instruct-v0.2.Q6_K.gguf",
+         self.llm=Llama(model_path=os.environ['MODEL_PATH_MISTRAL'],
                         chat_format="llama-2",
                         n_ctx=int(os.environ['CONTEXT_WINDOW_FOR_MISTRAL']),
                         n_gpu_layers=int(os.environ['GPU_LAYERS']),
