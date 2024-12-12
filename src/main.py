@@ -66,25 +66,6 @@ def process_dataset_chatbot(model_name, dataset, csv_writer):
         csv_writer.writerow([original_message, model_output])
 
 
-def save_output():
-    global start_time, end_time
-    output_file = os.path.join(output_dir, "output.csv")
-    with open(output_file, mode="w", newline='', encoding="utf-8") as csvfile:
-        csv_writer = csv.writer(csvfile)
-        csv_writer.writerow(["Original Message", "Model Output"])
-        start_time = time.perf_counter()
-        print(f"Start Time: {start_time}")
-        if model_name == "mistral" or model_name == "phi_mini":
-            process_dataset_quantized_instruct(model_name, dataset_to_process, csv_writer)
-        else:
-            process_dataset_chatbot(model_name, dataset_to_process, csv_writer)
-        end_time = time.perf_counter()
-        print(f"End Time: {end_time}")
-        print(f"Total Time taken for executing train set is {end_time - start_time} ")
-    # Display CSV content
-    print(pd.read_csv(output_file))
-
-
 if __name__ == "__main__":
     print("Compiling LLMs")
     LLMS = {
@@ -118,7 +99,21 @@ if __name__ == "__main__":
     )
 
     # Write output to CSV
-    save_output()
+    output_file = os.path.join(output_dir, "output.csv")
+    with open(output_file, mode="w", newline='', encoding="utf-8") as csvfile:
+        csv_writer = csv.writer(csvfile)
+        csv_writer.writerow(["Original Message", "Model Output"])
+        start_time = time.perf_counter()
+        print(f"Start Time: {start_time}")
+        if model_name == "mistral" or model_name == "phi_mini":
+            process_dataset_quantized_instruct(model_name, dataset_to_process, csv_writer)
+        else:
+            process_dataset_chatbot(model_name, dataset_to_process, csv_writer)
+        end_time = time.perf_counter()
+        print(f"End Time: {end_time}")
+        print(f"Total Time taken for executing train set is {end_time - start_time} ")
+    # Display CSV content
+    print(pd.read_csv(output_file))
 
     if 'phi_mini' in LLMS:
         LLMS['phi_mini'].close()
