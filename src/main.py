@@ -17,11 +17,6 @@ from src.phi_mini import PhiMiniWrapper
 
 load_dotenv()
 
-LLMS = {
-    'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
-    'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
-    'codet5': CodeT5Wrapper(model_name="Salesforce/codet5-base")
-}
 
 
 def call_model_sync(model, messages):

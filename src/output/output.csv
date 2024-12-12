@@ -1,17 +1,31 @@
 Original Message,Model Output
-Code cleanup based on Sonar inspection,Update ScottAgent package summary with additional documentation link.
-Remove #original_to_s that is not used,Refactor `NameError` to_s alias to include `did_you_mean?` output
-Log the bind address for DeviceClient exceptions,Raise errors for already started or not started client threads.
-feature(tar-to-zip) itchy -> itchy/legacy,"Update 'itchy' require to 'itchy/legacy' for tar-to-zip.js
+"Regression test for rendering file from absolute path
 
-(10 words)"
-"Diagnostics framework uses <I> hours format in timestamps
+Test that we are not allowing you to grab a file with an absolute path
+outside of your application directory. This is dangerous because it
+could be used to retrieve files from the server like `/etc/passwd`.",Add test for dynamic_render with absolute path and assert missing template error
+Make time_independent_equals work with python3 byte strings,Refactor for Python 3 compatibility and optimize XOR comparison.
+"Fixed typo in revision <I>dc<I> (now Issue <I> is really fixed)
 
-Otherwise it's hard to interpret the logs, especially around mid-day.
+Update Issue <I>
+Status: Fixed
 
-(cherry picked from commit 1e<I>c<I>)","Refactor Calendar imports, change HOUR to HOUR_OF_DAY"
-re-raise exception if --ignore was not set,Bump version level with error handling
-remove requirement on pattern_domain same as pattern_parameter,Refactor default domain regex handling in I18nRouteLoader.php
-"hardening tempo tests, dropped the <I>bpm case for now",Adjust tempo threshold to 5% for stability in tests
-Clean idle mask in tests to get clean state,Add idle event handling and update test case
-docs(website): point to next on edit instead of master,Update GitHub URL generation in extractMarkdownFiles.js
+Thanks Jed for pointing that out!",Update IPython reference in sitecustomize.py for Python 0.10 compatibility
+Update models database for 0x<I> (#<I>),Update color modes to RGB_W
+#<I> emitEvent when job is done,Emit event for postponed job and duplicate event emission
+Rename an internal method (thanks to ActionController for the inspiration),Refactor `execute_and_log!` to `perform_and_log!` in `Samuel::Request` for exception handling consistency.
+"Support rubies without Array#to_h
+
+The code used Array#to_h. However, this method was added in <I>. In
+order to support <I>, this commit implements the equivalent
+functionality as a private method.
+
+Fix #1",Refactor foreign key check to use hash_from_pairs method for cleaner code
+"ParsoidConfig's interwikiMap returns an api string
+
+ * Probably a confusion with interwikiMap in wikiConf, which suggest
+   this name clash is confusing.
+
+Change-Id: I<I>c<I>d3c3b7f<I>f8ceb<I>cb<I>",Update interwiki URL mapping in ApiRequest.js using new conf structure
+Add tests for `degreesToRadians` and `radiansToDegrees`,Add tests for degreesToRadians and radiansToDegrees conversions
+Make note of empty dict return in docstring,Add action info dictionary return and CLI error handling to cloud.py
