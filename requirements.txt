@@ -5,4 +5,11 @@ langchain-ollama
 python-dotenv
 transformers
 torch
-#forEsGen
+mistral_inference
+bitsandbytes
+sentencepiece
+langchain-cli
+langchain-openai
+mistralai
+accelerate
+
