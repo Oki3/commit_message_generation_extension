@@ -1,21 +1,16 @@
 Original Message,Model Output
-save lineman version with a ~ to get patch updates,Updated `lineman` version in generated package.json to be a tilde major dependency.
-Save inputs that are not defaults,Added `input_defaults` checking and returned `inputs.keys` instead of `inputs.any?` in `Step#valid_inputs?` method.
-"Add a hasPublicProperty() public method.
+"Fix scroll bars showing on notification, adding full length message on title",Add `box-sizing: border-box;` to `.maintenance-mode-alert strong`
+Added `background: false` to run params for process.,"Add background option to pipe.js, set false by default"
+Improved test [skip ci],Update lock_timeout assertion in pgslice_test.rb
+* Make ruboto/toast independent of ruboto/base.,Refactor toast method to use Java namespace consistently.
+Minor refactoring Graph helper,Refactor dependent items sorting to always go last in Graph.php
+Added fluent interface to setter.,Add return statement to setControllers method
+protect against crash from using dig in NPM#peer_dependency,Add peerDependency check and extract version method
+"HTTP Method Fix
 
-This is useful for when you just want to lookup a property on a class you don't know everything about, instead of throwing an exception when trying to access it.",Added method 'hasPublicProperty' to check if object has a public property.
-"Some existing apps expect this to be present.
+Don’t set if property isn’t. Requests have defaults.",Add HTTP method check to AbstractEndpoint
+Explicitly require pathname core extension,Refactor ActiveSupport to include FrozenObjectError
+"Updates to setup.py
 
-
-
-For example Gargoyle does this ""from jsonfield import JSONField"", expecting this (older) version of django-jsonfield to be present:
-
-
-
-<URL>",Added import statement for JSONField from fields package.
-set nodeRequire on application context,Removed unnecessary 'tty' dependency and set document root to 'public' folder.
-Tests pass with <I>% coverage; pylint reports <I>/<I>,Added Flask app context to reflection function in `sandman2/__init__.py` and removed it from `tests/test_sandman2.py`.
-add case for lines_to_cover due to new CI machine,Updated lines to cover measurement in GroovyIT test to allow for small deviations.
-No longer export crypto-ld classes.,Removed import of crypto-ld's LDKeyPair classes from jsonld-signatures.js.
-Simplify trySeek().,Updated StreamUtil::seekWithOffset() to return true if at exact offset with SEEK_SET.
-fix: disable browsersync ghost syncing as a workaround to ensure local Nightwatch.js browser tests don't have clicks / interactions triggered by other browsers.,Added option to disable ghost mode in webpack development server.
+Added doctoring to setup.py to comply with PEP8. Added Python 3 as a
+supported language.",Add Python 3 support to setup script
