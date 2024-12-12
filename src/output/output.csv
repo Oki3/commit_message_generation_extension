@@ -1,16 +1,12 @@
 Original Message,Model Output
-"Fix scroll bars showing on notification, adding full length message on title",Add `box-sizing: border-box;` to `.maintenance-mode-alert strong`
-Added `background: false` to run params for process.,"Add background option to pipe.js, set false by default"
-Improved test [skip ci],Update lock_timeout assertion in pgslice_test.rb
-* Make ruboto/toast independent of ruboto/base.,Refactor toast method to use Java namespace consistently.
-Minor refactoring Graph helper,Refactor dependent items sorting to always go last in Graph.php
-Added fluent interface to setter.,Add return statement to setControllers method
-protect against crash from using dig in NPM#peer_dependency,Add peerDependency check and extract version method
-"HTTP Method Fix
-
-Don’t set if property isn’t. Requests have defaults.",Add HTTP method check to AbstractEndpoint
-Explicitly require pathname core extension,Refactor ActiveSupport to include FrozenObjectError
-"Updates to setup.py
-
-Added doctoring to setup.py to comply with PEP8. Added Python 3 as a
-supported language.",Add Python 3 support to setup script
+"[OPENY-<I>] Fixed errors drush, when run site installation",Update TermOfUseForm to check checkboxes only on non-Drush installations.
+Compatibility between experimental and normal modes.,Refactor for experimental mode compatibility: Add id and urgency removal from pending tasks comparison.
+create hasIntroMarker method to quickly identify if an episode has an intro marker,Add hasIntroMarker property and season method caching in video.py
+DRY: Use constants for level codes instead of re-defining,Update logging levels constants in Monolog Logger
+Invoking correct method in test assertion.,Refactor testHeight assertion to testHeight in BoundsTest.java
+Used full method names when sending email in advanced app,Update email headers for password reset email
+"fixing error handler so that it returns all attributes, including validation errors",Refactor error handler to use toJSON and conditionally remove stack trace
+Fix dead code in call() (#<I>),Refactor hook check to support array input and improve method matching
+"Merged #<I>.
+Adds check for left position from container for first slide, if attempting to scroll from the first slide to itself when asNavFor is in use.",Add position-based slide navigation and action handling
+Added a missing end/commit statement for the transactions which was preventing system from updating,Add end method call to Model post-update
