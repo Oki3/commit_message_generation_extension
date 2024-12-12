@@ -1,21 +1,17 @@
 Original Message,Model Output
-save lineman version with a ~ to get patch updates,Updated `lineman` version in generated package.json to be a tilde major dependency.
-Save inputs that are not defaults,Added `input_defaults` checking and returned `inputs.keys` instead of `inputs.any?` in `Step#valid_inputs?` method.
-"Add a hasPublicProperty() public method.
+Code cleanup based on Sonar inspection,Update ScottAgent package summary with additional documentation link.
+Remove #original_to_s that is not used,Refactor `NameError` to_s alias to include `did_you_mean?` output
+Log the bind address for DeviceClient exceptions,Raise errors for already started or not started client threads.
+feature(tar-to-zip) itchy -> itchy/legacy,"Update 'itchy' require to 'itchy/legacy' for tar-to-zip.js
 
-This is useful for when you just want to lookup a property on a class you don't know everything about, instead of throwing an exception when trying to access it.",Added method 'hasPublicProperty' to check if object has a public property.
-"Some existing apps expect this to be present.
+(10 words)"
+"Diagnostics framework uses <I> hours format in timestamps
 
+Otherwise it's hard to interpret the logs, especially around mid-day.
 
-
-For example Gargoyle does this ""from jsonfield import JSONField"", expecting this (older) version of django-jsonfield to be present:
-
-
-
-<URL>",Added import statement for JSONField from fields package.
-set nodeRequire on application context,Removed unnecessary 'tty' dependency and set document root to 'public' folder.
-Tests pass with <I>% coverage; pylint reports <I>/<I>,Added Flask app context to reflection function in `sandman2/__init__.py` and removed it from `tests/test_sandman2.py`.
-add case for lines_to_cover due to new CI machine,Updated lines to cover measurement in GroovyIT test to allow for small deviations.
-No longer export crypto-ld classes.,Removed import of crypto-ld's LDKeyPair classes from jsonld-signatures.js.
-Simplify trySeek().,Updated StreamUtil::seekWithOffset() to return true if at exact offset with SEEK_SET.
-fix: disable browsersync ghost syncing as a workaround to ensure local Nightwatch.js browser tests don't have clicks / interactions triggered by other browsers.,Added option to disable ghost mode in webpack development server.
+(cherry picked from commit 1e<I>c<I>)","Refactor Calendar imports, change HOUR to HOUR_OF_DAY"
+re-raise exception if --ignore was not set,Bump version level with error handling
+remove requirement on pattern_domain same as pattern_parameter,Refactor default domain regex handling in I18nRouteLoader.php
+"hardening tempo tests, dropped the <I>bpm case for now",Adjust tempo threshold to 5% for stability in tests
+Clean idle mask in tests to get clean state,Add idle event handling and update test case
+docs(website): point to next on edit instead of master,Update GitHub URL generation in extractMarkdownFiles.js
