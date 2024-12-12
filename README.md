@@ -24,7 +24,7 @@ DEEPINFRA_API_KEY=<your_api_key>
 - Next, install the required versions of Mistral-7b-instruct and Phi-3.5-mini-instruct through the following commands:
    `cd llama.cpp`
    `cd models`
-For Mistral Ai, use `huggingface-cli download TheBloke/Mistral-7B-Instruct-v0.2-GGUF mistral-7b-instruct-v0.2.Q6.gguf --local-dir . --local-dir-use-symlinks False`
+For Mistral Ai, use `huggingface-cli download TheBloke/Mistral-7B-Instruct-v0.2-GGUF mistral-7b-instruct-v0.2.Q6_K.gguf --local-dir . --local-dir-use-symlinks False`
 For Phi-3.5-mini, use `huggingface-cli download bartowski/Phi-3.5-mini-instruct-GGUF --include "Phi-3.5-mini-instruct-Q8_0.gguf" --local-dir ./`
 Depending on the system spec of your local setup, you can use other quantized versions based on the provided links: 
 - Phi-3.5-mini-instruct : [https://huggingface.co/bartowski/Phi-3.5-mini-instruct-GGUF]
