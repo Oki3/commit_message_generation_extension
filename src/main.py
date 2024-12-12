@@ -3,6 +3,8 @@ import os
 import random
 import time
 
+from langchain_community.chat_models import ChatDeepInfra
+
 from mistral_wrapper_llama_cpp import LlamaMistralWrapper
 import pandas as pd
 from dotenv import load_dotenv
@@ -65,9 +67,8 @@ def process_dataset_chatbot(model_name, dataset, csv_writer):
 if __name__ == "__main__":
     print("Compiling LLMs")
     LLMS = {
-         # 'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
-         #  'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
-         # 'starcoder':StarCoderWrapper(model_name="TechxGenus/starcoder2-15b-instruct"),
+         'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
+         'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
          'mistral':LlamaMistralWrapper(),
          'phi_mini':PhiMiniWrapper()
     }

@@ -12,4 +12,5 @@ langchain-cli
 langchain-openai
 mistralai
 accelerate
+huggingface-hub
 

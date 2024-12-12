@@ -1,12 +1,17 @@
 Original Message,Model Output
-"[OPENY-<I>] Fixed errors drush, when run site installation",Update TermOfUseForm to check checkboxes only on non-Drush installations.
-Compatibility between experimental and normal modes.,Refactor for experimental mode compatibility: Add id and urgency removal from pending tasks comparison.
-create hasIntroMarker method to quickly identify if an episode has an intro marker,Add hasIntroMarker property and season method caching in video.py
-DRY: Use constants for level codes instead of re-defining,Update logging levels constants in Monolog Logger
-Invoking correct method in test assertion.,Refactor testHeight assertion to testHeight in BoundsTest.java
-Used full method names when sending email in advanced app,Update email headers for password reset email
-"fixing error handler so that it returns all attributes, including validation errors",Refactor error handler to use toJSON and conditionally remove stack trace
-Fix dead code in call() (#<I>),Refactor hook check to support array input and improve method matching
-"Merged #<I>.
-Adds check for left position from container for first slide, if attempting to scroll from the first slide to itself when asNavFor is in use.",Add position-based slide navigation and action handling
-Added a missing end/commit statement for the transactions which was preventing system from updating,Add end method call to Model post-update
+Code cleanup based on Sonar inspection,Update ScottAgent package summary with additional documentation link.
+Remove #original_to_s that is not used,Refactor `NameError` to_s alias to include `did_you_mean?` output
+Log the bind address for DeviceClient exceptions,Raise errors for already started or not started client threads.
+feature(tar-to-zip) itchy -> itchy/legacy,"Update 'itchy' require to 'itchy/legacy' for tar-to-zip.js
+
+(10 words)"
+"Diagnostics framework uses <I> hours format in timestamps
+
+Otherwise it's hard to interpret the logs, especially around mid-day.
+
+(cherry picked from commit 1e<I>c<I>)","Refactor Calendar imports, change HOUR to HOUR_OF_DAY"
+re-raise exception if --ignore was not set,Bump version level with error handling
+remove requirement on pattern_domain same as pattern_parameter,Refactor default domain regex handling in I18nRouteLoader.php
+"hardening tempo tests, dropped the <I>bpm case for now",Adjust tempo threshold to 5% for stability in tests
+Clean idle mask in tests to get clean state,Add idle event handling and update test case
+docs(website): point to next on edit instead of master,Update GitHub URL generation in extractMarkdownFiles.js

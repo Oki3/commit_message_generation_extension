@@ -1,16 +1,20 @@
+import os
+
 import torch
 from accelerate import disk_offload
+from dotenv import load_dotenv
 from llama_cpp import Llama
 
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
+load_dotenv()
 
 class PhiMiniWrapper:
     def __init__(self):
         self.llm = Llama(
             model_path="/Users/nawminujhat/Desktop/Study Materials/ML for SE/team-3/llama.cpp/models/Phi-3.5-mini-instruct-Q8_0.gguf",
-            n_ctx=2048,
-            n_gpu_layers=48,
+            n_ctx=int(os.environ['CONTEXT_WINDOW_FOR_PHI']),
+            n_gpu_layers=int(os.environ['GPU_LAYERS']),
             verbose=True)
 
     def __del__(self):
