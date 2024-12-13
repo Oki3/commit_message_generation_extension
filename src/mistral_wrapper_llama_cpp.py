@@ -1,10 +1,7 @@
 import os
-from linecache import cache
 
 from dotenv import load_dotenv
-from langchain.chains.question_answering.map_reduce_prompt import messages
 from llama_cpp import Llama
-
 
 load_dotenv()
 class LlamaMistralWrapper:
