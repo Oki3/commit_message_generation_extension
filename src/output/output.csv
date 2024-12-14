@@ -1,0 +1,23 @@
+Original Message,Model Output
+"mtime should not be a Date object
+
+Prior to this commit file's mtime was a Date object which is
+inconsistent to the mtime of directories.",Updated `_walkSync` function to use JavaScript timestamps instead of `mtime` objects.
+"Fixed unit test: because the implementation creates an IMolecule object, the original 'molecule' pointer does not get atoms, and the returned IMolecule object should be assigned to get a molecule with information
+
+Change-Id: I<I>ef8a0f<I>a<I>f<I>c<I>a6efb<I>c<I>cbee",Refactored MDLV2000ReaderTest to assign read result directly to molecule object.
+Missed some () when removing a pylint2 compat shim,Removed unnecessary parentheses in consumer.to_consume iteration.
+add more debugging for combine magic windows tests,Added print statements for debugging custom.out file in test\_ipmag.py
+set db adapter after storing config,Updated Install class to use Adapter instance instead of testing connection in testDbConfig method.
+Fixed VCR.use_cassette so that it only ejects the cassette if it was successfully inserted.,Added error handling to prevent automatic cassette ejection in VCR methods.
+"removed some commented code
+
+
+Former-commit-id: <I>a<I>de4e<I>cfd<I>da8adb5c<I>ad<I>",Removed redundant code for closing polygon loop in loader.py.
+Inherit ignore rules of output from book,Added inheritance of book's ignore rules to Output class. (Fixes potential ignore conflicts)
+Add args method to translatable component builder which accepts varargs,"Added overload for `args` method that accepts Component array, delegates to list version."
+"Removed registration of duplicate keys within containers
+
+This behavior is unnecessary for merging containers and removes the
+possiblity of unnecessary mutation of registered objects within the
+container.",Removed deprecated config registry method in Container class.

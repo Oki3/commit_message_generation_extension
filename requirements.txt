@@ -1,8 +1,16 @@
+accelerate
+bitsandbytes
 datasets
+huggingface-hub
 langchain
+langchain-cli
 langchain_community
 langchain-ollama
+langchain-openai
+llama-cpp-python
+mistral_inference
+mistralai
 python-dotenv
+sentencepiece
 transformers
 torch
-#forEsGen

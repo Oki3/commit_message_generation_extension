@@ -1,3 +1,6 @@
 [submodule "ESGen"]
 	path = ESGen
 	url = https://github.com/lhhyz/ESGen.git
+[submodule "llama.cpp"]
+	path = llama.cpp
+	url = https://github.com/ggerganov/llama.cpp
