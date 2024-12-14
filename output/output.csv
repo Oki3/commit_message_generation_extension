@@ -1,26 +1,13 @@
 Original Message,Model Output
-"Remove Tox runner from setup.py
+Slightly nicer wording here.,Updated Stripe publishable key comment with clearer instruction.
+Use apply_async instead of delay for class-based task [WAL-<I>],Replaced `delay` with `apply_async` in BackgroundListPullTask for task execution.
+Fix docstring of config.py to use correct versionadded (#<I>),Updated XGBoost config.py with version information (1.3.0 -> 1.4.0)
+Version bump <I>-dev,"Updated project version to ""0.0.5-dev"" in setup.py file."
+"import-logs.py: fixed a bug introduced in r<I> when no password was specified.
 
-This isn't used to run Tox by the Makefile, so it's just dead code with
-unfortunate dependency installation implications.","-59,5 +40,5 @@'Kafka client', 'distributed messaging', 'txkafka']'Kafka client', 'distributed messaging', 'txkafka']'Kafka client', 'dis"
-improves first_lookup readability,"= self.first_lookup(symbol, size)= self.first_lookup(symbol, size)= self.first_lookup(symbol, size)= self.first_lookup(symbol, size)"
-Move check out of in `_update`,"if callable(fields):
--                fields(data[eid])
--            else:
--if callable(fields):
--                fields(data[eid])
--            else:
--if"
-"fix($translate): Trim whitespace off translationId
-
-$translate service now trims translation ID for lookup.",interpolationId = interpolateParams.interpolationId ||interpolationId = interpolationId ||interpolationId ||interpolationId ||interpolationId ||interpolationId ||interpolationId ||interpolation
-Allow setting a group for one-off handlers.,"function (event, groupName, fn) {function (event, groupName, fn) {function (event, groupName, fn) {function (event, groupName, fn)function (event, groupName, fn)"
-time_utils.yesterday and .last_week take an optional start time.,"return datetime.strptime(datetime.utcnow(), '%Y-%m-%d %H:%M:%S')= datetime.strptime(datetime.utcnow(), '%Y-%m-%d %H:%M:%"
-"fix Rails.application.routes.router.visualizer for router debugging
-
-fixes error due to Routes#partitioned_routes being removed",routes.ast.grep(Nodes::Symbol) . all? { |n|n.default_regexp?| |n| n.default_regexp?| |n| n.default_regexp?
-"Allowing different archive format types.
-
-Correcting incorrect comment about ""content"" key in array too.","@param int $project_id@param array $params@param string $format Options: ""tar.gz"",@param string $format Options: ""tar.bz2"",@param string $format Options"
-Remove settings now handled by the templates themselves,options[:jekyll] template.extend(Stevenson::OutputFilters::JekyllFilter) if options[:jekyll] template.extend(Stevenson::OutputFilters::Jek
-Restore previous human attribute ofr key and name,self.human_attribute_name(attr) def self.human_attribute_name(attr) defself.human_attribute_name(attr) def self.human_attribute_name(attr) def self.
+git-svn-id: <URL>",Added check for specified login and password before falling back to config file for Piwik credentials.
+Don't show superfluous 'COMMAND' in command help,Removed metavar argument from subparsers in Termtool class.
+feat(actor): load user jars before core ones,Swapped order of OpenTest and user-jars in classpath construction.
+fix: added setRequestMetadata() example in testbed,Replaced Mixpanel token with request metadata in Branch initialization (#your\_issue\_number)
+add a few docs about concurrency,Added concurrency notes and thread safety improvements to Scope class.
+Removing unused interface implementations from `Roave\ApiCompare\Changes`,Removed Countable implementation from Changes class.
