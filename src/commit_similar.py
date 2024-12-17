@@ -42,6 +42,7 @@ class Commit:
 
 class CommitSimilarity:
     repo: Repo
+    other = None
 
     def __init__(self, path: str):
         self.repo = Repo(path)
@@ -63,21 +64,24 @@ class CommitSimilarity:
 
         return ChangeBlock(file, range_a, range_b, text)
 
-    def diff(self):
+    def get_changes(self):
         changes: list[ChangeBlock] = []
 
-        for diff_item in self.repo.index.diff(None, cached=True, create_patch=True, unified=0).iter_change_type("M"):
+        # Get exact diffs for changes that are staged but not committed, only for modified files
+        for diff_item in self.repo.index.diff(self.other, cached=True, create_patch=True, unified=0).iter_change_type("M"):
             diff_text = diff_item.diff.decode('utf-8', errors='replace') if isinstance(diff_item.diff, bytes) else diff_item.diff
             diff_lines = diff_text.splitlines()
 
             change_texts: list[list[str]] = []
 
+            # Split change blocks
             for line in diff_lines:
                 if line.startswith('@@'):
                     change_texts.append([])
 
                 change_texts[-1].append(line)
 
+            # Parse change blocks
             for change_text in change_texts:
                 changes.append(self.parse_change_block(diff_item.a_path, change_text))
 
@@ -96,7 +100,8 @@ class CommitSimilarity:
 
         return Commit(hash, overlap)
     
-    def log(self, filename: str, range: Range):
+    def get_overlapping_commits(self, filename: str, range: Range):
+        # when the commit only contains additions, the range is empty
         if range.empty():
             return []
 
@@ -105,10 +110,9 @@ class CommitSimilarity:
         log_text = log.decode('utf-8', errors='replace') if isinstance(log, bytes) else log
         log_lines = log_text.splitlines()
 
-        print(log_text)
-
         commit_texts: list[list[str]] = []
 
+        # Split commits
         for line in log_lines:
             if line.startswith('commit '):
                 commit_texts.append([])
@@ -117,13 +121,30 @@ class CommitSimilarity:
 
         commits: list[Commit] = []
         
+        # Parse commits
         for commit_text in commit_texts:
             commits.append(self.parse_log_commit(commit_text))
 
         return commits
+    
+    def sort_and_merge_commits_by_overlap(self, commits: list[Commit]):
+        commit_map: dict[str, int] = {}
+
+        for commit in commits:
+            if commit.hash not in commit_map:
+                commit_map[commit.hash] = 0
+            
+            commit_map[commit.hash] += commit.overlap
+
+        sorted_commits = [Commit(x[0], x[1]) for x in sorted(commit_map.items(), key=lambda x: x[1], reverse=True)]
+
+        return sorted_commits
 
 sim = CommitSimilarity('./')
-changes = sim.diff()
+changes = sim.get_changes()
+commits = []
 for change in changes:
     print(change)
-    print([str(commit) for commit in sim.log(change.file, change.range_a)])
+    commits += sim.get_overlapping_commits(change.file, change.range_a)
+sorted_commits = sim.sort_and_merge_commits_by_overlap(commits)
+print(str(sorted_commits[0]) if len(sorted_commits) > 0 else 'No commits found')
