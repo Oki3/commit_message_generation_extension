@@ -1,4 +1,4 @@
-from git import Repo
+from git import Repo, Commit as GitCommit
 
 class Range:
     start: int
@@ -31,18 +31,36 @@ class ChangeBlock:
 
 class Commit:
     hash: str
+    author: str
+    date: str
+    message: str
+
+    def __init__(self, hash: str, author: str, date: str, message: str):
+        self.hash = hash
+        self.author = author
+        self.date = date
+        self.message = message
+
+    @property
+    def short_hash(self):
+        return self.hash[:7]
+
+    def __str__(self):
+        return f'{self.short_hash} ({self.message}) by {self.author}'
+
+class CommitOverlap:
+    commit: Commit
     overlap: int
 
-    def __init__(self, hash: str, overlap: int):
-        self.hash = hash
+    def __init__(self, commit: Commit, overlap: int):
+        self.commit = commit
         self.overlap = overlap
 
     def __str__(self):
-        return f'{self.hash} overlaps {self.overlap} line(s)'
+        return f'{self.commit} overlaps {self.overlap} line(s)'
 
-class CommitSimilarity:
+class SimilarCommitSearch:
     repo: Repo
-    other = None
 
     def __init__(self, path: str):
         self.repo = Repo(path)
@@ -64,11 +82,16 @@ class CommitSimilarity:
 
         return ChangeBlock(file, range_a, range_b, text)
 
-    def get_changes(self):
+    def get_changes(self, diff_from: GitCommit, diff_to: GitCommit|None = None, only_staged: bool = True):
         changes: list[ChangeBlock] = []
 
+        if only_staged:
+            index = diff_from.diff(diff_to, staged=True, create_patch=True, unified=0)
+        else:
+            index = diff_from.diff(diff_to, create_patch=True, unified=0)
+
         # Get exact diffs for changes that are staged but not committed, only for modified files
-        for diff_item in self.repo.index.diff(self.other, cached=True, create_patch=True, unified=0).iter_change_type("M"):
+        for diff_item in index.iter_change_type("M"):
             diff_text = diff_item.diff.decode('utf-8', errors='replace') if isinstance(diff_item.diff, bytes) else diff_item.diff
             diff_lines = diff_text.splitlines()
 
@@ -88,19 +111,31 @@ class CommitSimilarity:
         return changes
     
     def parse_log_commit(self, lines: list[str]):
-        hash = lines[0].split(' ')[1]
+        hash = lines[0].split(' ')[1].strip()
+        author = lines[1].split(' ')[1].strip()
+        date = lines[2].split(' ')[1].strip()
         overlap = 0
 
-        for line in lines:
+        message = ""
+        in_message = True
+
+        for line in lines[3:]:
+            if in_message and line.startswith('diff --git'):
+                in_message = False
+            if in_message:
+                message += line
+            
             if line.startswith('@@'):
                 words = line.split(' ')
                 size_a = words[1].split(',')[1]
                 size_b = words[2].split(',')[1]
                 overlap += max(0, int(size_b) - int(size_a))
+        
+        message = message.strip()
 
-        return Commit(hash, overlap)
+        return CommitOverlap(Commit(hash, author, date, message), overlap)
     
-    def get_overlapping_commits(self, filename: str, range: Range):
+    def get_commit_overlaps(self, filename: str, range: Range):
         # when the commit only contains additions, the range is empty
         if range.empty():
             return []
@@ -119,32 +154,46 @@ class CommitSimilarity:
 
             commit_texts[-1].append(line)
 
-        commits: list[Commit] = []
+        commit_overlaps: list[CommitOverlap] = []
         
         # Parse commits
         for commit_text in commit_texts:
-            commits.append(self.parse_log_commit(commit_text))
+            commit_overlaps.append(self.parse_log_commit(commit_text))
 
-        return commits
+        return commit_overlaps
     
-    def sort_and_merge_commits_by_overlap(self, commits: list[Commit]):
+    def sort_and_merge_commit_overlaps(self, commit_overlaps: list[CommitOverlap]):
         commit_map: dict[str, int] = {}
 
-        for commit in commits:
-            if commit.hash not in commit_map:
-                commit_map[commit.hash] = 0
+        for commit_overlap in commit_overlaps:
+            hash = commit_overlap.commit.hash
+
+            if hash not in commit_map:
+                commit_map[hash] = 0
             
-            commit_map[commit.hash] += commit.overlap
+            commit_map[hash] += commit_overlap.overlap
 
-        sorted_commits = [Commit(x[0], x[1]) for x in sorted(commit_map.items(), key=lambda x: x[1], reverse=True)]
+        sorted_commit_overlaps = []
 
-        return sorted_commits
+        for hash, overlap in sorted(commit_map.items(), key=lambda x: x[1], reverse=True):
+            commit = next((commit_overlap.commit for commit_overlap in commit_overlaps if commit_overlap.commit.hash == hash), None)
 
-sim = CommitSimilarity('./')
-changes = sim.get_changes()
-commits = []
-for change in changes:
-    print(change)
-    commits += sim.get_overlapping_commits(change.file, change.range_a)
-sorted_commits = sim.sort_and_merge_commits_by_overlap(commits)
-print(str(sorted_commits[0]) if len(sorted_commits) > 0 else 'No commits found')
+            sorted_commit_overlaps.append(CommitOverlap(commit, overlap))
+
+        return sorted_commit_overlaps
+    
+    def search(self, diff_from: str|None = None, diff_to: GitCommit|str|None = None, only_staged: bool = True):
+        if diff_to is not None and only_staged:
+            raise ValueError('Cannot use both diff_to and only_staged options at the same time')
+        
+        diff_from = self.repo.index if diff_from is None else self.repo.commit(diff_from)
+        diff_to = diff_to
+        only_staged = only_staged
+
+        changes = self.get_changes(diff_from, diff_to, only_staged)
+        commit_overlaps = []
+
+        for change in changes:
+            commit_overlaps += self.get_commit_overlaps(change.file, change.range_a)
+        
+        return self.sort_and_merge_commit_overlaps(commit_overlaps)
