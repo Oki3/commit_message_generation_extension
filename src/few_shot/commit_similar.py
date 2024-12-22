@@ -106,7 +106,7 @@ class SimilarCommitSearch:
 
             # Parse change blocks
             for change_text in change_texts:
-                changes.append(self.parse_change_block(diff_item.a_path, change_text))
+                changes.append(self.parse_change_block(diff_item.b_path, change_text))
 
         return changes
     
