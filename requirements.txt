@@ -16,3 +16,5 @@ transformers
 torch
 nltk
 tabulate
+rouge_score
+bert_score
