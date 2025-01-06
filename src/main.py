@@ -27,11 +27,16 @@ def call_model_with_prompt(model, prompt):
     return llm.invoke(prompt)
 
 
-def prepare_prompt(diff, model_name):
-    if model_name == 'mistral':
-        return f"{diff}\nYou are a programmer who makes the above code changes. Please write a commit message for the above code changes."
-    elif model_name == 'phi_mini':
-        return f"{diff}\nYou are a programmer who makes the above code changes. Please write a commit message for the above code changes."
+def prepare_prompt(diff, model_name, chain_of_thought=False):
+    base_prompt = f"{diff}\nYou are a programmer who makes the above code changes. Please write a commit message for the above code changes."
+    if model_name in ["mistral", "phi_mini"]:
+        if chain_of_thought:
+            return base_prompt + " Let's think step by step."
+        return base_prompt
+    # if model_name == 'mistral':
+    #     return f"{diff}\nYou are a programmer who makes the above code changes. Please write a commit message for the above code changes."
+    # elif model_name == 'phi_mini':
+    #     return f"{diff}\nYou are a programmer who makes the above code changes. Please write a commit message for the above code changes."
 
 
 def generate_commit_message(prompt, model_name):
@@ -45,24 +50,43 @@ def process_dataset_quantized_instruct(model_name, dataset, csv_writer):
         original_message = item['message']
         print(f"Original message : {original_message}")
         prompt = prepare_prompt(diff, model_name)
+        experiment_2_prompt = prepare_prompt(diff, model_name, chain_of_thought=True)
         commit_message = generate_commit_message(prompt, model_name)
-        print(f"Commit message : {commit_message}")
+        experiment_2_commit_message = generate_commit_message(experiment_2_prompt, model_name)
+        print(f"Base commit message : {commit_message}")
+        print(f"Zero-shot CoT commit message : {experiment_2_commit_message}")
         csv_writer.writerow([original_message, commit_message])
 
 
 def process_dataset_chatbot(model_name, dataset, csv_writer):
     """Process the dataset and write results to the CSV file."""
 
+    prompt = "You are a programmer who makes the above code changes. Please write a commit message for the above code changes."
+
     for item in dataset:
         diff = item['diff']
         original_message = item['message']
+
         message = [
             SystemMessage(content="Be a helpful assistant with knowledge of git message conventions."),
             HumanMessage(
-                content=f"{diff}\nYou are a programmer who makes the above code changes. Please write a commit message for the above code changes. Let's think step by step."
+                content= f"{diff}\n" + prompt
             ),
         ]
         model_output = call_model_sync(model_name, message)
+
+        # Perform Zero-shot CoT prompting
+        experiment_2_message = [
+            SystemMessage(content="Be a helpful assistant with knowledge of git message conventions."),
+            HumanMessage(
+                content=f"{diff}\n" + prompt + " Let's think step by step."
+            ),
+        ]
+        experiment_2_model_output = call_model_sync(model_name, experiment_2_message)
+
+        print(f"Base commit message : {model_output}")
+        print(f"Zero-shot CoT commit message : {experiment_2_model_output}")
+
         csv_writer.writerow([original_message, model_output])
 
 
