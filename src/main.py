@@ -29,10 +29,9 @@ def call_model_with_prompt(model, prompt):
 
 def prepare_prompt(diff, model_name):
     if model_name == 'mistral':
-        return f"Summarize this git diff into a useful, 10 words commit message{diff}\n\nCommit message:"
+        return f"{diff}\nYou are a programmer who makes the above code changes. Please write a commit message for the above code changes."
     elif model_name == 'phi_mini':
-        return (f"Summarize this git diff into a useful, 10 words commit message{diff}. "
-                f"You should only output the commit message and no extra description.\n\nCommit message:")
+        return f"{diff}\nYou are a programmer who makes the above code changes. Please write a commit message for the above code changes."
 
 
 def generate_commit_message(prompt, model_name):
@@ -42,7 +41,7 @@ def generate_commit_message(prompt, model_name):
 def process_dataset_quantized_instruct(model_name, dataset, csv_writer):
     for item in dataset:
         diff = item['diff']
-        # print(diff)
+        print("-"*20)
         original_message = item['message']
         print(f"Original message : {original_message}")
         prompt = prepare_prompt(diff, model_name)
@@ -60,7 +59,8 @@ def process_dataset_chatbot(model_name, dataset, csv_writer):
         message = [
             SystemMessage(content="Be a helpful assistant with knowledge of git message conventions."),
             HumanMessage(
-                content=f"Summarize this git diff {diff}. into a useful, 10 words commit message. It is very important that you only provide the final output without any additional comments or remarks."),
+                content=f"{diff}\nYou are a programmer who makes the above code changes. Please write a commit message for the above code changes. Let's think step by step."
+            ),
         ]
         model_output = call_model_sync(model_name, message)
         csv_writer.writerow([original_message, model_output])
