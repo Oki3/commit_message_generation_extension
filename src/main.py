@@ -1,170 +1,139 @@
-import csv
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import os
-import random
-import time
-import re
+import ollama
+from pandas import read_csv, DataFrame
+import argparse
 
-from mistral_wrapper_llama_cpp import LlamaMistralWrapper
-import pandas as pd
-from dotenv import load_dotenv
-from langchain_community.chat_models import ChatDeepInfra
-from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_ollama import ChatOllama
+class Model:
+    name: str = ""
 
-from extract_diff import import_dataset
-from phi_mini import PhiMiniWrapper
+    def run(self, prompt: str) -> str:
+        response = ollama.chat(model=self.name, messages=[{
+            "role": "user",
+            "content": prompt
+        }])
 
-load_dotenv()
+        return response.message.content.strip()
+    
+    def check_installed(self) -> bool:
+        try:
+            ollama.show(self.name)
 
+            return True
+        except:
+            return False
+    
+class MistralModel(Model):
+    name: str = "mistral"
 
-def call_model_sync(model, messages):
-    """Call given model with given prompts."""
-    llm = LLMS[model]
-    return llm.invoke(messages) if model == "mistral" else llm.invoke(messages).content
+    def run(self, prompt: str) -> str:
+        return super().run(prompt)
 
+class CodellamaModel(Model):
+    name: str = "codellama"
 
-def call_model_with_prompt(model, prompt):
-    llm = LLMS[model]
-    return llm.invoke(prompt)
+    def run(self, prompt: str) -> str:
+        return super().run(prompt)
+    
+class Phi35Model(Model):
+    name: str = "phi3.5"
 
+    def run(self, prompt: str) -> str:
+        return super().run(prompt)
 
-def prepare_prompt(diff, model_name, chain_of_thought=False):
-    base_prompt = f"{diff}\nYou are a programmer who makes the above code changes. Please write a commit message for the above code changes."
-    if model_name in ["mistral", "phi_mini"]:
-        if chain_of_thought:
-            return base_prompt + """
-                    Let's think step by step. Inside the answer, write the git commit message in the following format:
-                    ### COMMIT MESSAGE ###
-                    [The generated commit message]
-                    ### END COMMIT MESSAGE ###
-                    """
-        return base_prompt
+MODELS = {
+    "mistral": MistralModel(),
+    "codellama": CodellamaModel(),
+    "phi3.5": Phi35Model()
+}
+EXPERIMENTS = ["baseline", "few_shot", "cot"]
+INPUT_FOLDER = './input'
+OUTPUT_FOLDER = './output'
 
+os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-def generate_commit_message(prompt, model_name):
-    return call_model_with_prompt(model_name, prompt)
+parser = argparse.ArgumentParser(description="Run a model with a given prompt.")
 
+parser.add_argument("--model", type=str, default="mistral", choices=MODELS.keys(), help="The model to use.")
+parser.add_argument("--prompt", type=str, default="baseline", choices=EXPERIMENTS, help="The prompt to use.")
+parser.add_argument("--size", type=int, default=1000, help="The number of items to process.")
 
-def process_dataset_quantized_instruct(model_name, dataset, csv_writer, task):
-    for item in dataset:
-        diff = item['diff']
-        print("-"*20)
-        original_message = item['message']
-        print(f"Original message : {original_message}")
+class Experiment:
+    model: Model
+    size: int
+    prompt: str
+    input_file: str
+    output_file: str
+    input_df: DataFrame|None = None
+    output_df: DataFrame|None = None
 
-        if task == "baseline":
-            prompt = prepare_prompt(diff, model_name)
-        elif task == "experiment_2":
-            prompt = prepare_prompt(diff, model_name, chain_of_thought=True)
+    def __init__(self, model: Model, size: int, prompt: str, folder: str):
+        self.model = model
+        self.size = size
+        self.prompt = prompt
+        self.input_file = f"{folder}/{model.name}_{1000}_{prompt}.csv"
+        self.output_file = f"{OUTPUT_FOLDER}/{model.name}_{size}_{prompt}.csv"
 
-        commit_message = generate_commit_message(prompt, model_name)
-        match = re.search(r"### COMMIT MESSAGE ###\n(.*?)\n### END COMMIT MESSAGE ###", commit_message, re.S)
-        if match:
-            commit_message = match.group(1).strip()
-        print(f"Commit message : {commit_message}")
-        csv_writer.writerow([original_message, commit_message])
+    def check_installed(self):
+        if not self.model.check_installed():
+            raise Exception(f"Model {self.model.name} is not installed.")
+        
+    def read_input(self):
+        self.input_df = read_csv(self.input_file)
 
+    def save_output(self):
+        self.output_df.to_csv(self.output_file, index=False)
 
-def process_dataset_chatbot(model_name, dataset, csv_writer, task):
-    """Process the dataset and write results to the CSV file."""
+    def process_item(self, index: int):
+        item = self.input_df.iloc[index]
+        prompt = item['prompt']
 
-    prompt = "You are a programmer who makes the above code changes. Please write a commit message for the above code changes."
+        print(f"{self.model.name}/{self.prompt} - {item['hash'][:7]} - running")
 
-    for item in dataset:
-        diff = item['diff']
-        original_message = item['message']
+        generated_message = self.model.run(prompt)
 
-        if task == "baseline":
-            message = [
-                SystemMessage(content="Be a helpful assistant with knowledge of git message conventions."),
-                HumanMessage(
-                    content= f"{diff}\n" + prompt
-                ),
-            ]
-        elif task == "experiment_2":
-            message = [
-                SystemMessage(content="Be a helpful assistant with knowledge of git message conventions."),
-                HumanMessage(
-                    content=f"{diff}\n" + prompt + """
-                    Let's think step by step. Inside the answer, write the git commit message in the following format:
-                    ### COMMIT MESSAGE ###
-                    [The generated commit message]
-                    ### END COMMIT MESSAGE ###
-                    """
-                ),
-            ]
-        model_output = call_model_sync(model_name, message)
-        match = re.search(r"### COMMIT MESSAGE ###\n(.*?)\n### END COMMIT MESSAGE ###", model_output, re.S)
-        if match:
-            model_output = match.group(1).strip()
-        print(f"Commit message : {model_output}")
-        csv_writer.writerow([original_message, model_output])
+        print(f"{self.model.name}/{self.prompt} - {item['hash'][:7]} - finished")
 
+        return {
+            "hash": item['hash'],
+            "project": item['project'],
+            "true_message": item['true_message'],
+            "generated_message": generated_message
+        }
+
+    def run(self):
+        self.output_df = DataFrame(columns=["hash", "project", "true_message", "generated_message"])
+
+        with ThreadPoolExecutor() as executor:
+            futures = {executor.submit(self.process_item, i): i for i in range(self.size)}
+            total = len(futures)
+            completed = 0
+
+            for future in as_completed(futures):
+                index = futures[future]
+                try:
+                    result = future.result()
+                    self.output_df.loc[index] = [
+                        result['hash'],
+                        result['project'],
+                        result['true_message'],
+                        result['generated_message']
+                    ]
+                    completed += 1
+                    print(f"Progress: {completed}/{total} ({(completed/total)*100:.2f}%) done")
+                except Exception as e:
+                    print(f"Error processing item {index}: {e}")
 
 if __name__ == "__main__":
-    print("Compiling LLMs")
-    LLMS = {
-        'deepinfra': ChatDeepInfra(model="databricks/dbrx-instruct", temperature=0),
-        'codellama': ChatOllama(model="codellama", base_url="http://localhost:11434"),
-        'mistral': LlamaMistralWrapper(),
-        'phi_mini': PhiMiniWrapper()
-    }
-    # Create output directory
-    print("Creating Output directory")
-    output_dir = "output"
+    args = parser.parse_args()
 
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    model_name = args.model
+    model = MODELS[model_name]
+    prompt = args.prompt
+    size = args.size
 
-    # Load dataset
-    print("Separating datasets")
-    train_dataset, validation_dataset, test_dataset = import_dataset("Maxscha/commitbench")
-    print(train_dataset.shape)
-
-    print("Receiving model Names")
-    model_name = input("Enter the model name: ")
-
-    # Handle invalid input
-    if model_name not in LLMS:
-        print(f"Model {model_name} not found.")
-        exit(1)
-
-    # Prepare subset
-    dataset_to_process = (
-        train_dataset.select(random.sample(range(len(train_dataset)), 10))
-    )
-
-    # Write output to CSV
-    output_file = os.path.join(output_dir, "output.csv")
-    experiment_2_file = os.path.join(output_dir, "experiment_2.csv")
-
-    with open(output_file, mode="w", newline='', encoding="utf-8") as csvfile, \
-        open(experiment_2_file, mode="w", newline='', encoding="utf-8") as csvfile_experiment_2:
-        csv_writer = csv.writer(csvfile)
-        csv_writer_2 = csv.writer(csvfile_experiment_2)
-
-        # Write headers for both CSVs
-        csv_writer.writerow(["Original Message", "Model Output"])
-        csv_writer_2.writerow(["Original Message", "Model Output"])
-
-        start_time = time.perf_counter()
-        print(f"Start Time: {start_time}")
-
-        processing_function = (
-            process_dataset_quantized_instruct
-            if model_name in {"mistral", "phi_mini"}
-            else process_dataset_chatbot
-        )
-
-        processing_function(model_name, dataset_to_process, csv_writer, "baseline")
-        processing_function(model_name, dataset_to_process, csv_writer_2, "experiment_2")
-        end_time = time.perf_counter()
-
-        print(f"End Time: {end_time}")
-        print(f"Total Time taken for executing train set is {end_time - start_time} ")
-
-    print(pd.read_csv(output_file))
-
-    if 'phi_mini' in LLMS:
-        LLMS['phi_mini'].close()
-    del LLMS[model_name]
+    experiment = Experiment(model, size, prompt, INPUT_FOLDER)
+    experiment.check_installed()
+    experiment.read_input()
+    experiment.run()
+    experiment.save_output()
