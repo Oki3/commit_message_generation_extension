@@ -83,7 +83,7 @@ class Experiment:
         time_elapsed = time.time() - self.start_time
         time_remaining = (time_elapsed / completed) * (total - completed)
 
-        print(f"Progress: {completed}/{total} ({(completed/total)*100:.2f}%) done. Time remaining: {time_remaining:.2f}s")
+        print(f"Progress: {completed}/{total} ({(completed/total)*100:.2f}%) done. Elapsed {time_elapsed:.2f}s, remaining: {time_remaining:.2f}s")
 
     def append_result(self, index: int, result: dict):
         self.output_df.loc[index] = [
