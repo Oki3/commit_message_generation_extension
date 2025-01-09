@@ -155,7 +155,7 @@ parser = argparse.ArgumentParser(description="Run one of the experiments with th
 
 parser.add_argument("--model", type=str, default="mistral", choices=MODELS.keys(), help="The model to use.")
 parser.add_argument("--prompt", type=str, default="baseline", choices=EXPERIMENTS, help="The prompt to use.")
-parser.add_argument("--input_size", type=int, default=1000, help="The size of te input.")
+parser.add_argument("--input_size", type=int, default=1000, help="The size of the input.")
 parser.add_argument("--process_amount", type=int, default=1000, help="The number of items to process.")
 parser.add_argument("--sequential", action="store_true", help="Run the experiment sequentially instead of in parallel.")
 parser.add_argument("--input_folder", type=str, default="./input", help="The folder containing the input files.")
