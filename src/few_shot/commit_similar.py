@@ -1,33 +1,31 @@
 from git import Repo, Commit as GitCommit
+from logger import Logger
 
 class Range:
-    start: int
-    end: int
+    line: int
+    length: int
 
-    def __init__(self, start: int, end: int):
-        self.start = start
-        self.end = end
+    def __init__(self, line: int, length: int):
+        self.line = line
+        self.length = length
 
-    def git_range(self):
-        return f'{self.start},{self.end}'
-    
-    def empty(self):
-        return self.start > self.end
+    def __str__(self):
+        return f'{self.line},{self.length}'
 
 class ChangeBlock:
     file: str
-    range_a: Range
-    range_b: Range
+    insertions: Range
+    deletions: Range
     text: list[str]
 
-    def __init__(self, file: str, range_a: Range, range_b: Range, text: list[str]):
+    def __init__(self, file: str, insertions: Range, deletions: Range, text: list[str]):
         self.file = file
-        self.range_a = range_a
-        self.range_b = range_b
+        self.insertions = insertions
+        self.deletions = deletions
         self.text = text
 
     def __str__(self):
-        return f'{self.file} a/{self.range_a.start}:{self.range_a.end} b/{self.range_b.start}:{self.range_b.end}'
+        return f'{self.file} -{self.deletions} +{self.insertions}'
 
 class Commit:
     hash: str
@@ -85,29 +83,35 @@ class CommitScore:
         return f'{self.commit} with score {self.score}'
 
 class SimilarCommitSearch:
+    path: str
     repo: Repo
     commits: dict[str, GitCommit]
+    padding: int
+    logger: Logger
 
-    def __init__(self, path: str):
+    def __init__(self, path: str, logger: Logger, padding: int = 3):
+        self.path = path
         self.repo = Repo(path)
+        self.padding = padding
+        self.logger = logger
         self.commits = {}
 
-    def parse_diff_range(self, range_text: str):
-        lines = range_text.replace('-', '').split(',')
+    def parse_range(self, range_text: str):
+        lines = range_text.replace('-', '').replace('+', '').split(',')
 
-        index = int(lines[0])
-        num_changed = int(lines[1]) if len(lines) > 1 else 1
+        line = int(lines[0])
+        length = int(lines[1]) if len(lines) > 1 else 1
 
-        return Range(index, index + max(0, num_changed - 1))
+        return Range(max(1, line), length)
     
     def parse_change_block(self, file: str, lines: list[str]):
         range_texts = lines[0].split(' ')[1:3]
-        range_a = self.parse_diff_range(range_texts[0])
-        range_b = self.parse_diff_range(range_texts[1])
+        deletions = self.parse_range(range_texts[0])
+        insertions = self.parse_range(range_texts[1])
 
         text = lines[1:]
 
-        return ChangeBlock(file, range_a, range_b, text)
+        return ChangeBlock(file, insertions, deletions, text)
 
     def get_changes(self, diff_from: GitCommit, diff_to: GitCommit|None = None, only_staged: bool = True):
         changes: list[ChangeBlock] = []
@@ -147,11 +151,18 @@ class SimilarCommitSearch:
         message = ""
         in_message = True
 
+        FORBIDDEN_LINES = ["Resolves", "Signed-off-by", "Co-authored-by"]
+
         for line in lines[3:]:
             if in_message and line.startswith('diff --git'):
                 in_message = False
             if in_message:
-                message += line.strip() + ' '
+                text = line.strip()
+
+                if any(forbidden in text for forbidden in FORBIDDEN_LINES):
+                    continue
+
+                message += text + ' '
 
             if line.startswith('-') and not line.startswith('--'):
                 deletions += 1
@@ -168,7 +179,7 @@ class SimilarCommitSearch:
     def get__or_create_commit(self, hash: str, date: str, author: str, message: str):
         if hash not in self.commits:
             commit = self.repo.commit(hash)
-            
+
             insertions = commit.stats.total['insertions']
             deletions = commit.stats.total['deletions']
 
@@ -176,12 +187,22 @@ class SimilarCommitSearch:
         
         return self.commits[hash]
     
-    def get_commit_overlaps(self, filename: str, range: Range, diff_to: str):
-        # when the commit only contains additions, the range is empty
-        if range.empty():
-            return []
+    def get_git_range(self, change: ChangeBlock, diff_to: str):
+        commit = self.repo.commit(diff_to)
+        max_lines = len(commit.tree[change.file].data_stream.read().splitlines())
 
-        log = self.repo.git.log(f'-L {range.git_range()}:{filename}', '--patch', f"{diff_to}")
+        start = change.deletions.line
+        end = change.deletions.line + change.deletions.length
+
+        return f'{max(start - self.padding, 1)},{min(end + self.padding, max_lines)}'
+    
+    def get_commit_overlaps(self, change: ChangeBlock, diff_to: str):
+        diff_to_text = f"{diff_to}~"
+        git_range = self.get_git_range(change, diff_to_text)
+
+        self.logger.print(f"Checking changes in {change.file} for {git_range}")	
+
+        log = self.repo.git.log(f'-L {git_range}:{change.file}', '--patch', diff_to_text)
 
         log_text = log.decode('utf-8', errors='replace') if isinstance(log, bytes) else log
         log_lines = log_text.splitlines()
@@ -201,7 +222,7 @@ class SimilarCommitSearch:
         for commit_text in commit_texts:
             commit_overlap = self.parse_log_commit(commit_text)
 
-            print(f"|> Found commit {commit_overlap.commit.short_hash} with {commit_overlap.insertions} insertions and {commit_overlap.deletions} deletions")
+            self.logger.print(f"|> Found commit {commit_overlap.commit.short_hash} with {commit_overlap.insertions} insertions and {commit_overlap.deletions} deletions")
             commit_overlaps.append(commit_overlap)
 
         return commit_overlaps
@@ -241,7 +262,6 @@ class SimilarCommitSearch:
         commit_overlaps = []
 
         for change in changes:
-            print(f"Checking changes in {change.file} from line {change.range_a.start} to {change.range_a.end}")
-            commit_overlaps += self.get_commit_overlaps(change.file, change.range_a, diff_to)
+            commit_overlaps += self.get_commit_overlaps(change, diff_to)
         
         return self.sort_and_merge_commit_scores(commit_overlaps)

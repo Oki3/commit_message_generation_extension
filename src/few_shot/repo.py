@@ -4,6 +4,7 @@ from git import Repo
 from commit_similar import SimilarCommitSearch
 from git import RemoteProgress
 import sys
+from logger import Logger
 
 class ManagedRepo:
 	author_name: str
@@ -11,10 +12,12 @@ class ManagedRepo:
 	url: str
 	folder: str
 	repo: Repo
+	logger: Logger
 
-	def __init__(self, author: str, repo: str, data_path: str='./data/'):
+	def __init__(self, author: str, repo: str, logger: Logger, data_path: str='./data/'):
 		self.author_name = author
 		self.repo_name = repo
+		self.logger = logger
 		self.url = f'https://github.com/{author}/{repo}.git'
 
 		current_folder = os.path.dirname(os.path.abspath(__file__))
@@ -62,9 +65,9 @@ class ManagedRepo:
 						self.last_op_code = op_code
 						self.started = True
 
-		print(f'Cloning repository {self.repo_name} from {self.url}')
+		self.logger.print(f'Cloning repository {self.repo_name} from {self.url}')
 		self.repo = Repo.clone_from(self.url, self.folder, progress=CloneProgress())
 		print()
 
-	def get_similarity_search(self):
-		return SimilarCommitSearch(self.folder)
+	def get_similarity_search(self, padding: int):
+		return SimilarCommitSearch(self.folder, self.logger, padding)
