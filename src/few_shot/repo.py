@@ -22,7 +22,7 @@ class ManagedRepo:
 
 		current_folder = os.path.dirname(os.path.abspath(__file__))
 
-		self.folder = current_folder + f'/../../{data_path}/{author}/{repo}'
+		self.folder = current_folder + f'/../../../{data_path}/{author}/{repo}'
 	
 	def is_cloned(self):
 		return os.path.exists(self.folder)
