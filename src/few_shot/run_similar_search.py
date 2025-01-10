@@ -1,5 +1,4 @@
 from math import ceil
-from commit_similar import SimilarCommitSearch
 import os
 from pandas import DataFrame, read_csv
 from logger import Logger
@@ -123,7 +122,7 @@ and context demonstrated by the above examples.
 
 			messages = [commit.message for commit in commits]
 
-			self.df.at[item.name, 'most_similar_commits_messages'] = ', '.join(messages)
+			self.df.at[item.name, 'most_similar_commits_messages'] = '||-||'.join(messages)
 
 			if len(messages) > 0:
 				prompt = self.few_shot_prompt(item['diff'], messages)
@@ -165,6 +164,6 @@ CHANGE_BLOCK_PADDING = 3
 INPUT_FILE = current_folder + '/../commitbench_subset.csv'
 OUTPUT_FILE = current_folder + '/../commitbench_subset_similar.csv'
 
-logger = Logger("/../../logs/")
-experiment = SimilaritySearchExperiment(INPUT_FILE, OUTPUT_FILE, logger, ITEMS, CHANGE_BLOCK_PADDING)
+log = Logger("few_shot")
+experiment = SimilaritySearchExperiment(INPUT_FILE, OUTPUT_FILE, log, ITEMS, CHANGE_BLOCK_PADDING)
 experiment.run()

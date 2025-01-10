@@ -2,11 +2,10 @@ import os
 import datetime
 
 class Logger:
-	def __init__(self, folder):
-		current_folder = os.path.dirname(os.path.abspath(__file__))
+	def __init__(self, name: str, folder: str = "./logs"):
 		date_time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
-		self.log_file = current_folder + folder + f'/similar_logs_{date_time}.txt'
+		self.log_file = folder + f'/{name}_{date_time}.txt'
 
 		if not os.path.exists(os.path.dirname(self.log_file)):
 			os.makedirs(os.path.dirname(self.log_file))
