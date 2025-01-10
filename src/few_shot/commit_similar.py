@@ -1,6 +1,7 @@
 from git import Repo, Commit as GitCommit
 from logger import Logger
 
+# Represents a range of lines in a file
 class Range:
     line: int
     length: int
@@ -12,6 +13,7 @@ class Range:
     def __str__(self):
         return f'{self.line},{self.length}'
 
+# Represents a block of changes in a file, including insertions, deletions, and the text content
 class ChangeBlock:
     file: str
     insertions: Range
@@ -27,6 +29,7 @@ class ChangeBlock:
     def __str__(self):
         return f'{self.file} -{self.deletions} +{self.insertions}'
 
+# Represents a Git commit with metadata such as hash, author, date, message, and changes
 class Commit:
     hash: str
     author: str
@@ -54,6 +57,7 @@ class Commit:
     def size(self):
         return self.insertions + self.deletions
 
+# Represents the overlap of changes between commits
 class CommitOverlap:
     commit: Commit
     insertions: int
@@ -71,6 +75,7 @@ class CommitOverlap:
     def size(self):
         return self.insertions + self.deletions
     
+# Represents a commit with a calculated similarity score  
 class CommitScore:
     commit: Commit
     score: float
@@ -82,6 +87,7 @@ class CommitScore:
     def __str__(self):
         return f'{self.commit} with score {self.score}'
 
+# Performs similarity search on Git commits to identify related changes based on diffs  
 class SimilarCommitSearch:
     path: str
     repo: Repo
@@ -96,6 +102,7 @@ class SimilarCommitSearch:
         self.logger = logger
         self.commits = {}
 
+    # Parse a range of lines from diff metadata
     def parse_range(self, range_text: str):
         lines = range_text.replace('-', '').replace('+', '').split(',')
 
@@ -103,7 +110,8 @@ class SimilarCommitSearch:
         length = int(lines[1]) if len(lines) > 1 else 1
 
         return Range(max(1, line), length)
-    
+
+    # Parse a block of changes from the diff output
     def parse_change_block(self, file: str, lines: list[str]):
         range_texts = lines[0].split(' ')[1:3]
         deletions = self.parse_range(range_texts[0])
@@ -113,6 +121,7 @@ class SimilarCommitSearch:
 
         return ChangeBlock(file, insertions, deletions, text)
 
+    # Get the changes between two commits or staged changes
     def get_changes(self, diff_from: GitCommit, diff_to: GitCommit|None = None, only_staged: bool = True):
         changes: list[ChangeBlock] = []
 
@@ -141,6 +150,7 @@ class SimilarCommitSearch:
 
         return changes
     
+    # Parse a commit from the Git log output
     def parse_log_commit(self, lines: list[str]):
         hash = lines[0].split(' ')[1].strip()
         author = lines[1].split(' ')[1].strip()
@@ -176,6 +186,7 @@ class SimilarCommitSearch:
 
         return CommitOverlap(commit, insertions, deletions)
     
+    # Retrieve an existing commit or create a new one
     def get__or_create_commit(self, hash: str, date: str, author: str, message: str):
         if hash not in self.commits:
             commit = self.repo.commit(hash)
@@ -187,6 +198,7 @@ class SimilarCommitSearch:
         
         return self.commits[hash]
     
+    # Get the range of lines in a file affected by a change block
     def get_git_range(self, change: ChangeBlock, diff_to: str):
         commit = self.repo.commit(diff_to)
         max_lines = len(commit.tree[change.file].data_stream.read().splitlines())
@@ -196,6 +208,7 @@ class SimilarCommitSearch:
 
         return f'{max(start - self.padding, 1)},{min(end + self.padding, max_lines)}'
     
+    # Get overlaps of changes in a file with previous commits
     def get_commit_overlaps(self, change: ChangeBlock, diff_to: str):
         diff_to_text = f"{diff_to}~"
         git_range = self.get_git_range(change, diff_to_text)
@@ -227,6 +240,7 @@ class SimilarCommitSearch:
 
         return commit_overlaps
     
+    # Sort and merge commit overlaps into a list of commit scores
     def sort_and_merge_commit_scores(self, commit_overlaps: list[CommitOverlap]) -> list[CommitScore]:
         commit_map: dict[str, CommitScore] = {}
 
@@ -250,6 +264,7 @@ class SimilarCommitSearch:
 
         return sorted_commit_scores
     
+    # Perform a similarity search for commits based on changes
     def search(self, diff_from: str|None = None, diff_to: GitCommit|str|None = None, only_staged: bool = True) -> list[CommitScore]:
         if diff_to is not None and only_staged:
             raise ValueError('Cannot use both diff_to and only_staged options at the same time')

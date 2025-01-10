@@ -6,6 +6,7 @@ import traceback
 
 from repo import ManagedRepo
 
+#  Class to perform a similarity search experiment on commit messages
 class SimilaritySearchExperiment:
 	df: DataFrame
 	input_file: str
@@ -21,6 +22,7 @@ class SimilaritySearchExperiment:
 		self.items = items
 		self.change_block_padding = change_block_padding
 
+	# Generate a prompt for cases where no similar commits are found
 	def empty_prompt(self, diff: str):
 		return f"""Instruction:
 You are an AI assistant designed to produce concise, descriptive commit messages for Git changes. 
@@ -35,6 +37,7 @@ Output:
 A short commit message (in one sentence) describing what changed and why.
 """
 
+	# Generate a prompt using a few-shot approach with examples of similar commit messages
 	def few_shot_prompt(self, diff: str, messages: list[str]):
 		numbered_messages = '\n'.join([f"{i+1}. {message}" for i, message in enumerate(messages)])
 		return f"""Instruction:
@@ -54,12 +57,15 @@ A short commit message (in one sentence) describing what changed and why, consis
 and context demonstrated by the above examples.
 """
 	
+	# Read the input dataset
 	def read(self):
 		return read_csv(self.input_file)
 	
+	# Save the updated dataset to the output file
 	def save(self):
 		self.df.to_csv(self.output_file, index=False)
 
+	# Handle a single commit item, perform similarity search, and generate a prompt
 	def handle_item(self, item: dict, i: int):
 		prompt = ""
 
@@ -144,9 +150,11 @@ and context demonstrated by the above examples.
 
 		self.df.at[item.name, 'prompt'] = prompt
 
+	# Estimate the number of tokens in a prompt based on its length
 	def estimate_prompt_tokens(self, prompt: str):
 		return ceil(len(prompt.replace("\n", " ").split(" ")) * 1.6)
 
+	# Run the experiment by processing each item in the dataset
 	def run(self):
 		self.df = self.read()
 

@@ -6,6 +6,7 @@ from git import RemoteProgress
 import sys
 from logger import Logger
 
+#  A class to manage a Git repository, providing functionalities such as cloning, checking if the repository is cloned and performing similarity searches on commits
 class ManagedRepo:
 	author_name: str
 	repo_name: str
@@ -24,9 +25,11 @@ class ManagedRepo:
 
 		self.folder = current_folder + f'/../../../{data_path}/{author}/{repo}'
 	
+	# Check if the repository is already cloned locally
 	def is_cloned(self):
 		return os.path.exists(self.folder)
 	
+	# Clone the repository from the remote URL to the local folder
 	def clone(self):
 		class CloneProgress(RemoteProgress):
 			messages = {
@@ -69,5 +72,6 @@ class ManagedRepo:
 		self.repo = Repo.clone_from(self.url, self.folder, progress=CloneProgress())
 		print()
 
+	# Create an instance of SimilarCommitSearch for the repository
 	def get_similarity_search(self, padding: int):
 		return SimilarCommitSearch(self.folder, self.logger, padding)

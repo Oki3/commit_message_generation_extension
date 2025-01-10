@@ -5,14 +5,17 @@ from pandas import read_csv, DataFrame
 import argparse
 import time
 
+# The base class for all the models providing common functionalities
 class Model:
     name: str = ""
 
+    # Generate a response based on the provided prompt and options
     def run(self, prompt: str, temperature: float) -> str:
         response = ollama.generate(model=self.name, prompt=prompt, options={"temperature": temperature})
 
         return response.response
     
+    # This will check if the model is installed
     def check_installed(self) -> bool:
         try:
             ollama.show(self.name)
@@ -21,6 +24,7 @@ class Model:
         except:
             return False
     
+# Specific models implementations with predefined names   
 class MistralModel(Model):
     name: str = "mistral"
 
@@ -30,6 +34,7 @@ class CodellamaModel(Model):
 class Phi35Model(Model):
     name: str = "phi3.5"
 
+# Class representing an expirement with the given model
 class Experiment:
     model: Model
     input_size: int
@@ -55,23 +60,29 @@ class Experiment:
         
         self.output_df = DataFrame(columns=["hash", "project", "true_message", "generated_message"])
 
+        # Ensure the process amount does not exceed the input size
         if self.process_amount > self.input_size:
             self.process_amount = self.input_size
 
+    # Check if the associated model is installed
     def check_installed(self):
         if not self.model.check_installed():
             raise Exception(f"Model {self.model.name} is not installed.")
         
+    # Read input from the CSV file    
     def read_input(self):
         self.input_df = read_csv(self.input_file)
 
+    # Save output to the ouput CSV file
     def save_output(self):
         self.output_df.to_csv(self.output_file, index=False)
 
+    # Process a single item using the model
     def process_item(self, index: int, temperature: float) -> dict:
         item = self.input_df.iloc[index]
         prompt = item['prompt']
 
+        # Generate a message using the model
         generated_message = self.model.run(prompt, temperature)
 
         return {
@@ -81,12 +92,14 @@ class Experiment:
             "generated_message": generated_message
         }
     
+    # Display progress of the experiment
     def print_progress(self, completed: int, total: int):
         time_elapsed = time.time() - self.start_time
         time_remaining = (time_elapsed / completed) * (total - completed)
 
         print(f"Progress: {completed}/{total} ({(completed/total)*100:.2f}%) done. Elapsed {time_elapsed:.2f}s, remaining: {time_remaining:.2f}s")
 
+    
     def append_result(self, index: int, result: dict):
         self.output_df.loc[index] = [
             result['hash'],
