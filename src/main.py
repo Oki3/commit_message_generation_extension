@@ -41,15 +41,17 @@ class Experiment:
     output_df: DataFrame|None = None
     start_time: float = 0
     workers: int
+    temperature: float
 
-    def __init__(self, model: Model, input_size: int, process_amount: int, prompt: str, input_folder: str, output_folder: str, workers: int):
+    def __init__(self, model: Model, input_size: int, process_amount: int, prompt: str, input_folder: str, output_folder: str, workers: int, temperature: float):
         self.model = model
         self.input_size = input_size
         self.process_amount = process_amount
         self.prompt = prompt
         self.workers = workers
+        self.temperature = temperature
         self.input_file = f"{input_folder}/{model.name}_{input_size}_{prompt}.csv"
-        self.output_file = f"{output_folder}/{model.name}_{process_amount}_{prompt}.csv"
+        self.output_file = f"{output_folder}/{model.name}_{process_amount}_{prompt}_{temperature}.csv"
         
         self.output_df = DataFrame(columns=["hash", "project", "true_message", "generated_message"])
 
@@ -106,9 +108,9 @@ class Experiment:
     def start(self):
         self.start_time = time.time()
 
-    def run_parallel(self, temperature: float):
+    def run_parallel(self):
         with ThreadPoolExecutor(max_workers=self.workers) as executor:
-            futures = {executor.submit(self.process_item, i, temperature): i for i in range(self.process_amount)}
+            futures = {executor.submit(self.process_item, i, self.temperature): i for i in range(self.process_amount)}
             total = len(futures)
             completed = 0
 
@@ -132,12 +134,12 @@ class Experiment:
                 executor.shutdown(wait=False, cancel_futures=True)
                 raise KeyboardInterrupt()
 
-    def run(self, temperature: float):
+    def run(self):
         self.start()
 
         for i in range(self.process_amount):
             try:
-                result = self.process_item(i, temperature)
+                result = self.process_item(i, self.temperature)
                 self.append_result(i, result)
                 self.print_progress(i+1, self.process_amount)
             except Exception as e:
@@ -179,13 +181,13 @@ if __name__ == "__main__":
 
     os.makedirs(output_folder, exist_ok=True)
 
-    experiment = Experiment(model, input_size, process_amount, prompt, input_folder, output_folder, workers)
+    experiment = Experiment(model, input_size, process_amount, prompt, input_folder, output_folder, workers, temperature)
     experiment.check_installed()
     experiment.read_input()
     
     if sequential:
-        experiment.run(temperature)
+        experiment.run()
     else:
-        experiment.run_parallel(temperature)
+        experiment.run_parallel()
     
     experiment.save_output()

@@ -1,6 +1,0 @@
-hash,project,true_message,generated_message
-1d8f1560455aee983dd4733f3ae15c77b4f86823,jazzband_inflect,Fix file path to words.txt as it is in the same folder as test_pl_si.py,Update test file path for universality and remove unnecessary paths: Simplify imports and remove redundant test file paths.
-f4a7f5e406ee83b6708d6b1e042ab6213fda5b51,0k_shyaml,"fix: dev: avoid DRY, use entrypoint !minor
-
-And fixes coverage.","Simplified main function structure and removed sys.exit() call, replacing it with the entrypoint() function call instead."
-736e417530a1088db9f5c190cfd2de37f0abbe82,yob_pdf-reader,"Read and parse glyph list once only, and cache the results (for performance)",Refactored `PDF::Reader::GlyphHash` to cache Adobe glyph mapping for performance improvement and froze `glyphs` array to prevent unintended mutation.
