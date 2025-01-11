@@ -3,7 +3,7 @@ Group project (Team 3) for CS4570 Machine Learning for Software Engineering. Thi
 
 ## Requirements
 
-- Python 3.7 or higher
+- Python 3.10 or higher
 - [Ollama](https://github.com/jmorganca/ollama) (for model serving)
 - A supported Ollama model (e.g. `mistral`, `codellama`, `phi3.5`)
 
@@ -12,7 +12,7 @@ Group project (Team 3) for CS4570 Machine Learning for Software Engineering. Thi
 ### 1. Install Python and Dependencies
 
 1. **Python**  
-   Make sure you have Python 3.7 or higher installed. If you are on a Unix-like system (Linux/MacOS), run:
+   Make sure you have Python 3.10 or higher installed. If you are on a Unix-like system (Linux/MacOS), run:
    ```bash
    python3 --version
    ```
