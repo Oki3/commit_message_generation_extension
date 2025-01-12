@@ -166,4 +166,4 @@ llama.cpp
 data/
 logs/
 /myenv
-/new_venv
+new_venv/
