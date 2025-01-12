@@ -163,3 +163,6 @@ cython_debug/
 offload/
 llama.cpp
 /myenv
+
+data/
+logs/

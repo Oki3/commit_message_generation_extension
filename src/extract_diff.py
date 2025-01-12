@@ -1,6 +1,6 @@
 from datasets import load_dataset
 
-
+# Imports a dataset and splits it into training, validation, and testing subsets.
 def import_dataset(dataset_name):
     dataset = load_dataset(dataset_name)
 
@@ -11,6 +11,7 @@ def import_dataset(dataset_name):
 
     return train_dataset, validation_dataset, test_dataset
 
+#  Imports a dataset, extracts a subset of the training data, and saves it locally as a CSV file.
 def import_subset_for_local_machine(dataset_name):
     dataset = load_dataset(dataset_name)
     train_df=dataset['train'].to_pandas()
