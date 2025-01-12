@@ -5,6 +5,9 @@ from pandas import read_csv, DataFrame
 import argparse
 import time
 
+from src.post_processing.post_processing_csv import convert_to_result_file
+
+
 # The base class for all the models providing common functionalities
 class Model:
     name: str = ""
@@ -179,28 +182,29 @@ parser.add_argument("--temperature", type=float, default=0.7, help="The temperat
 parser.add_argument("--workers", type=int, default=5, help="The number of workers to use for parallel processing.")
 
 if __name__ == "__main__":
-    args = parser.parse_args()
-
-    model_name = args.model
-    model = MODELS[model_name]
-    prompt = args.prompt
-    input_size = args.input_size
-    process_amount = args.process_amount
-    sequential = args.sequential
-    input_folder = args.input_folder
-    output_folder = args.output_folder
-    temperature = args.temperature
-    workers = args.workers
-
-    os.makedirs(output_folder, exist_ok=True)
-
-    experiment = Experiment(model, input_size, process_amount, prompt, input_folder, output_folder, workers, temperature)
-    experiment.check_installed()
-    experiment.read_input()
-    
-    if sequential:
-        experiment.run()
-    else:
-        experiment.run_parallel()
-    
-    experiment.save_output()
+    #args = parser.parse_args()
+    #
+    # model_name = args.model
+    # model = MODELS[model_name]
+    # prompt = args.prompt
+    # input_size = args.input_size
+    # process_amount = args.process_amount
+    # sequential = args.sequential
+    # input_folder = args.input_folder
+    # output_folder = args.output_folder
+    # temperature = args.temperature
+    # workers = args.workers
+    #
+    # os.makedirs(output_folder, exist_ok=True)
+    #
+    # experiment = Experiment(model, input_size, process_amount, prompt, input_folder, output_folder, workers, temperature)
+    # experiment.check_installed()
+    # experiment.read_input()
+    #
+    # if sequential:
+    #     experiment.run()
+    # else:
+    #     experiment.run_parallel()
+    #
+    # experiment.save_output()
+    convert_to_result_file()

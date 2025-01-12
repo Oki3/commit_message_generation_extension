@@ -1,22 +1,32 @@
 import pandas as pd
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from nltk.translate.meteor_score import meteor_score
+from pandas import DataFrame
 from rouge_score import rouge_scorer
 from bert_score import score as bert_score
 from nltk.tokenize import word_tokenize
 from tabulate import tabulate
 import nltk
+import ssl
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
 
-# the first time running they need to be downloaded
 nltk.download('punkt_tab')
 nltk.download('wordnet')
+# the first time running they need to be downloaded
 
-# File preprocessing
-file_path = './output/output.csv'
-df = pd.read_csv(file_path)
 
-original_column = df.columns[0]
-model_output_column = df.columns[1]
+# #File preprocessing
+# file_path = './output/output.csv'
+# df = pd.read_csv(file_path)
+#
+# original_column = df.columns[0]
+# model_output_column = df.columns[1]
+
 
 # BLEU Score
 def compute_bleu(original, generated):
@@ -50,7 +60,7 @@ def compute_bertscore(originals, generated):
     return F1.mean().item()
 
 # Evaluate metrics
-def evaluate_metrics(df):
+def evaluate_metrics(df:DataFrame):
     total_bleu = 0
     total_meteor = 0
     total_rouge_l = 0
@@ -59,8 +69,8 @@ def evaluate_metrics(df):
     generated = []
 
     for i, row in df.iterrows():
-        original = str(row[original_column])
-        model_output = str(row[model_output_column])
+        original = str(row['true_message'])
+        model_output = str(row['generated_message'])
 
         originals.append(original)
         generated.append(model_output)
@@ -78,14 +88,15 @@ def evaluate_metrics(df):
     return avg_bleu, avg_meteor, avg_rouge_l, avg_bertscore
 
 # Compute all metrics
-avg_bleu, avg_meteor, avg_rouge_l, avg_bertscore = evaluate_metrics(df)
+def calculate_average_scores(df:DataFrame):
+ avg_bleu, avg_meteor, avg_rouge_l, avg_bertscore = evaluate_metrics(df)
 
 # Print results in a table
-results_table = [
+ results_table = [
     ["BLEU", avg_bleu],
     ["METEOR", avg_meteor],
     ["ROUGE-L", avg_rouge_l],
     ["BERTScore", avg_bertscore]
-]
+ ]
 
-print(tabulate(results_table, headers=["Metric", "Score"], tablefmt="grid"))
+ print(tabulate(results_table, headers=["Metric", "Score"], tablefmt="grid"))

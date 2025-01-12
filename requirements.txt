@@ -8,7 +8,6 @@ langchain_community
 langchain-ollama
 langchain-openai
 llama-cpp-python
-mistral_inference
 mistralai
 python-dotenv
 sentencepiece
