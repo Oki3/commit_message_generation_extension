@@ -1,0 +1,14 @@
+
+Original Message,Model Output
+Slightly nicer wording here.,Updated Stripe publishable key comment with clearer instruction.
+Use apply_async instead of delay for class-based task [WAL-<I>],Replaced `delay` with `apply_async` in BackgroundListPullTask for task execution.
+Fix docstring of config.py to use correct versionadded (#<I>),Updated XGBoost config.py with version information (1.3.0 -> 1.4.0)
+Version bump <I>-dev,"Updated project version to ""0.0.5-dev"" in setup.py file."
+"import-logs.py: fixed a bug introduced in r<I> when no password was specified.
+
+git-svn-id: <URL>",Added check for specified login and password before falling back to config file for Piwik credentials.
+Don't show superfluous 'COMMAND' in command help,Removed metavar argument from subparsers in Termtool class.
+feat(actor): load user jars before core ones,Swapped order of OpenTest and user-jars in classpath construction.
+fix: added setRequestMetadata() example in testbed,Replaced Mixpanel token with request metadata in Branch initialization (#your\_issue\_number)
+add a few docs about concurrency,Added concurrency notes and thread safety improvements to Scope class.
+Removing unused interface implementations from `Roave\ApiCompare\Changes`,Removed Countable implementation from Changes class.
