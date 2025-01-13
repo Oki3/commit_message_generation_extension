@@ -64,34 +64,12 @@ def compute_bertscore(originals, generated):
     return F1.mean().item()
 
 # Evaluate metrics
-def evaluate_metrics(df:DataFrame, original_column:str="true_message", model_output_column:str="generated_message"):
-    total_bleu = 0
-    total_meteor = 0
-    total_rouge_l = 0
+def evaluate_metrics(orignal: str, generated: str):
+    blue = compute_bleu(orignal, generated)
+    meteor = compute_meteor(orignal, generated)
+    rouge = compute_rouge_l(orignal, generated)
 
-    originals = []
-    generated = []
-
-    for i, row in df.iterrows():
-        original = str(row[original_column])
-        model_output = str(row[model_output_column])
-
-        originals.append(original)
-        generated.append(model_output)
-
-        total_bleu += compute_bleu(original, model_output)
-        total_meteor += compute_meteor(original, model_output)
-        total_rouge_l += compute_rouge_l(original, model_output)
-
-    avg_bleu = total_bleu / len(df)
-    avg_meteor = total_meteor / len(df)
-    avg_rouge_l = total_rouge_l / len(df)
-
-    #avg_bertscore = compute_bertscore(originals, generated)
-    avg_bertscore = 0
-    average_all_score=(avg_bleu+avg_meteor+avg_rouge_l+avg_bertscore)/4
-
-    return avg_bleu, avg_meteor, avg_rouge_l, avg_bertscore,average_all_score
+    return blue, meteor, rouge
 
 # Compute all metrics
 def calculate_average_scores(df:DataFrame):
@@ -103,7 +81,7 @@ def calculate_average_scores(df:DataFrame):
     ["METEOR", avg_meteor],
     ["ROUGE-L", avg_rouge_l],
     ["BERTScore", avg_bertscore],
-     ["AVERAGE SCORE", average_all_score]
+    ["AVERAGE SCORE", average_all_score]
  ]
 
  print(tabulate(results_table, headers=["Metric", "Score"], tablefmt="grid"))

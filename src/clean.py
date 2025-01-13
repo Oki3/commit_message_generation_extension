@@ -3,7 +3,7 @@ import pandas as pd
 import logging
 
 def clean_string(message: str):
-	return message.replace('\n', '').strip(' `"\'-')
+	return message.replace('\n', '').strip(' `"\'-:')
 
 def delete_empty_lines(message: str):
 	return "\n".join(line for line in message.split('\n') if line.strip() not in ["", "```", "```bash", "```git"])
@@ -28,8 +28,13 @@ def clean_message(message: str, prompt_type: str):
 			message = delete_empty_lines(message[index:])
 	
 	message.replace("git commit -m", "")
-	
-	message = message.split('\n')[0]
+
+	first_line = message.split('\n')[0]
+
+	if any(phrase in first_line.lower() for phrase in ["here is", "here's", "here are", "commit message"]) and len(message.split('\n')) > 1:
+		message = message.split('\n')[1]
+	else:
+		message = first_line
 	
 	return clean_string(message)
 

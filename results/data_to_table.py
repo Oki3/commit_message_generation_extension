@@ -39,14 +39,16 @@ def bold_if_max(val: float, max_val: float):
 def generate_latex(table_rows):
     maxima = compute_max_values(table_rows)
     model_name = {
-        "codellama": "CodeLLama 6.7B",
+        "codellama": "CodeLlama 6.7B",
         "mistral": "Mistral 7B",
         "phi3.5": "Phi3.5 3.8B",
     }
 
     print(r"\begin{table*}[ht]")
     print(r"\centering")
-    print(r"\begin{tabular}{llccccccccc}")
+    print(r"\caption{Evaluation of different models.}")
+    print(r"\label{tab:evaluation}")
+    print(r"\begin{tabular}{llcccccc}")
     print(r"\toprule")
     print(r"Model & Prompt & \multicolumn{3}{c}{Generated (raw)} & \multicolumn{3}{c}{Generated (cleaned)}\\")
     print(r"\cmidrule(lr){3-5} \cmidrule(lr){6-8}")
@@ -80,8 +82,6 @@ def generate_latex(table_rows):
 
     print(r"\bottomrule")
     print(r"\end{tabular}")
-    print(r"\caption{Evaluation of different models.}")
-    print(r"\label{tab:evaluation}")
     print(r"\end{table*}")
 
 def csv_to_latex_table(csv_path: str):

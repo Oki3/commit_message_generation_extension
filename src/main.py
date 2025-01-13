@@ -5,7 +5,7 @@ from pandas import read_csv, DataFrame
 import argparse
 import time
 
-from post_processing.post_processing_csv import convert_to_result_file
+from post_processing.post_processing_csv import read_and_evaluate_files
 from post_processing.graphs import read_from_files_for_graphs
 from clean import clean_folder
 
@@ -14,8 +14,8 @@ class Model:
     name: str = ""
 
     # Generate a response based on the provided prompt and options
-    def run(self, prompt: str, temperature: float) -> str:
-        response = ollama.generate(model=self.name, prompt=prompt, options={"temperature": temperature})
+    def run(self, prompt: str, temperature: float, repeat_penalty: float = 1.1) -> str:
+        response = ollama.generate(model=self.name, prompt=prompt, options={"temperature": temperature, "repeat_penalty": repeat_penalty})
 
         return response.response
     
@@ -87,7 +87,10 @@ class Experiment:
         prompt = item['prompt']
 
         # Generate a message using the model
-        generated_message = self.model.run(prompt, temperature)
+        generated_message = self.model.run(prompt, temperature, 1.5 if self.prompt == "cot" else 1.1)
+
+        print(f"t: {item['true_message']}")
+        print(f"g: {generated_message}")
 
         return {
             "hash": item['hash'],
@@ -191,7 +194,7 @@ if __name__ == "__main__":
         clean_folder()
     elif args.get_result_file or args.draw_graphs:
         if args.get_result_file:
-            convert_to_result_file()
+            read_and_evaluate_files()
 
         if args.draw_graphs:
             read_from_files_for_graphs()
