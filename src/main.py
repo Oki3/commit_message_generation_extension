@@ -5,6 +5,10 @@ from pandas import read_csv, DataFrame
 import argparse
 import time
 
+from post_processing.post_processing_csv import convert_to_result_file
+from post_processing.graphs import read_from_files_for_graphs
+from clean import clean_folder
+
 # The base class for all the models providing common functionalities
 class Model:
     name: str = ""
@@ -177,30 +181,41 @@ parser.add_argument("--input_folder", type=str, default="./input", help="The fol
 parser.add_argument("--output_folder", type=str, default="./output", help="The folder to save the output files.")
 parser.add_argument("--temperature", type=float, default=0.7, help="The temperature for the model generation.")
 parser.add_argument("--workers", type=int, default=5, help="The number of workers to use for parallel processing.")
+parser.add_argument("--get_result_file",action="store_true",help="Get the scores for obtained results")
+parser.add_argument("--draw_graphs",action="store_true",help="Draw the graphs")
+parser.add_argument("--clean_output",action="store_true",help="Clean the output files")
 
 if __name__ == "__main__":
     args = parser.parse_args()
+    if args.clean_output:
+        clean_folder()
+    elif args.get_result_file or args.draw_graphs:
+        if args.get_result_file:
+            convert_to_result_file()
 
-    model_name = args.model
-    model = MODELS[model_name]
-    prompt = args.prompt
-    input_size = args.input_size
-    process_amount = args.process_amount
-    sequential = args.sequential
-    input_folder = args.input_folder
-    output_folder = args.output_folder
-    temperature = args.temperature
-    workers = args.workers
-
-    os.makedirs(output_folder, exist_ok=True)
-
-    experiment = Experiment(model, input_size, process_amount, prompt, input_folder, output_folder, workers, temperature)
-    experiment.check_installed()
-    experiment.read_input()
-    
-    if sequential:
-        experiment.run()
+        if args.draw_graphs:
+            read_from_files_for_graphs()
     else:
-        experiment.run_parallel()
-    
-    experiment.save_output()
+        model_name = args.model
+        model = MODELS[model_name]
+        prompt = args.prompt
+        input_size = args.input_size
+        process_amount = args.process_amount
+        sequential = args.sequential
+        input_folder = args.input_folder
+        output_folder = args.output_folder
+        temperature = args.temperature
+        workers = args.workers
+
+        os.makedirs(output_folder, exist_ok=True)
+
+        experiment = Experiment(model, input_size, process_amount, prompt, input_folder, output_folder, workers, temperature)
+        experiment.check_installed()
+        experiment.read_input()
+
+        if sequential:
+            experiment.run()
+        else:
+            experiment.run_parallel()
+
+        experiment.save_output()

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from git import Repo, Commit as GitCommit
 from logger import Logger
 
