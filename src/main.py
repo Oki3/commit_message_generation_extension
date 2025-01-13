@@ -7,6 +7,7 @@ import time
 
 from post_processing.post_processing_csv import convert_to_result_file
 from post_processing.graphs import read_from_files_for_graphs
+from clean import clean_output_files
 
 
 # The base class for all the models providing common functionalities
@@ -183,36 +184,40 @@ parser.add_argument("--temperature", type=float, default=0.7, help="The temperat
 parser.add_argument("--workers", type=int, default=5, help="The number of workers to use for parallel processing.")
 parser.add_argument("--get_result_file",action="store_true",help="Get the scores for obtained results")
 parser.add_argument("--draw_graphs",action="store_true",help="Draw the graphs")
+parser.add_argument("--clean_output",action="store_true",help="Clean the output files")
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    if args.get_result_file:
-        convert_to_result_file()
-    if args.draw_graphs:
-        read_from_files_for_graphs()
+    if args.clean_output:
+        clean_output_files()
+    elif args.get_result_file or args.draw_graphs:
+        if args.get_result_file:
+            convert_to_result_file()
+
+        if args.draw_graphs:
+            read_from_files_for_graphs()
     else:
+        model_name = args.model
+        model = MODELS[model_name]
+        prompt = args.prompt
+        input_size = args.input_size
+        process_amount = args.process_amount
+        sequential = args.sequential
+        input_folder = args.input_folder
+        output_folder = args.output_folder
+        temperature = args.temperature
+        workers = args.workers
 
-     model_name = args.model
-     model = MODELS[model_name]
-     prompt = args.prompt
-     input_size = args.input_size
-     process_amount = args.process_amount
-     sequential = args.sequential
-     input_folder = args.input_folder
-     output_folder = args.output_folder
-     temperature = args.temperature
-     workers = args.workers
+        os.makedirs(output_folder, exist_ok=True)
 
-     os.makedirs(output_folder, exist_ok=True)
+        experiment = Experiment(model, input_size, process_amount, prompt, input_folder, output_folder, workers, temperature)
+        experiment.check_installed()
+        experiment.read_input()
 
-     experiment = Experiment(model, input_size, process_amount, prompt, input_folder, output_folder, workers, temperature)
-     experiment.check_installed()
-     experiment.read_input()
+        if sequential:
+            experiment.run()
+        else:
+            experiment.run_parallel()
 
-     if sequential:
-        experiment.run()
-     else:
-        experiment.run_parallel()
-
-     experiment.save_output()
-     convert_to_result_file()
+        experiment.save_output()
+        convert_to_result_file()

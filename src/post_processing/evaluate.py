@@ -40,7 +40,7 @@ def compute_bleu(original, generated):
     """
     original_tokens = original.split()
     generated_tokens = generated.split()
-    smooth = SmoothingFunction().method4
+    smooth = SmoothingFunction().method1
     return sentence_bleu([original_tokens], generated_tokens, smoothing_function=smooth)
 
 # METEOR Score
@@ -64,7 +64,7 @@ def compute_bertscore(originals, generated):
     return F1.mean().item()
 
 # Evaluate metrics
-def evaluate_metrics(df:DataFrame):
+def evaluate_metrics(df:DataFrame, original_column:str="true_message", model_output_column:str="generated_message"):
     total_bleu = 0
     total_meteor = 0
     total_rouge_l = 0
@@ -73,8 +73,8 @@ def evaluate_metrics(df:DataFrame):
     generated = []
 
     for i, row in df.iterrows():
-        original = str(row['true_message'])
-        model_output = str(row['generated_message'])
+        original = str(row[original_column])
+        model_output = str(row[model_output_column])
 
         originals.append(original)
         generated.append(model_output)
@@ -87,7 +87,8 @@ def evaluate_metrics(df:DataFrame):
     avg_meteor = total_meteor / len(df)
     avg_rouge_l = total_rouge_l / len(df)
 
-    avg_bertscore = compute_bertscore(originals, generated)
+    #avg_bertscore = compute_bertscore(originals, generated)
+    avg_bertscore = 0
     average_all_score=(avg_bleu+avg_meteor+avg_rouge_l+avg_bertscore)/4
 
     return avg_bleu, avg_meteor, avg_rouge_l, avg_bertscore,average_all_score
