@@ -21,7 +21,7 @@ def read_and_evaluate_files(output_dir='./cleaned_output'):
             parts=filename.replace('.csv','').split('_')
             model=parts[0]
             prompt_type=parts[2]
-            df=pd.read_csv(os.path.join(output_dir,filename),usecols=['true_message','generated_message','cleaned_generated_message','aggressive_cleaned_generated_message'])
+            df=pd.read_csv(os.path.join(output_dir,filename),usecols=['true_message','generated_message','cleaned_generated_message'])
             
             bleu,meteor,rouge_l,bertscore,average_all_score=evaluate_metrics(df, model_output_column='generated_message')
             results['model'].append(f"{model}_uncleaned")
@@ -33,14 +33,6 @@ def read_and_evaluate_files(output_dir='./cleaned_output'):
 
             bleu,meteor,rouge_l,bertscore,average_all_score=evaluate_metrics(df, model_output_column='cleaned_generated_message')
             results['model'].append(f"{model}_cleaned")
-            results['prompt'].append(prompt_type)
-            results['bleu'].append(bleu)
-            results['meteor'].append(meteor)
-            results['rouge_l'].append(rouge_l)
-            results['bertscore'].append(bertscore)
-
-            bleu,meteor,rouge_l,bertscore,average_all_score=evaluate_metrics(df, model_output_column='aggressive_cleaned_generated_message')
-            results['model'].append(f"{model}_aggressive")
             results['prompt'].append(prompt_type)
             results['bleu'].append(bleu)
             results['meteor'].append(meteor)

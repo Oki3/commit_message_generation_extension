@@ -8,7 +8,7 @@ def parse_model_approach(s: str):
 def read_and_filter_csv(csv_path: str):
     df = pd.read_csv(csv_path)
     df['base_model'], df['approach'] = zip(*df['model'].apply(parse_model_approach))
-    df = df[df['approach'].isin(['uncleaned','cleaned','aggressive'])]
+    df = df[df['approach'].isin(['uncleaned','cleaned'])]
     return df
 
 def group_and_organize(df: pd.DataFrame):
@@ -17,21 +17,19 @@ def group_and_organize(df: pd.DataFrame):
     for (base_model, prompt), group in grouped:
         row_u = group[group['approach'] == 'uncleaned']
         row_c = group[group['approach'] == 'cleaned']
-        row_a = group[group['approach'] == 'aggressive']
-        if not (row_u.empty or row_c.empty or row_a.empty):
-            u, c, a = row_u.iloc[0], row_c.iloc[0], row_a.iloc[0]
+        if not (row_u.empty or row_c.empty):
+            u, c = row_u.iloc[0], row_c.iloc[0]
             rows.append([
                 base_model,
                 prompt,
                 u['bleu'], u['meteor'], u['rouge_l'],
                 c['bleu'], c['meteor'], c['rouge_l'],
-                a['bleu'], a['meteor'], a['rouge_l'],
             ])
     rows.sort(key=lambda r: (r[0], r[1]))
     return rows
 
 def compute_max_values(rows):
-    all_vals = [ [r[idx]*100 for r in rows] for idx in range(2,11) ]
+    all_vals = [ [r[idx]*100 for r in rows] for idx in range(2,8) ]
     
     return [max(vals) if vals else 0 for vals in all_vals]
 
@@ -66,7 +64,7 @@ def generate_latex(table_rows):
             # u_bleu, u_meteor, u_rouge, c_bleu, c_meteor, c_rouge, a_bleu, a_meteor, a_rouge
             bolded_vals = [
                 bold_if_max(vals[j]*100, maxima[ j ]) 
-                for j in range(9)
+                for j in range(6)
             ]
             if i == 0:
                 print(

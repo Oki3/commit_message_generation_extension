@@ -7,8 +7,7 @@ import time
 
 from post_processing.post_processing_csv import convert_to_result_file
 from post_processing.graphs import read_from_files_for_graphs
-from clean import clean_output_files
-
+from clean import clean_folder
 
 # The base class for all the models providing common functionalities
 class Model:
@@ -189,7 +188,7 @@ parser.add_argument("--clean_output",action="store_true",help="Clean the output 
 if __name__ == "__main__":
     args = parser.parse_args()
     if args.clean_output:
-        clean_output_files()
+        clean_folder()
     elif args.get_result_file or args.draw_graphs:
         if args.get_result_file:
             convert_to_result_file()
@@ -220,4 +219,3 @@ if __name__ == "__main__":
             experiment.run_parallel()
 
         experiment.save_output()
-        convert_to_result_file()

@@ -2,7 +2,68 @@ import os
 import pandas as pd
 import logging
 
-def clean_output_files(input_folder='./output', output_folder='./cleaned_output'):
+def clean_string(message: str):
+	return message.replace('\n', '').strip(' `"\'-')
+
+def delete_empty_lines(message: str):
+	return "\n".join(line for line in message.split('\n') if line.strip() not in ["", "```", "```bash", "```git"])
+
+def clean_message(message: str, prompt_type: str):
+	message = delete_empty_lines(message)
+
+	if prompt_type == "cot":
+		last_mention = message.lower().rfind("commit message")
+		index = last_mention + 13
+		
+		if last_mention == -1:
+			last_mention = message.lower().rfind("answer")
+			index = last_mention + 6
+		
+		if last_mention != -1:
+			next_colon = message[index:].find(":")
+
+			if next_colon != -1:
+				index += next_colon + 1
+
+			message = delete_empty_lines(message[index:])
+	
+	message.replace("git commit -m", "")
+	
+	message = message.split('\n')[0]
+	
+	return clean_string(message)
+
+def clean_item(df: pd.DataFrame, index: int, model: str, prompt_type: str):
+	item = df.iloc[index]
+	message = item['generated_message']
+
+	if not isinstance(message, str):
+		df.at[index, 'generated_message'] = ""
+		df.at[index, 'cleaned_generated_message'] = ""
+		df.at[index, 'single_line_generated_message'] = ""
+		return
+
+	logging.info(f"({index}, {model}, {prompt_type}) {message}")
+
+	clean = clean_message(message, prompt_type)
+	
+	logging.info(f"({index}, {model}, {prompt_type}) {clean}")
+	df.at[index, 'cleaned_generated_message'] = clean
+
+def clean_file(input_path: str, output_path: str):
+	df = pd.read_csv(input_path)
+
+	parts = os.path.basename(input_path).replace('.csv','').split('_')
+	model = parts[0]
+	size = parts[1]
+	prompt_type = parts[2]
+
+	for i in range(len(df)):
+		clean_item(df, i, model, prompt_type)
+
+	df.to_csv(output_path, index=False)
+
+def clean_folder(input_folder: str='./output', output_folder: str='./cleaned_output'):
 	logging.basicConfig(filename='clean_output.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 	os.makedirs(output_folder, exist_ok=True)
 
@@ -10,49 +71,7 @@ def clean_output_files(input_folder='./output', output_folder='./cleaned_output'
 		if not filename.endswith('.csv'):
 			continue
 
-		df = pd.read_csv(os.path.join(input_folder, filename))
-		parts=filename.replace('.csv','').split('_')
-		model=parts[0]
-		prompt_type=parts[2]
+		input_path = os.path.join(input_folder, filename)
+		output_path = os.path.join(output_folder, filename)
 
-		for i in range(len(df)):
-			item = df.iloc[i]
-			message = item['generated_message']
-
-			if not isinstance(message, str):
-				df.at[i, 'generated_message'] = ""
-				continue
-
-			logging.info(f"({i}, {model}, {prompt_type}) {message}")
-
-			message1 = message
-			message1 = "\n".join([line for line in message1.split('\n') if line.strip() != ""])
-
-			if prompt_type == "cot":
-				if 'answer' in message1.lower():
-					end = message1.lower().rfind('answer')
-
-					message1 = message1[end+7:]
-				elif '[[' in message:
-					message1 = message1.split('[[')[1].split(']]')[0]
-			
-			message1 = message1.strip('"`').strip("'")
-			logging.info(f"({i}, {model}, {prompt_type}) {message1}")
-			df.at[i, 'cleaned_generated_message'] = message1
-
-			message2 = message1
-
-			if prompt_type == "cot":
-				message2 = message2.split('\n')[-1]
-			else:
-				if " here is" in message2.split('\n')[0].lower() and len(message2.split('\n')) > 1:
-					message2 = message2.split('\n')[1]
-				else:
-					message2 = message2.split('\n')[0]
-
-			message2 = message2.strip('"`').strip("'")
-
-			logging.info(f"({i}, {model}, {prompt_type}) {message2}")
-			df.at[i, 'aggressive_cleaned_generated_message'] = message2
-
-		df.to_csv(os.path.join(output_folder, filename), index=False)
+		clean_file(input_path, output_path)

@@ -40,7 +40,7 @@ def compute_bleu(original, generated):
     """
     original_tokens = original.split()
     generated_tokens = generated.split()
-    smooth = SmoothingFunction().method1
+    smooth = SmoothingFunction().method4
     return sentence_bleu([original_tokens], generated_tokens, smoothing_function=smooth)
 
 # METEOR Score
