@@ -1,7 +1,9 @@
 import os
 import pandas as pd
+import logging
 
 def clean_output_files(input_folder='./output', output_folder='./cleaned_output'):
+	logging.basicConfig(filename='clean_output.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 	os.makedirs(output_folder, exist_ok=True)
 
 	for filename in os.listdir(input_folder):
@@ -17,11 +19,11 @@ def clean_output_files(input_folder='./output', output_folder='./cleaned_output'
 			item = df.iloc[i]
 			message = item['generated_message']
 
-			print(f"({i}) {message}")
-
 			if not isinstance(message, str):
 				df.at[i, 'generated_message'] = ""
 				continue
+
+			logging.info(f"({i}, {model}, {prompt_type}) {message}")
 
 			message1 = message
 			message1 = "\n".join([line for line in message1.split('\n') if line.strip() != ""])
@@ -35,7 +37,7 @@ def clean_output_files(input_folder='./output', output_folder='./cleaned_output'
 					message1 = message1.split('[[')[1].split(']]')[0]
 			
 			message1 = message1.strip('"`').strip("'")
-			print(f"({i}) {message1}")
+			logging.info(f"({i}, {model}, {prompt_type}) {message1}")
 			df.at[i, 'cleaned_generated_message'] = message1
 
 			message2 = message1
@@ -50,7 +52,7 @@ def clean_output_files(input_folder='./output', output_folder='./cleaned_output'
 
 			message2 = message2.strip('"`').strip("'")
 
-			print(f"({i}) {message2}")
+			logging.info(f"({i}, {model}, {prompt_type}) {message2}")
 			df.at[i, 'aggressive_cleaned_generated_message'] = message2
 
 		df.to_csv(os.path.join(output_folder, filename), index=False)
