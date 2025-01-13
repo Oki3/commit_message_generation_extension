@@ -1,4 +1,4 @@
-import pandas as pd
+
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from nltk.translate.meteor_score import meteor_score
 from pandas import DataFrame
@@ -17,6 +17,10 @@ else:
 
 nltk.download('punkt_tab')
 nltk.download('wordnet')
+import warnings
+
+warnings.filterwarnings("ignore", category=UserWarning, module="transformers")
+
 # the first time running they need to be downloaded
 
 
@@ -56,7 +60,7 @@ def compute_rouge_l(original, generated):
 # BERTScore
 def compute_bertscore(originals, generated):
     """Compute BERTScore for the dataset."""
-    P, R, F1 = bert_score(generated, originals, lang="en", rescale_with_baseline=True)
+    P, R, F1 = bert_score(generated, originals, lang="en", rescale_with_baseline=False)
     return F1.mean().item()
 
 # Evaluate metrics
@@ -84,19 +88,21 @@ def evaluate_metrics(df:DataFrame):
     avg_rouge_l = total_rouge_l / len(df)
 
     avg_bertscore = compute_bertscore(originals, generated)
+    average_all_score=(avg_bleu+avg_meteor+avg_rouge_l+avg_bertscore)/4
 
-    return avg_bleu, avg_meteor, avg_rouge_l, avg_bertscore
+    return avg_bleu, avg_meteor, avg_rouge_l, avg_bertscore,average_all_score
 
 # Compute all metrics
 def calculate_average_scores(df:DataFrame):
- avg_bleu, avg_meteor, avg_rouge_l, avg_bertscore = evaluate_metrics(df)
+ avg_bleu, avg_meteor, avg_rouge_l, avg_bertscore,average_all_score = evaluate_metrics(df)
 
 # Print results in a table
  results_table = [
     ["BLEU", avg_bleu],
     ["METEOR", avg_meteor],
     ["ROUGE-L", avg_rouge_l],
-    ["BERTScore", avg_bertscore]
+    ["BERTScore", avg_bertscore],
+     ["AVERAGE SCORE", average_all_score]
  ]
 
  print(tabulate(results_table, headers=["Metric", "Score"], tablefmt="grid"))
