@@ -5,7 +5,7 @@ from pandas import read_csv, DataFrame
 import argparse
 import time
 
-from post_processing.post_processing_csv import convert_to_result_file
+from post_processing.post_processing import convert_to_result_file
 from post_processing.graphs import read_from_files_for_graphs
 
 

@@ -7,7 +7,7 @@ import warnings
 
 warnings.filterwarnings("ignore", category=UserWarning, module="transformers")
 
-def read_and_evaluate_files(output_dir='./output'):
+def read_and_evaluate_files(output_dir='./src/output'):
     results = {
         'model':[],
         'prompt':[],
@@ -34,7 +34,7 @@ def read_and_evaluate_files(output_dir='./output'):
 
 def convert_to_result_file():
     results_df=read_and_evaluate_files()
-    results_df.to_csv('./results/evaluation_results.csv',index=False)
+    results_df.to_csv('./src/results/evaluation_results.csv',index=False)
     print(results_df.to_string())
 
 

@@ -31,6 +31,8 @@ warnings.filterwarnings("ignore", category=UserWarning, module="transformers")
 # original_column = df.columns[0]
 # model_output_column = df.columns[1]
 
+def normalize_score(score,min_val,max_val):
+    return (score-min_val)/(max_val-min_val)
 
 # BLEU Score
 def compute_bleu(original, generated):
@@ -88,9 +90,13 @@ def evaluate_metrics(df:DataFrame):
     avg_rouge_l = total_rouge_l / len(df)
 
     avg_bertscore = compute_bertscore(originals, generated)
-    average_all_score=(avg_bleu+avg_meteor+avg_rouge_l+avg_bertscore)/4
 
-    return avg_bleu, avg_meteor, avg_rouge_l, avg_bertscore,average_all_score
+    norm_bleu=normalize_score(avg_bleu,min_val=0,max_val=1)
+    norm_meteor=normalize_score(avg_meteor,min_val=0,max_val=1)
+    norm_rouge_l=normalize_score(avg_rouge_l,min_val=0,max_val=1)
+    average_all_score=(norm_bleu+norm_meteor+norm_rouge_l+avg_bertscore)/4
+
+    return norm_bleu,norm_meteor,norm_rouge_l,avg_bertscore,average_all_score
 
 # Compute all metrics
 def calculate_average_scores(df:DataFrame):
