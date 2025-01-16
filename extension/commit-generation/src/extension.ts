@@ -12,6 +12,23 @@ export function activate(context: vscode.ExtensionContext) {
 		// Get path to repository
 		const repoPath = path.resolve(__dirname, '../../../');
 
+		// Check if `.venv` exists
+        const venvPath = path.join(repoPath, '.venv');
+        const activatePath = path.join(venvPath, 'bin', 'activate'); // Adjust for Windows: use `Scripts` instead of `bin`
+
+        if (!fs.existsSync(venvPath)) {
+            vscode.window.showErrorMessage('.venv not found in the repository. Please create a virtual environment.');
+            return;
+        }
+
+        // Install requirements if needed
+        const requirementsPath = path.join(repoPath, 'requirements.txt');
+        if (fs.existsSync(requirementsPath)) {
+            const installCommand = `source ${activatePath} && pip install -r ${requirementsPath}`;
+            execSync(installCommand, { cwd: repoPath, encoding: 'utf8', shell: '/bin/bash' });
+            vscode.window.showInformationMessage('Installed Python requirements.');
+        }
+
 		// Capture the current diff
 		const gitDiff = execSync('git diff', { cwd: repoPath, encoding: 'utf8', shell: '/bin/bash' });
 
