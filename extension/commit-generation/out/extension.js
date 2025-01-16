@@ -60,8 +60,22 @@ function activate(context) {
         }
         const tempFilePath = path.join(tempDir, 'staged_diff.txt');
         fs.writeFileSync(tempFilePath, gitDiff);
-        // Temporary git diff logging
-        console.log("Read Data: " + fs.readFileSync(tempFilePath, 'utf8'));
+        // Run the Python script with the temp file as input
+        const pythonScript = `python src/main.py --model mistral --prompt baseline`;
+        // TODO: update main to handle temp git diff file
+        // const pythonScript = `python3 main.py --model mistral --prompt fewshot --sequential --input_file ${tempFilePath}`; 
+        const options = { cwd: repoPath };
+        (0, child_process_1.exec)(pythonScript, options, (error, stdout, stderr) => {
+            if (error) {
+                vscode.window.showErrorMessage(`Error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                vscode.window.showErrorMessage(`Stderr: ${stderr}`);
+                return;
+            }
+            vscode.window.showInformationMessage(`Output: ${stdout}`);
+        });
     }
     catch (error) {
         if (error instanceof Error) {
