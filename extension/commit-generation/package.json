@@ -21,6 +21,9 @@
         "command": "commit-generation.generateMessage",
         "title": "Generate commit message"
       }
+    ],
+    "activationEvents": [
+      "onCommand:commit-generation.generateMessage"
     ]
   },
   "scripts": {
