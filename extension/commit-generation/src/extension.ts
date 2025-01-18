@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { exec, execSync } from 'child_process';
+import { stdout } from 'process';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -30,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
 		// Capture the current diff
-		const gitDiff = execSync('git diff', { cwd: repoPath, encoding: 'utf8', shell: '/bin/bash' });
+		const gitDiff = execSync('git diff --cached', { cwd: repoPath, encoding: 'utf8', shell: '/bin/bash' });
 
 
 		if (!gitDiff.trim()) {
@@ -47,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
 		fs.writeFileSync(tempFilePath, gitDiff);
 		
 		// Run the Python script with the temp file as input
-		const pythonScript = `python src/main.py --model mistral --prompt baseline`; 
+		const pythonScript = `python src/main.py --model mistral --prompt fewshot --diff_file "${tempFilePath}"`; 
 		// TODO: update main to handle temp git diff file
 		// const pythonScript = `python3 main.py --model mistral --prompt fewshot --sequential --input_file ${tempFilePath}`; 
 
@@ -64,6 +65,37 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 			vscode.window.showInformationMessage(`Output: ${stdout}`);
 		});
+		const commitMessage=stdout.toString().trim();
+		vscode.window.showInputBox({
+			value:commitMessage,
+			prompt:'Review and edit the generated commit message, then press Enter to confirm.',
+		}).then(
+			userMessage=>{
+				if(userMessage){
+					try{
+						const commitCommand='git commit -m ${userMessage}'
+						execSync(commitCommand, { cwd: repoPath, shell: '/bin/bash' })
+						vscode.window.showInformationMessage('Commit message applied successfully.');
+					}
+					catch(commitError)
+					{
+						if (commitError instanceof Error)
+						{
+							vscode.window.showErrorMessage(`Error committing changes: ${commitError.message}`);
+						}
+						else {
+							vscode.window.showErrorMessage('An unknown error occurred while committing changes.');
+						}
+						
+					}
+				}
+			    else{
+					vscode.window.showWarningMessage('Commit message generation cancelled.');
+				}
+
+			}
+		)
+		
 	} catch (error: unknown) {
 		if (error instanceof Error) {
 			vscode.window.showErrorMessage(`Failed to get diff: ${error.message}`);
@@ -71,6 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showErrorMessage('Failed to get diff: Unknown error occurred.');
 		}
 	}
+	   
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand

@@ -41,6 +41,7 @@ const vscode = __importStar(require("vscode"));
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const child_process_1 = require("child_process");
+const process_1 = require("process");
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 function activate(context) {
@@ -62,7 +63,7 @@ function activate(context) {
             vscode.window.showInformationMessage('Installed Python requirements.');
         }
         // Capture the current diff
-        const gitDiff = (0, child_process_1.execSync)('git diff', { cwd: repoPath, encoding: 'utf8', shell: '/bin/bash' });
+        const gitDiff = (0, child_process_1.execSync)('git diff --cached', { cwd: repoPath, encoding: 'utf8', shell: '/bin/bash' });
         if (!gitDiff.trim()) {
             vscode.window.showWarningMessage('No staged changes found.');
             return;
@@ -75,7 +76,7 @@ function activate(context) {
         const tempFilePath = path.join(tempDir, 'staged_diff.txt');
         fs.writeFileSync(tempFilePath, gitDiff);
         // Run the Python script with the temp file as input
-        const pythonScript = `python src/main.py --model mistral --prompt baseline`;
+        const pythonScript = `python src/main.py --model mistral --prompt fewshot --diff_file "${tempFilePath}"`;
         // TODO: update main to handle temp git diff file
         // const pythonScript = `python3 main.py --model mistral --prompt fewshot --sequential --input_file ${tempFilePath}`; 
         const options = { cwd: repoPath };
@@ -89,6 +90,30 @@ function activate(context) {
                 return;
             }
             vscode.window.showInformationMessage(`Output: ${stdout}`);
+        });
+        const commitMessage = process_1.stdout.toString().trim();
+        vscode.window.showInputBox({
+            value: commitMessage,
+            prompt: 'Review and edit the generated commit message, then press Enter to confirm.',
+        }).then(userMessage => {
+            if (userMessage) {
+                try {
+                    const commitCommand = 'git commit -m ${userMessage}';
+                    (0, child_process_1.execSync)(commitCommand, { cwd: repoPath, shell: '/bin/bash' });
+                    vscode.window.showInformationMessage('Commit message applied successfully.');
+                }
+                catch (commitError) {
+                    if (commitError instanceof Error) {
+                        vscode.window.showErrorMessage(`Error committing changes: ${commitError.message}`);
+                    }
+                    else {
+                        vscode.window.showErrorMessage('An unknown error occurred while committing changes.');
+                    }
+                }
+            }
+            else {
+                vscode.window.showWarningMessage('Commit message generation cancelled.');
+            }
         });
     }
     catch (error) {
