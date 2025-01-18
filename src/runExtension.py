@@ -7,7 +7,6 @@ from pandas import DataFrame
 import argparse
 import time
 
-# If you still use these in post-processing, import them; otherwise, you can remove
 #from post_processing.post_processing_csv import convert_to_result_file
 #from post_processing.graphs import read_from_files_for_graphs
 #from clean import clean_folder
@@ -57,7 +56,6 @@ class TxtExperiment:
         workers: int,
         temperature: float
     ):
-        # We always use Mistral + "fewshot"
         self.model = MistralModel()
         self.prompt = "fewshot"
         
@@ -181,9 +179,6 @@ class TxtExperiment:
                 print(f"Error processing item {i}: {e}")
                 self.append_error(i)
 
-# --------------------------------------------------------------------
-# Parser: no model/prompt args. Always Mistral fewshot.
-# --------------------------------------------------------------------
 parser = argparse.ArgumentParser(description="TXT-based experiment (always uses Mistral fewshot).")
 
 parser.add_argument("--txt_file", type=str, required=True, help="Path to the .txt file (one prompt per line).")
@@ -205,9 +200,6 @@ if __name__ == "__main__":
         workers=args.workers,
         temperature=args.temperature
     )
-
-    # If you have any pre/post step for "clean output" or "draw graphs" from your original code,
-    # you can re-implement them here if needed.
 
     experiment.check_installed()
     experiment.read_input()
