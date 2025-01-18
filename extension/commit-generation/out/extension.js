@@ -152,7 +152,7 @@ function activate(context) {
             await createVenvIfNeeded();
             console.log("Virtual environment created. Now installing dependencies...");
             await installRequirements();
-            // 7.3 Optionally do `ollama pull mistral` or other commands
+            //     Optionally do `ollama pull mistral` or other commands
             //     (Again, you can spawn them by using `venvPython` / `venvPip` 
             //      or call them directly if they are not Python-based.)
             // 
@@ -174,10 +174,11 @@ function activate(context) {
             const tempFilePath = path.join(tempDir, 'staged_diff.txt');
             fs.writeFileSync(tempFilePath, gitDiff);
             console.log("Diff file is written to temp file, located at", tempFilePath, ", now running the model to generate messages....");
-            // 7.7 Run the Python script inside the venv
+            //     Run the Python script inside the venv
             //     (assuming the script is `src/main.py --model mistral --prompt baseline`)
             //     You might need to pass the path to your tempFilePath as well if your Python script uses it.
-            await runPythonScript(['src/main.py', '--model', 'mistral', '--prompt', 'baseline']);
+            const outputTxtPath = path.join(repoPath, 'my_messages.txt');
+            await runPythonScript(['src/runExtension.py', '--txt_file', tempFilePath, '--output_txt', outputTxtPath]);
             console.log("Message automatically copied to clipboard. Ctrl+V to paste it to places you wish.");
         })().catch((error) => {
             vscode.window.showErrorMessage(`Extension activation error: ${error.message}`);
