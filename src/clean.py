@@ -3,7 +3,7 @@ import pandas as pd
 import logging
 
 def clean_string(message: str):
-	return message.replace('\n', '').strip(' `"\'-:')
+	return message.replace('\n', '').strip(' `"\'-:]')
 
 def delete_empty_lines(message: str):
 	return "\n".join(line for line in message.split('\n') if line.strip() not in ["", "```", "```bash", "```git"])
@@ -18,6 +18,10 @@ def clean_message(message: str, prompt_type: str):
 		if last_mention == -1:
 			last_mention = message.lower().rfind("answer")
 			index = last_mention + 6
+
+		if last_mention == -1:
+			last_mention = message.lower().rfind("[[")
+			index = last_mention + 2
 		
 		if last_mention != -1:
 			next_colon = message[index:].find(":")
