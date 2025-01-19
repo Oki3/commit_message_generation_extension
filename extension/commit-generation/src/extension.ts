@@ -173,7 +173,19 @@ export function activate(context: vscode.ExtensionContext) {
 
 async function runPythonScriptWithPipedDiff(): Promise<void> {
     return new Promise((resolve, reject) => {
-        let diffCollected = '';
+        let diffCollected = `
+            You are a programmer to produce concise, descriptive commit messages for Git changes.
+            Below are up to three examples of commit messages that previously touched upon the same code or files. 
+            Please note that the first example is more important and should influence your message the most. 
+            Use the style and context of these examples, prioritizing the first examples, to inspire a new commit message for the provided Git diff. 
+            Do not include references to issue numbers or pull requests.
+
+            Examples of relevant commit messages:
+            1. add more singular exception lists
+            2. fix singular *use words
+
+            Now here is the new Git diff for which you must generate a commit message:
+            `;
 
         // A) Spawn 'git diff --cached'
         const gitProcess = spawn('git', ['diff', '--cached'], { cwd: repoPath });
@@ -200,6 +212,13 @@ async function runPythonScriptWithPipedDiff(): Promise<void> {
                 resolve();
                 return;
             }
+
+            diffCollected += `
+            Format:
+            A short commit message (in one sentence) describing what changed and why, consistent with the style 
+            and context demonstrated by the above examples.
+
+            Output:`;
 
             // D) Now spawn Python
             const pyProcess = spawn(
@@ -244,7 +263,6 @@ async function runPythonScriptWithPipedDiff(): Promise<void> {
         // Run the Python script from .venv
         const runPythonScript = async (scriptArgs: string[]) => {
             return new Promise<void>((resolve, reject) => {
-                // If your script is at `src/main.py`, we can call it directly with the venv Python
                 const pythonProcess = spawn(
                     venvPython,
                     scriptArgs,

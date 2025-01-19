@@ -1,7 +1,1 @@
- It appears that the code snippet you provided is a Python script for running experiments on text data using a specific model (Mistral). The changes made to the script include:
-
-1. Removing the reading of a .txt file from the command line arguments and instead reading from standard input (stdin), which allows the user to provide the data interactively. This change is made by removing the `--txt_file` argument in the `argparse` and adjusting the code accordingly.
-2. If the user does not provide a value for the `--process_amount`, it defaults to 1, but if there's only one line of data (i.e., prompt), it clamps the process_amount to 1. This ensures that the model processes at least one prompt, even if the user did not explicitly specify a number of lines to process.
-3. The output CSV and text files are now named `output_txt.csv` and `output_txt.txt`, respectively, by default. These names can be overridden by providing custom file names using the `--output_csv` and `--output_txt` flags when running the script.
-
-The changes made improve the flexibility of the script for users who might want to interactively provide data for experimentation or modify the output file names easily. However, the primary purpose of the script remains unchanged: it allows users to run experiments on text data using the Mistral model.
+ Added support for processing a text file in parallel with multiple workers using ThreadPoolExecutor. The user can specify the number of workers via the command-line argument '--workers'. If not specified, the default value is 5.

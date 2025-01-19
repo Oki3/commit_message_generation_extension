@@ -179,7 +179,19 @@ function activate(context) {
         // 2) We'll define a new method that spawns git diff, collects the diff, then spawns python:
         async function runPythonScriptWithPipedDiff() {
             return new Promise((resolve, reject) => {
-                let diffCollected = '';
+                let diffCollected = `
+            You are a programmer to produce concise, descriptive commit messages for Git changes.
+            Below are up to three examples of commit messages that previously touched upon the same code or files. 
+            Please note that the first example is more important and should influence your message the most. 
+            Use the style and context of these examples, prioritizing the first examples, to inspire a new commit message for the provided Git diff. 
+            Do not include references to issue numbers or pull requests.
+
+            Examples of relevant commit messages:
+            1. add more singular exception lists
+            2. fix singular *use words
+
+            Now here is the new Git diff for which you must generate a commit message:
+            `;
                 // A) Spawn 'git diff --cached'
                 const gitProcess = (0, child_process_1.spawn)('git', ['diff', '--cached'], { cwd: repoPath });
                 // B) Accumulate its stdout into diffCollected
@@ -202,6 +214,12 @@ function activate(context) {
                         resolve();
                         return;
                     }
+                    diffCollected += `
+            Format:
+            A short commit message (in one sentence) describing what changed and why, consistent with the style 
+            and context demonstrated by the above examples.
+
+            Output:`;
                     // D) Now spawn Python
                     const pyProcess = (0, child_process_1.spawn)(venvPython, 
                     // for example: ['src/runExtension.py', '--output_txt', 'my_messages.txt']
@@ -237,7 +255,6 @@ function activate(context) {
         // Run the Python script from .venv
         const runPythonScript = async (scriptArgs) => {
             return new Promise((resolve, reject) => {
-                // If your script is at `src/main.py`, we can call it directly with the venv Python
                 const pythonProcess = (0, child_process_1.spawn)(venvPython, scriptArgs, { cwd: repoPath });
                 // Gather stdout (for commit message, etc.)
                 pythonProcess.stdout.on('data', (data) => {
