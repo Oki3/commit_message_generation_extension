@@ -6,6 +6,7 @@ import ollama
 from pandas import DataFrame
 import argparse
 import time
+import sys
 
 #from post_processing.post_processing_csv import convert_to_result_file
 #from post_processing.graphs import read_from_files_for_graphs
@@ -38,7 +39,7 @@ class TxtExperiment:
     model: Model
     process_amount: int
     prompt: str
-    txt_file: str
+    # txt_file: str
     output_csv: str
     output_txt: str
     input_df: DataFrame | None = None
@@ -49,7 +50,7 @@ class TxtExperiment:
 
     def __init__(
         self,
-        txt_file: str,
+        # txt_file: str,
         output_csv: str,
         output_txt: str,
         process_amount: int,
@@ -59,7 +60,7 @@ class TxtExperiment:
         self.model = MistralModel()
         self.prompt = "fewshot"
         
-        self.txt_file = txt_file
+        # self.txt_file = txt_file
         self.output_csv = output_csv
         self.output_txt = output_txt
         self.process_amount = process_amount
@@ -74,19 +75,27 @@ class TxtExperiment:
             raise Exception(f"Model {self.model.name} is not installed.")
 
     def read_input(self):
-        """Read from a single .txt file, one prompt per line."""
-        if not os.path.exists(self.txt_file):
-            raise FileNotFoundError(f"TXT file not found: {self.txt_file}")
+        # """Read from a single .txt file, one prompt per line."""
+        # if not os.path.exists(self.txt_file):
+        #     raise FileNotFoundError(f"TXT file not found: {self.txt_file}")
 
-        print(f"Reading TXT: {self.txt_file}")
-        with open(self.txt_file, "r", encoding="utf-8") as f:
-            lines = [l.strip() for l in f if l.strip()]
+        # print(f"Reading TXT: {self.txt_file}")
+        # with open(self.txt_file, "r", encoding="utf-8") as f:
+        #     lines = [l.strip() for l in f if l.strip()]
 
+        # self.input_df = DataFrame({"prompt": lines})
+
+        # # If the requested process_amount > number of lines, clamp it.
+        # if self.process_amount > len(lines):
+        #     self.process_amount = len(lines)
+        print("Reading from stdin...")
+        diff_content = sys.stdin.read()
+
+        # Possibly split into lines or treat as one prompt
+        lines = [diff_content]
         self.input_df = DataFrame({"prompt": lines})
+        self.process_amount = len(lines)
 
-        # If the requested process_amount > number of lines, clamp it.
-        if self.process_amount > len(lines):
-            self.process_amount = len(lines)
 
     def save_output_csv(self):
         """Saves all columns (prompt and generated_message) to a CSV file."""
@@ -181,7 +190,7 @@ class TxtExperiment:
 
 parser = argparse.ArgumentParser(description="TXT-based experiment (always uses Mistral fewshot).")
 
-parser.add_argument("--txt_file", type=str, required=True, help="Path to the .txt file (one prompt per line).")
+# parser.add_argument("--txt_file", type=str, required=True, help="Path to the .txt file (one prompt per line).")
 parser.add_argument("--output_csv", type=str, default="output_txt.csv", help="Output CSV file for tabular data.")
 parser.add_argument("--output_txt", type=str, default="output_txt.txt", help="Output text file with generated lines.")
 parser.add_argument("--process_amount", type=int, default=1, help="Number of lines to process.")
@@ -193,7 +202,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     experiment = TxtExperiment(
-        txt_file=args.txt_file,
+    #    txt_file=args.txt_file,
         output_csv=args.output_csv,
         output_txt=args.output_txt,
         process_amount=args.process_amount,
