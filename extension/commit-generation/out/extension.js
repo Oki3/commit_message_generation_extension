@@ -104,6 +104,28 @@ function activate(context) {
                 });
             });
         };
+        // Create a helper function to pull the Mistral model via Ollama
+        async function pullModel(repoPath) {
+            return new Promise((resolve, reject) => {
+                // spawn 'ollama pull mistral' in the specified repo directory
+                const pullProcess = (0, child_process_1.spawn)('ollama', ['pull', 'mistral'], { cwd: repoPath });
+                // Capture any output if needed
+                pullProcess.stdout.on('data', (data) => {
+                    console.log(`[ollama pull mistral] stdout: ${data}`);
+                });
+                pullProcess.stderr.on('data', (data) => {
+                    console.error(`[ollama pull mistral] stderr: ${data}`);
+                });
+                pullProcess.on('close', (code) => {
+                    if (code !== 0) {
+                        reject(new Error(`ollama pull mistral failed. Exit code: ${code}`));
+                    }
+                    else {
+                        resolve();
+                    }
+                });
+            });
+        }
         // git diff
         const getGitDiff = async () => {
             return new Promise((resolve, reject) => {
@@ -152,12 +174,9 @@ function activate(context) {
             await createVenvIfNeeded();
             console.log("Virtual environment created. Now installing dependencies...");
             await installRequirements();
-            //     Optionally do `ollama pull mistral` or other commands
-            //     (Again, you can spawn them by using `venvPython` / `venvPip` 
-            //      or call them directly if they are not Python-based.)
-            // 
-            // const ollamaCmd = spawn('ollama', ['pull', 'mistral'], { cwd: repoPath });
-            // ... handle stdout, stderr, and exit code ...
+            // pull the Mistral model via Ollama
+            console.log("Pulling Mistral model via Ollama...");
+            await pullModel(repoPath);
             console.log("Dependencies installed. Now fetching git diff...");
             const gitDiff = await getGitDiff();
             if (!gitDiff.trim()) {
@@ -179,7 +198,7 @@ function activate(context) {
             //     You might need to pass the path to your tempFilePath as well if your Python script uses it.
             const outputTxtPath = path.join(repoPath, 'my_messages.txt');
             await runPythonScript(['src/runExtension.py', '--txt_file', tempFilePath, '--output_txt', outputTxtPath]);
-            console.log("Message automatically copied to clipboard. Ctrl+V to paste it to places you wish.");
+            console.log("Message automatically copied to the file location: ", outputTxtPath);
         })().catch((error) => {
             vscode.window.showErrorMessage(`Extension activation error: ${error.message}`);
         });
