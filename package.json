@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "@types/vscode": "^1.96.0"
+  },
+  "dependencies": {
+    "vscode": "^1.1.37"
+  }
+}

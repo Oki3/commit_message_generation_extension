@@ -10,6 +10,7 @@ import { stdout } from 'process';
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	try {
+		console.log("Extension activated.");
 		// Get path to repository
 		const repoPath = path.resolve(__dirname, '../../../');
 

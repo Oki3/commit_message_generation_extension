@@ -18,7 +18,7 @@ class LlamaMistralWrapper:
             )
             # Print confirmation of model loading
             print("Loaded Mistral")
-        except KeyError as e:
+    except KeyError as e:
             # Raise an exception if required environment variables are missing
             raise Exception(f"Missing environment variable: {e}")
 

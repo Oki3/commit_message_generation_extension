@@ -10,6 +10,15 @@ from post_processing.graphs import read_from_files_for_graphs
 from clean import clean_folder
 
 # The base class for all the models providing common functionalities
+def parse_git_diff(diff_file: str)-> list:
+    with open(diff_file,'r') as file:
+        diff_content=file.read()   
+    diffs=diff_content.split('diff --git')
+    parsed_diffs=[]
+    for diff in diffs:
+        if diff.strip():
+            parsed_diffs.append(f"diff --git{diff}")
+    return parsed_diffs
 class Model:
     name: str = ""
 
@@ -37,6 +46,21 @@ class CodellamaModel(Model):
     
 class Phi35Model(Model):
     name: str = "phi3.5"
+def process_git_diff(model:Model,prompt_template: str, diff_file:str):
+    diffs=parse_git_diff(diff_file)
+    generated_messages=[]
+    for i, diff in enumerate(diffs):
+        print(f"Processing diff chunk {i+1}/{len(diffs)}...")
+        try:
+            prompt=prompt_template.format(diff=diff)
+            generated_message=model.run(prompt=prompt)
+            generated_messages.append({"chunk":diff,"generated_message":generated_message})
+        except Exception as e:
+            print(f"Error processing diff chunk {i+1}:e")
+            generated_messages.append({"chunk":diff,"generated_message":"ERROR: Unable to process this chunk"})
+    for message in generated_messages:
+        print(f"Diff:\n{message['chunk']}\nGenerated Message:\n{message['generated_message']}\n")
+    return generated_messages
 
 # Class representing an expirement with the given model
 class Experiment:
@@ -184,6 +208,7 @@ parser.add_argument("--workers", type=int, default=5, help="The number of worker
 parser.add_argument("--get_result_file",action="store_true",help="Get the scores for obtained results")
 parser.add_argument("--draw_graphs",action="store_true",help="Draw the graphs")
 parser.add_argument("--clean_output",action="store_true",help="Clean the output files")
+parser.add_argument("--diff_file",type=str,required=True,help="The path to the Git diff file.")
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -195,6 +220,16 @@ if __name__ == "__main__":
 
         if args.draw_graphs:
             read_from_files_for_graphs()
+    elif args.diff_file:
+        model_name=args.model 
+        model=MODELS[model_name]
+        prompt_template=args.prompt
+        diff_file=args.diff_file
+        if not os.path.exists(diff_file):
+            raise FileNotFoundError(f"Diff file {diff_file} not found")
+        if not model.check_installed():
+            raise Exception(f"Model {model_name} is not installed")
+        process_git_diff(model,prompt_template,diff_file)
     else:
         model_name = args.model
         model = MODELS[model_name]
@@ -206,6 +241,7 @@ if __name__ == "__main__":
         output_folder = args.output_folder
         temperature = args.temperature
         workers = args.workers
+        diff_file=args.diff_file
 
         os.makedirs(output_folder, exist_ok=True)
 
