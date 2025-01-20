@@ -179,19 +179,8 @@ function activate(context) {
         // 2) We'll define a new method that spawns git diff, collects the diff, then spawns python:
         async function runPythonScriptWithPipedDiff() {
             return new Promise((resolve, reject) => {
-                let diffCollected = `
-            You are a programmer to produce concise, descriptive commit messages for Git changes.
-            Below are up to three examples of commit messages that previously touched upon the same code or files. 
-            Please note that the first example is more important and should influence your message the most. 
-            Use the style and context of these examples, prioritizing the first examples, to inspire a new commit message for the provided Git diff. 
-            Do not include references to issue numbers or pull requests.
-
-            Examples of relevant commit messages:
-            1. add more singular exception lists
-            2. fix singular *use words
-
-            Now here is the new Git diff for which you must generate a commit message:
-            `;
+                generatedMessage = '';
+                let diffCollected = "";
                 // A) Spawn 'git diff --cached'
                 const gitProcess = (0, child_process_1.spawn)('git', ['diff', '--cached'], { cwd: repoPath });
                 // B) Accumulate its stdout into diffCollected
@@ -227,7 +216,7 @@ function activate(context) {
                     ['src/runExtension.py', '--output_txt', 'my_messages.txt'], { cwd: repoPath });
                     // E) When Python writes to stdout, accumulate the generated message
                     pyProcess.stdout.on('data', (data) => {
-                        vscode.window.showInformationMessage(`Output: ${data}`);
+                        //vscode.window.showInformationMessage(`Output: ${data}`);
                         generatedMessage += data.toString();
                     });
                     // (Optional) handle Python stderr
@@ -235,14 +224,30 @@ function activate(context) {
                         console.error(`[Python stderr]: ${data}`);
                     });
                     // F) On Python close
-                    pyProcess.on('close', (pyCode) => {
+                    pyProcess.on('close', async (pyCode) => {
                         if (pyCode !== 0) {
                             reject(new Error(`Python script exited with code ${pyCode}`));
                         }
                         else {
                             console.log('Full generated message:', generatedMessage.trim());
-                            vscode.env.clipboard.writeText(generatedMessage.trim());
-                            vscode.window.showInformationMessage('Commit message has been generated and copied to clipboard!');
+                            console.log('About to show QuickPick with options:', generatedMessage.trim());
+                            const options = [
+                                { label: '✅ Accept', detail: generatedMessage.trim() },
+                                { label: '❌ Reject', detail: 'Do not use this commit message.' },
+                            ];
+                            const selection = await vscode.window.showQuickPick(options, {
+                                placeHolder: 'Review the generated commit message and choose an action.',
+                            });
+                            if (selection?.label === '✅ Accept') {
+                                vscode.env.clipboard.writeText(generatedMessage.trim());
+                                vscode.window.showInformationMessage('Commit message accepted and copied to clipboard!');
+                            }
+                            else if (selection?.label === '❌ Reject') {
+                                vscode.window.showWarningMessage('Commit message rejected.');
+                            }
+                            else {
+                                vscode.window.showWarningMessage('No action taken.');
+                            }
                             resolve();
                         }
                     });
@@ -261,7 +266,7 @@ function activate(context) {
                     vscode.window.showInformationMessage(`Output: ${data}`);
                     generatedMessage += data.toString();
                 });
-                pythonProcess.on('close', (code) => {
+                pythonProcess.on('close', async (code) => {
                     if (code !== 0) {
                         reject(new Error(`Python script exited with code ${code}`));
                     }
@@ -288,27 +293,6 @@ function activate(context) {
             console.log("Dependencies installed. Now fetching git diff...");
             console.log("Piping staged diff to Python...");
             await runPythonScriptWithPipedDiff();
-            // const gitDiff = await getGitDiff();
-            // if (!gitDiff.trim()) {
-            //     vscode.window.showWarningMessage('No staged changes found.');
-            //     return;
-            // }
-            // console.log("Git diff fetched: ",
-            //            // gitDiff, 
-            //             "Now write diff to temp file...");
-            // const tempDir = context.globalStorageUri.fsPath;
-            // if (!fs.existsSync(tempDir)) {
-            //     fs.mkdirSync(tempDir, { recursive: true });
-            // }
-            // const tempFilePath = path.join(tempDir, 'staged_diff.txt');
-            // fs.writeFileSync(tempFilePath, gitDiff);
-            // console.log("Diff file is written to temp file, located at", tempFilePath, ", now running the model to generate messages....")
-            // //     Run the Python script inside the venv
-            // //     (assuming the script is `src/main.py --model mistral --prompt baseline`)
-            // //     You might need to pass the path to your tempFilePath as well if your Python script uses it.
-            // const outputTxtPath = path.join(repoPath, 'my_messages.txt');
-            // await runPythonScript(['src/runExtension.py', '--txt_file', tempFilePath, '--output_txt', outputTxtPath]);
-            // console.log("Message automatically copied to the file location: ", outputTxtPath);
         })().catch((error) => {
             vscode.window.showErrorMessage(`Extension activation error: ${error.message}`);
         });

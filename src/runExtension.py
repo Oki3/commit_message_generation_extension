@@ -88,8 +88,11 @@ class TxtExperiment:
         # # If the requested process_amount > number of lines, clamp it.
         # if self.process_amount > len(lines):
         #     self.process_amount = len(lines)
-        print("Reading from stdin...")
+        # print("Reading from stdin...")
+        self.output_df = DataFrame(columns=["prompt", "generated_message"])
+        print("Reading from stdin...", file=sys.stderr)
         diff_content = sys.stdin.read()
+        # print(f"Diff content read: {diff_content}")
 
         # Possibly split into lines or treat as one prompt
         lines = [diff_content]
@@ -99,7 +102,8 @@ class TxtExperiment:
 
     def save_output_csv(self):
         """Saves all columns (prompt and generated_message) to a CSV file."""
-        self.output_df.to_csv(self.output_csv, index=False)
+        with open(self.output_csv, "w", encoding="utf-8") as f:
+         self.output_df.to_csv(f, index=False)
 
     def save_output_txt(self):
         """Saves only the generated messages to a .txt file (one per line)."""
@@ -114,11 +118,23 @@ class TxtExperiment:
     def process_item(self, index: int, temperature: float) -> dict:
         item = self.input_df.iloc[index]
         prompt_line = item["prompt"]
+        few_shot_prompt = f"""
+        You are a programmer tasked with generating concise, descriptive commit messages based on Git diffs.
+         Below are two examples of commit messages for similar changes:
+
+        Example 1: add more singular exception lists
+        Example 2: fix singular *use words
+
+         Now, given the following Git diff, generate a commit message:
+
+       {prompt_line}
+
+        Commit Message:"""
 
         # We'll combine "fewshot" logic however you like;
         # for now, we just run it as-is with that line as the prompt.
         # If you had a fewshot template, you'd incorporate it here.
-        generated_message = self.model.run(prompt_line, temperature)
+        generated_message = self.model.run(few_shot_prompt, temperature)
         return {
             "prompt": prompt_line,
             "generated_message": generated_message
@@ -133,7 +149,7 @@ class TxtExperiment:
         print(
             f"Progress: {completed}/{total} "
             f"({(completed/total)*100:.2f}%) done. "
-            f"Elapsed {time_elapsed:.2f}s, remaining: {time_remaining:.2f}s"
+            f"Elapsed {time_elapsed:.2f}s, remaining: {time_remaining:.2f}s",file=sys.stderr
         )
 
     def append_result(self, index: int, result: dict):
@@ -200,7 +216,8 @@ parser.add_argument("--temperature", type=float, default=0.7, help="Model genera
 
 if __name__ == "__main__":
     args = parser.parse_args()
-
+    open(args.output_csv, "w").close()  
+    open(args.output_txt, "w").close()  
     experiment = TxtExperiment(
     #    txt_file=args.txt_file,
         output_csv=args.output_csv,
@@ -222,3 +239,6 @@ if __name__ == "__main__":
     experiment.save_output_csv()
     # Write only generated messages to .txt
     experiment.save_output_txt()
+    for msg in experiment.output_df["generated_message"]:
+        if isinstance(msg, str) and msg.strip():
+            print(msg)

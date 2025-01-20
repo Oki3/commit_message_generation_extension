@@ -1,1 +1,0 @@
- Added support for processing a text file in parallel with multiple workers using ThreadPoolExecutor. The user can specify the number of workers via the command-line argument '--workers'. If not specified, the default value is 5.
