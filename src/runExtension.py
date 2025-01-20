@@ -115,26 +115,12 @@ class TxtExperiment:
                     msg = ""
                 f.write(msg + "\n")
 
+
     def process_item(self, index: int, temperature: float) -> dict:
         item = self.input_df.iloc[index]
         prompt_line = item["prompt"]
-        few_shot_prompt = f"""
-        You are a programmer tasked with generating concise, descriptive commit messages based on Git diffs.
-         Below are two examples of commit messages for similar changes:
-
-        Example 1: add more singular exception lists
-        Example 2: fix singular *use words
-
-         Now, given the following Git diff, generate a commit message:
-
-       {prompt_line}
-
-        Commit Message:"""
-
-        # We'll combine "fewshot" logic however you like;
-        # for now, we just run it as-is with that line as the prompt.
-        # If you had a fewshot template, you'd incorporate it here.
-        generated_message = self.model.run(few_shot_prompt, temperature)
+        # Generate the commit message using the few-shot prompt
+        generated_message = self.model.run(prompt_line, temperature)
         return {
             "prompt": prompt_line,
             "generated_message": generated_message

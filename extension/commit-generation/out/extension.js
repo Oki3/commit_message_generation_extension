@@ -177,10 +177,174 @@ function activate(context) {
         // };
         // 1) We remove getGitDiff usage entirely.
         // 2) We'll define a new method that spawns git diff, collects the diff, then spawns python:
+        async function processFileChange(file) {
+            return new Promise((resolve, reject) => {
+                const repoPath = path.resolve(__dirname, '../../../');
+                let fileDiff = '';
+                const fileDiffProcess = (0, child_process_1.spawn)('git', ['diff', '--cached', '--', file], { cwd: repoPath });
+                fileDiffProcess.stdout.on('data', (data) => {
+                    fileDiff += data.toString();
+                });
+                fileDiffProcess.stderr.on('data', (err) => {
+                    vscode.window.showErrorMessage(`Error getting diff for ${file}: ${err}`);
+                });
+                fileDiffProcess.on('close', async (code) => {
+                    if (code !== 0) {
+                        return reject(new Error(`git diff for ${file} failed with code ${code}`));
+                    }
+                    if (!fileDiff.trim()) {
+                        return resolve(); // no changes for this file
+                    }
+                    const fewShotExamples = [
+                        'Fix null pointer exception in authentication',
+                        'Refactor logging setup for better traceability',
+                        'Improve API request handling to avoid timeouts'
+                    ].join('\n');
+                    // Create a file-specific prompt
+                    let prompt = `
+            You are an AI assistant tasked with generating a concise one-sentence Git commit message for changes in a single file.
+            Examples of relevant commit messages:
+            ${fewShotExamples}
+            File: ${file}
+            Diff:
+            ${fileDiff}
+            Output:
+           - A concise, one-sentence commit message describing the changes in the file, including the filename in the message if relevant. Limit to under 100 characters.`;
+                    // Spawn Python script for this prompt
+                    const pyProcess = (0, child_process_1.spawn)(venvPython, ['src/runExtension.py', '--output_txt', 'my_messages.txt'], { cwd: repoPath });
+                    let generatedMessageForFile = '';
+                    pyProcess.stdout.on('data', (data) => {
+                        generatedMessageForFile += data.toString();
+                    });
+                    pyProcess.stderr.on('data', (data) => {
+                        console.error(`[Python stderr for ${file}]: ${data}`);
+                    });
+                    pyProcess.on('close', async (pyCode) => {
+                        if (pyCode !== 0) {
+                            vscode.window.showErrorMessage(`Python script for ${file} exited with code ${pyCode}`);
+                        }
+                        else {
+                            const trimmedMessage = generatedMessageForFile.trim();
+                            console.log(`Commit message for ${file}:`, trimmedMessage);
+                            // Save the file and its message
+                            fileMessages.push({ file, message: trimmedMessage });
+                        }
+                        resolve();
+                    });
+                    // Pass prompt to Python script via stdin
+                    pyProcess.stdin.write(prompt);
+                    pyProcess.stdin.end();
+                });
+            });
+        }
+        let fileMessages = [];
+        async function processChangedFiles() {
+            return new Promise((resolve, reject) => {
+                const repoPath = path.resolve(__dirname, '../../../');
+                const listFilesProcess = (0, child_process_1.spawn)('git', ['diff', '--name-only', '--cached'], { cwd: repoPath });
+                let changedFiles = [];
+                listFilesProcess.stdout.on('data', (data) => {
+                    changedFiles.push(...data.toString().split('\n').filter((f) => f.trim()));
+                });
+                listFilesProcess.stderr.on('data', (errData) => {
+                    vscode.window.showErrorMessage(`Error listing changed files: ${errData}`);
+                });
+                listFilesProcess.on('close', async (code) => {
+                    if (code !== 0) {
+                        return reject(new Error(`git diff --name-only exited with code ${code}`));
+                    }
+                    for (const file of changedFiles) {
+                        await processFileChange(file);
+                    }
+                    let options = fileMessages.map(item => ({
+                        label: `${item.file}: ${item.message}`
+                    }));
+                    // Add a bulk action option at the beginning of the options list
+                    options.unshift({
+                        label: '✅ Accept All',
+                        description: 'Accept and copy all commit messages to clipboard'
+                    });
+                    const selected = await vscode.window.showQuickPick(options, {
+                        placeHolder: 'Review generated commit messages for each file or accept all.'
+                    });
+                    if (!selected) {
+                        vscode.window.showWarningMessage('No selection made.');
+                        return resolve();
+                    }
+                    if (selected.label === '✅ Accept All') {
+                        // Concatenate all messages for the "Accept All" option
+                        const allMessages = fileMessages
+                            .map(item => `${item.file}: ${item.message}`)
+                            .join('\n');
+                        await vscode.env.clipboard.writeText(allMessages);
+                        vscode.window.showInformationMessage('All commit messages copied to clipboard!');
+                    }
+                    else {
+                        // Handle individual file selection for accept/reject as before
+                        const selectedFile = selected.label;
+                        const selectedItem = fileMessages.find(item => item.file === selectedFile);
+                        if (!selectedItem) {
+                            vscode.window.showErrorMessage('Selected file not found.');
+                            return resolve();
+                        }
+                        const decisionOptions = [
+                            { label: '✅ Accept', detail: selectedItem.message },
+                            { label: '❌ Reject', detail: 'Do not use this commit message.' }
+                        ];
+                        const decision = await vscode.window.showQuickPick(decisionOptions, {
+                            placeHolder: `Review the commit message for ${selectedItem.file}:`
+                        });
+                        if (decision?.label === '✅ Accept') {
+                            await vscode.env.clipboard.writeText(selectedItem.message);
+                            vscode.window.showInformationMessage(`Commit message for ${selectedItem.file} accepted and copied to clipboard!`);
+                        }
+                        else if (decision?.label === '❌ Reject') {
+                            vscode.window.showWarningMessage(`Commit message for ${selectedItem.file} rejected.`);
+                        }
+                        else {
+                            vscode.window.showWarningMessage('No action taken.');
+                        }
+                    }
+                    resolve();
+                });
+            });
+        }
+        async function getChangedFiles() {
+            return new Promise((resolve, reject) => {
+                const listFilesProcess = (0, child_process_1.spawn)('git', ['diff', '--name-only', '--cached'], { cwd: repoPath });
+                let changedFiles = [];
+                listFilesProcess.stdout.on('data', (data) => {
+                    changedFiles.push(...data.toString().split('\n').filter((f) => f.trim()));
+                });
+                listFilesProcess.stderr.on('data', (errData) => {
+                    vscode.window.showErrorMessage(`Error listing changed files: ${errData}`);
+                });
+                listFilesProcess.on('close', (code) => {
+                    if (code !== 0) {
+                        return reject(new Error(`git diff --name-only exited with code ${code}`));
+                    }
+                    resolve(changedFiles);
+                });
+            });
+        }
         async function runPythonScriptWithPipedDiff() {
             return new Promise((resolve, reject) => {
                 generatedMessage = '';
-                let diffCollected = "";
+                const fewShotExamples = [
+                    'Fix null pointer exception, changed variable a to b and removed redundant lines in authentication',
+                    'Refactor logging setup for better traceability',
+                    'Improve API request handling to avoid timeouts'
+                ].join('\n');
+                let diffCollected = `
+            You are an AI assistant designed to produce concise, descriptive commit messages for Git changes. 
+           Below are up to three examples of commit messages that previously touched upon the same code or files. 
+          Please note that the first example is more important and should influence your message the most. 
+          Use the style and context of these examples, prioritizing the first examples, to inspire a new commit message for the provided Git diff.  
+          Do not include references to issue numbers or pull requests.  Do not surround with quotes. Do not summarize. Point out specific changes in the code. 
+          Examples of relevant commit messages:
+          ${fewShotExamples}
+         Now here is the new Git diff for which you must generate a commit message:
+            `;
                 // A) Spawn 'git diff --cached'
                 const gitProcess = (0, child_process_1.spawn)('git', ['diff', '--cached'], { cwd: repoPath });
                 // B) Accumulate its stdout into diffCollected
@@ -204,11 +368,12 @@ function activate(context) {
                         return;
                     }
                     diffCollected += `
-            Format:
-            A short commit message (in one sentence) describing what changed and why, consistent with the style 
-            and context demonstrated by the above examples.
-
-            Output:`;
+            Output:
+           For each file change in the provided diff, produce a concise, one-sentence commit message.
+           Format:
+           - File: <filename>
+           Commit Message: <message>
+          Separate each file's message with a newline.`;
                     // D) Now spawn Python
                     const pyProcess = (0, child_process_1.spawn)(venvPython, 
                     // for example: ['src/runExtension.py', '--output_txt', 'my_messages.txt']
@@ -291,8 +456,28 @@ function activate(context) {
             console.log("Pulling Mistral model via Ollama...");
             await pullModel(repoPath);
             console.log("Dependencies installed. Now fetching git diff...");
-            console.log("Piping staged diff to Python...");
-            await runPythonScriptWithPipedDiff();
+            try {
+                const changedFiles = await getChangedFiles();
+                if (changedFiles.length === 0) {
+                    vscode.window.showWarningMessage('No staged changes found.');
+                }
+                else if (changedFiles.length === 1) {
+                    console.log("Single file changed. Using runPythonScriptWithPipedDiff...");
+                    await runPythonScriptWithPipedDiff();
+                }
+                else {
+                    console.log("Multiple files changed. Processing each file separately...");
+                    await processChangedFiles();
+                }
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    vscode.window.showErrorMessage(`Error processing diffs: ${error.message}`);
+                }
+                else {
+                    vscode.window.showErrorMessage('Unknown error processing diffs.');
+                }
+            }
         })().catch((error) => {
             vscode.window.showErrorMessage(`Extension activation error: ${error.message}`);
         });
