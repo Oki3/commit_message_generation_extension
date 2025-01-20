@@ -200,14 +200,19 @@ export function activate(context: vscode.ExtensionContext) {
                     
                     // Create a file-specific prompt
                     let prompt = `
-            You are an AI assistant tasked with generating a concise one-sentence Git commit message for changes in a single file.
+            You are an AI assistant designed to produce concise, descriptive commit messages for Git changes. 
+            Below are up to three examples of commit messages that previously touched upon the same code or files. 
+            Please note that the first example is more important and should influence your message the most. 
+            Use the style and context of these examples, prioritizing the first examples, to inspire a new commit message for the provided Git diff.  Do not include references to issue numbers or pull requests.  Do not surround with quotes.
+            Generate a concise one-sentence Git commit message for changes in a single file.
             Examples of relevant commit messages:
             ${fewShotExamples}
             File: ${file}
             Diff:
             ${fileDiff}
             Output:
-           - A concise, one-sentence commit message describing the changes in the file, including the filename in the message if relevant. Limit to under 100 characters.`;
+           - A short commit message (in one sentence) describing what changed and why, consistent with the style 
+            and context demonstrated by the above examples.`;
                     
                     // Spawn Python script for this prompt
                     const pyProcess = spawn(
@@ -231,7 +236,7 @@ export function activate(context: vscode.ExtensionContext) {
                             vscode.window.showErrorMessage(`Python script for ${file} exited with code ${pyCode}`);
                         } else {
                             const trimmedMessage = generatedMessageForFile.trim();
-                            console.log(`Commit message for ${file}:`, trimmedMessage);
+                            console.log(`Commit message for ${file} has been generated:`, trimmedMessage);
                             
                             // Save the file and its message
                             fileMessages.push({ file, message: trimmedMessage });
@@ -277,7 +282,12 @@ export function activate(context: vscode.ExtensionContext) {
                     // Add a bulk action option at the beginning of the options list
                     options.unshift({
                         label: '✅ Accept All',
-                        description: 'Accept and copy all commit messages to clipboard'
+                        description: 'Accept and copy all commit messages to clipboard',
+                        
+                    },
+                    {
+                        label: '❌ Reject All',
+                        description: 'Reject all generated commit messages and do nothing',
                     });
                     
                     const selected = await vscode.window.showQuickPick(options, {
@@ -292,13 +302,18 @@ export function activate(context: vscode.ExtensionContext) {
                     if (selected.label === '✅ Accept All') {
                         // Concatenate all messages for the "Accept All" option
                         const allMessages = fileMessages
-                        .map(item => `${item.file}: ${item.message}`)
+                        .map(item => item.message)
                         .join('\n');
                         await vscode.env.clipboard.writeText(allMessages);
                         vscode.window.showInformationMessage('All commit messages copied to clipboard!');
-                    } else {
+                    } else if (selected.label === '❌ Reject All') {
+                        // Handle rejection of all commit messages
+                        vscode.window.showWarningMessage('All commit messages rejected.');
+                    }
+                    else {
                         // Handle individual file selection for accept/reject as before
-                        const selectedFile = selected.label;
+                        const selectedFile = selected.label.split(':')[0].trim();;
+                        console.log(selectedFile)
                         const selectedItem = fileMessages.find(item => item.file === selectedFile);
                         if (!selectedItem) {
                             vscode.window.showErrorMessage('Selected file not found.');
@@ -428,7 +443,7 @@ export function activate(context: vscode.ExtensionContext) {
                         if (pyCode !== 0) {
                             reject(new Error(`Python script exited with code ${pyCode}`));
                         } else {
-                            console.log('Full generated message:', generatedMessage.trim());
+                            console.log('Full generated message for a single file:', generatedMessage.trim());
                             console.log('About to show QuickPick with options:', generatedMessage.trim());
                             const options = [
                                 { label: '✅ Accept', detail: generatedMessage.trim() },

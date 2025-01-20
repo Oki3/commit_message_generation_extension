@@ -7,6 +7,8 @@ from pandas import DataFrame
 import argparse
 import time
 import sys
+from threading import Lock
+
 
 #from post_processing.post_processing_csv import convert_to_result_file
 #from post_processing.graphs import read_from_files_for_graphs
@@ -47,6 +49,7 @@ class TxtExperiment:
     start_time: float = 0
     workers: int
     temperature: float
+    file_lock = Lock()
 
     def __init__(
         self,
@@ -102,12 +105,15 @@ class TxtExperiment:
 
     def save_output_csv(self):
         """Saves all columns (prompt and generated_message) to a CSV file."""
-        with open(self.output_csv, "w", encoding="utf-8") as f:
-         self.output_df.to_csv(f, index=False)
+        with self.file_lock:
+         write_header = not os.path.exists(self.output_csv) or os.path.getsize(self.output_csv) == 0
+         with open(self.output_csv, "a", encoding="utf-8") as f:
+          self.output_df.to_csv(f, index=False)
 
     def save_output_txt(self):
         """Saves only the generated messages to a .txt file (one per line)."""
-        with open(self.output_txt, "w", encoding="utf-8") as f:
+        with self.file_lock:
+         with open(self.output_txt, "a", encoding="utf-8") as f:
             for idx in range(len(self.output_df)):
                 msg = self.output_df.loc[idx, "generated_message"]
                 # In case of NaN or empty
@@ -137,12 +143,19 @@ class TxtExperiment:
             f"({(completed/total)*100:.2f}%) done. "
             f"Elapsed {time_elapsed:.2f}s, remaining: {time_remaining:.2f}s",file=sys.stderr
         )
-
+    
     def append_result(self, index: int, result: dict):
         self.output_df.loc[index] = [
             result["prompt"],
             result["generated_message"]
         ]
+        # if result["generated_message"].strip():
+        #    self.append_message_to_file(result["generated_message"].strip())
+    # def append_message_to_file(self, message: str):
+    #     """Append a generated message to the output_txt file."""
+    #     with self.file_lock: 
+    #      with open(self.output_txt, "a", encoding="utf-8") as f:
+    #         f.write(message + "\n")
 
     def append_error(self, index: int):
         item = self.input_df.iloc[index]
@@ -202,8 +215,8 @@ parser.add_argument("--temperature", type=float, default=0.7, help="Model genera
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    open(args.output_csv, "w").close()  
-    open(args.output_txt, "w").close()  
+    # open(args.output_csv, "w").close()  
+    # open(args.output_txt, "w").close()  
     experiment = TxtExperiment(
     #    txt_file=args.txt_file,
         output_csv=args.output_csv,
