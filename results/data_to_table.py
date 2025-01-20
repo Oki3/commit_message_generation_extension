@@ -1,93 +1,161 @@
-import pandas as pd
 from itertools import groupby
+import pandas as pd
 
-def parse_model_approach(s: str):
-    parts = s.rsplit('_', 1)
-    return parts[0], parts[1] if len(parts) == 2 else ("", "")
+MODEL_NAME = {
+    "codellama": "CodeLlama 6.7B",
+    "mistral": "Mistral 7B",
+    "phi3.5": "Phi3.5 3.8B",
+}
 
-def read_and_filter_csv(csv_path: str):
-    df = pd.read_csv(csv_path)
-    df['base_model'], df['approach'] = zip(*df['model'].apply(parse_model_approach))
-    df = df[df['approach'].isin(['uncleaned','cleaned'])]
-    return df
+class Table:
+    df: pd.DataFrame
 
-def group_and_organize(df: pd.DataFrame):
-    grouped = df.groupby(['base_model', 'prompt'])
-    rows = []
-    for (base_model, prompt), group in grouped:
-        row_u = group[group['approach'] == 'uncleaned']
-        row_c = group[group['approach'] == 'cleaned']
-        if not (row_u.empty or row_c.empty):
-            u, c = row_u.iloc[0], row_c.iloc[0]
-            rows.append([
-                base_model,
-                prompt,
-                u['bleu'], u['meteor'], u['rouge_l'],
-                c['bleu'], c['meteor'], c['rouge_l'],
-            ])
-    rows.sort(key=lambda r: (r[0], r[1]))
-    return rows
+    def __init__(self, filename: str):
+        self.df = pd.read_csv(filename)
+        self.value = ""
 
-def compute_max_values(rows):
-    all_vals = [ [r[idx]*100 for r in rows] for idx in range(2,8) ]
-    
-    return [max(vals) if vals else 0 for vals in all_vals]
+    def style(self, i, key):
+        val = self.df.iloc[i][key] * 100
+        max_val = self.df[key].max() * 100
 
-def bold_if_max(val: float, max_val: float):
-    return rf"\textbf{{{val:.2f}}}" if abs(val - max_val) < 1e-12 else f"{val:.2f}"
+        return rf"\textbf{{{val:.2f}}}" if abs(val - max_val) < 1e-12 else f"{val:.2f}"
 
-def generate_latex(table_rows):
-    maxima = compute_max_values(table_rows)
-    model_name = {
-        "codellama": "CodeLLama 6.7B",
-        "mistral": "Mistral 7B",
-        "phi3.5": "Phi3.5 3.8B",
-    }
+    def table_start(self, title: str, l: list[tuple[str, int]], c: list[tuple[str, int]], second_row: list[str] = []):
+        self.value += r"\begin{table*}[ht]" + "\n"
+        self.value += r"\centering" + "\n"
+        self.value += rf"\caption{{{title}}}" + "\n"
+        self.value += r"\label{tab:evaluation}" + "\n"
 
-    print(r"\begin{table*}[ht]")
-    print(r"\centering")
-    print(r"\begin{tabular}{llccccccccc}")
-    print(r"\toprule")
-    print(r"Model & Prompt & \multicolumn{3}{c}{Generated (raw)} & \multicolumn{3}{c}{Generated (cleaned)}\\")
-    print(r"\cmidrule(lr){3-5} \cmidrule(lr){6-8}")
-    print(r"& & BLEU & METEOR & ROUGE-L & BLEU & METEOR & ROUGE-L \\")
-    print(r"\midrule")
+        l_size = sum([x[1] for x in l])
+        c_size = sum([x[1] for x in c])
 
-    first_model = True
-    for base_model, rows in groupby(table_rows, key=lambda r: r[0]):
-        rows = list(rows)
-        if not first_model: print(r"\midrule")
-        first_model = False
+        self.value += rf"\begin{{tabular}}{{{'l' * l_size + 'c' * c_size}}}" + "\n"
+        self.value += r"\toprule" + "\n"
 
-        for i, row in enumerate(rows):
-            _, prompt, *vals = row
-            # u_bleu, u_meteor, u_rouge, c_bleu, c_meteor, c_rouge, a_bleu, a_meteor, a_rouge
-            bolded_vals = [
-                bold_if_max(vals[j]*100, maxima[ j ]) 
-                for j in range(6)
-            ]
-            if i == 0:
-                print(
-                    rf"\multirow{{{len(rows)}}}{{*}}{{{model_name.get(base_model, base_model)}}} & {prompt} & "
-                    + f"{bolded_vals[0]} & {bolded_vals[1]} & {bolded_vals[2]} & "
-                    + f"{bolded_vals[3]} & {bolded_vals[4]} & {bolded_vals[5]} \\\\"
-                )
+        cmidrules = []
+
+        index = 1
+
+        for i, (name, size) in enumerate(l + c):
+            if size == 1:
+                self.value += name
             else:
-                print(
-                    rf"& {prompt} & {bolded_vals[0]} & {bolded_vals[1]} & {bolded_vals[2]} & "
-                    + f"{bolded_vals[3]} & {bolded_vals[4]} & {bolded_vals[5]} \\\\"
-                )
+                self.value += rf"\multicolumn{{{size}}}{{c}}{{{name}}}"
+                cmidrules.append((index, index + size - 1))
+            if i != len(l + c) - 1:
+                self.value += " & "
 
-    print(r"\bottomrule")
-    print(r"\end{tabular}")
-    print(r"\caption{Evaluation of different models.}")
-    print(r"\label{tab:evaluation}")
-    print(r"\end{table*}")
+            index += size
 
-def csv_to_latex_table(csv_path: str):
-    df = read_and_filter_csv(csv_path)
-    table_rows = group_and_organize(df)
-    generate_latex(table_rows)
+        self.value += r"\\" + "\n"
+        
+        self.value += " ".join([r"\cmidrule(lr){" + f"{x[0]}-{x[1]}" + "}" for x in cmidrules])
+
+        if len(second_row) > 0:
+            self.value += " & ".join(second_row)
+            self.value += r"\\" + "\n"
+
+        self.value += r"\midrule" + "\n"
+
+    def table_end(self):
+        self.value += r"\bottomrule" + "\n"
+        self.value += r"\end{tabular}" + "\n"
+        self.value += r"\end{table*}" + "\n"
+
+    def generate_full_results(self):
+        self.table_start(
+            r"Evaluation of different models, average for each $prompt \times model$ at temperature $0.7$. (As percentage)", 
+            [("Model", 1), ("Prompt", 1)],
+            [("Generated (raw)", 3), ("Generated (cleaned)", 3)],
+            ["", "", "BLEU", "METEOR", "ROUGE-L", "BLEU", "METEOR", "ROUGE-L"]
+        )
+
+        last_model = None
+
+        for i in range(len(self.df)):
+            item = self.df.iloc[i]
+            model = item["model"]
+            prompt = item["prompt"]
+            temperature = item["temperature"]
+
+            if temperature != 0.7:
+                continue
+
+            row = ""
+
+            if model != last_model:
+                if last_model is not None:
+                    row += r"\midrule"
+
+                row += rf"\multirow{3}{{*}}{{{MODEL_NAME[model]}}} "
+                last_model = model
+
+            row += f"& {prompt} & {self.style(i, 'bleu_mean')} & {self.style(i, 'meteor_mean')} & {self.style(i, 'rouge_l_mean')} & {self.style(i, 'cleaned_bleu_mean')} & {self.style(i, 'cleaned_meteor_mean')} & {self.style(i, 'cleaned_rouge_l_mean')} \\\\"
+
+            self.value += row + "\n"
+
+        self.table_end()
+
+        return self.value
+    
+    def generate_length_results(self):
+        self.table_start(
+            r"Evaluation of mean response length for each $prompt \times model$ at temperature $0.7$. (As percentage)", 
+            [("Model", 1), ("Prompt", 1)],
+            [("True length", 1), ("Generated (raw) length", 1), ("Generated (cleaned) length", 1)]
+        )
+
+        last_model = None
+
+        for i in range(len(self.df)):
+            item = self.df.iloc[i]
+            model = item["model"]
+            prompt = item["prompt"]
+            temperature = item["temperature"]
+
+            if temperature != 0.7:
+                continue
+
+            row = ""
+
+            if model != last_model:
+                if last_model is not None:
+                    row += r"\midrule"
+
+                row += rf"\multirow{3}{{*}}{{{MODEL_NAME[model]}}} "
+                last_model = model
+
+            row += f"& {prompt} & {item['true_mean_length']:.2f} & {item['mean_length']:.2f} & {item['cleaned_mean_length']:.2f} \\\\"
+
+            self.value += row + "\n"
+
+        self.table_end()
+
+        return self.value
+    
+    def generate_temperature_results(self):
+        self.table_start(
+            r"Evaluation of Mistral 7B with few-shot for different temperatures. (As percentage)",
+            [("Temperature", 1)],
+            [("Generated (raw)", 3), ("Generated (cleaned)", 3)],
+            ["", "BLEU", "METEOR", "ROUGE-L", "BLEU", "METEOR", "ROUGE-L"]
+        )
+
+        for i in range(len(self.df)):
+            item = self.df.iloc[i]
+            model = item["model"]
+            temperature = item["temperature"]
+
+            if model != "mistral" or temperature not in [0.0, 0.25, 0.5, 0.75, 1.0]:
+                continue
+
+            row = f"{temperature} & {self.style(i, 'bleu_mean')} & {self.style(i, 'meteor_mean')} & {self.style(i, 'rouge_l_mean')} & {self.style(i, 'cleaned_bleu_mean')} & {self.style(i, 'cleaned_meteor_mean')} & {self.style(i, 'cleaned_rouge_l_mean')} \\\\"
+
+            self.value += row + "\n"
+
+        self.table_end()
+
+        return self.value
 
 if __name__ == "__main__":
-    csv_to_latex_table("evaluation_results.csv")
+    print(Table("evaluation_results.csv").generate_temperature_results())
