@@ -1,0 +1,10 @@
+ - Update extension script to handle user responses for each file in QuickPick
+ "Updated function implementations for improved performance and better code readability."
+ "Refactor file-specific prompt generation for improved commit message quality"
+ Added thread lock to prevent concurrent writing in output files
+ Improved file-specific prompt handling to enhance AI-generated commit messages
+ "Updated function logic for handling array manipulation to optimize performance and reduce memory usage."
+ Improve AI assistant's response generation for Git commit messages
+ Improved QuickPick handling and refactored function implementations for better performance and code readability.
+ "Added thread lock for concurrent file writing in TxtExperiment class"
+ Added file lock for multi-threading in output files writing

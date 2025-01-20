@@ -168,5 +168,5 @@ logs/
 /myenv
 new_venv/
 
-
-
+/extension/commit-generation/node_modules
+node_modules/
