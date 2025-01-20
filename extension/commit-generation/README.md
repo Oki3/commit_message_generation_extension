@@ -1,71 +1,42 @@
-# commit-generation README
+# Commit Generation extension
 
-This is the README for your extension "commit-generation". After writing up a brief description, we recommend including the following sections.
+>Notice: We used WSL2 and macOS as the testing environment, some adaptions for Windows are also implemented. However, they are not tested thoroughly. The current extension can be seen as a Proof of Concept.
 
-## Features
+To test if the extension is running properly, you need to follow the instructions below:
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+1. Open `extension/commit-generation` as the root project in Visual Studio Code.
 
-For example if there is an image subfolder under your extension project workspace:
+2. Press `F5` to open the visual debugger, then press `Ctrl` + `Shift` + `P`, search and select `Generate commit message` in the list.
 
-\!\[feature X\]\(images/feature-x.png\)
+3. You should see the process by print statements in the console terminal, ignore the visual studio pop-ups - they are redundant for now.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+4. After that you should see the console outputs(below is an example)：
+```
+Initializing virtual environments...
+Virtual environment created. Now installing dependencies...
+Pulling Mistral model via Ollama...
+Dependencies installed. Now fetching git diff...
+Git diff fetched:  Now write diff to temp file...
+Diff file is written to temp file, located at /home/weicheng/.vscode-server/data/User/globalStorage/undefined_publisher.commit-generation/staged_diff.txt , now running the model to generate messages....
+Message automatically copied to the file location: [.../my_messages.txt]
+```
+If you can see the last line, then messages should be copied to the file location, which is typically in the root folder of your repository.
 
-## Requirements
+### Model running on the extension
+The extension runs on `src/runExtension.py`. The current model it is running:
+```
+Model: Mistral7b
+Applied technique(s): few-shot
+Temperature: 0.7
+```
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+To adjust the parameters for the model, modify `src/runExtension.py`. Alternatively, you can put your own model in.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+In the case that `ollama serve` is run locally before starting the extension, the program will issue the following error:
 
-## Release Notes
+>[ollama serve stderr]: Error: listen tcp 127.0.0.1:11434: bind: address already in use
 
-Users appreciate release notes as you update your extension.
+To solve this, please kill the `ollama` process prior to starting the extension. See instructions on this [here](https://github.com/ollama/ollama/issues/690).
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**

@@ -121,6 +121,14 @@ Temperature: 0.7
 
 To adjust the parameters for the model, modify `src/runExtension.py`. Alternatively, you can put your own model in.
 
+### Known Extension Issues
+
+In the case that `ollama serve` is run locally before starting the extension, the program will issue the following error:
+
+>[ollama serve stderr]: Error: listen tcp 127.0.0.1:11434: bind: address already in use
+
+To solve this, please kill the `ollama` process prior to starting the extension. See instructions on this [here](https://github.com/ollama/ollama/issues/690).
+
 ## Other scripts
 
 
